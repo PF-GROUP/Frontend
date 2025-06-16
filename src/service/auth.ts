@@ -2,7 +2,7 @@ import axios from "axios"
 import dotenv from 'dotenv';
 dotenv.config();
 // const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const API_URL = "http://191.235.34.31:3001";
+const API_URL = "http://191.235.34.31:3000";
 const axiosApiBack = axios.create({ baseURL: API_URL });
 
 interface IformInput {
