@@ -2,9 +2,10 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useAuthContext } from '../../../context/authContext';
-import { loginService } from '../../service/auth';
+import { loginService } from '../../services/authService';
 import { useRouter } from "next/navigation";
+import dynamic from 'next/dynamic';
+import { useAuthContext } from '../../../context/authContext';
 
 const schema = yup.object().shape({
   email: yup.string().email('Email inválido').required('El email es obligatorio'),
@@ -16,6 +17,10 @@ type FormData = {
   email: string;
   password: string;
 };
+const GoogleSignIn = dynamic(
+  () => import('./googleButton'),
+  { ssr: false }
+);
 
 export default function LoginForm() {
   const router = useRouter();
@@ -35,14 +40,11 @@ export default function LoginForm() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const resultado = await loginService(data);
-
-      
-      SaveUserData({
-        user: resultado.user,
-        token: resultado.token,
-      });
-
+      const token = await loginService(data as unknown as globalThis.FormData, SaveUserData) ;
+      if (!token) {
+        console.error('No se recibió un token válido');
+        return;
+      }
       handleGoHome();
     } catch (error) {
       console.error('Error enviando datos:', error);
@@ -88,7 +90,18 @@ export default function LoginForm() {
           >
             Inicia sesión
           </button>
+          
         </form>
+
+        <div className="flex justify-center mt-4">
+          <p className="text-sm text-gray-600">
+            O sino inicia sesion con{' '}
+
+             
+
+          </p>
+ <GoogleSignIn/>
+        </div>
       </div>
     </div>
   );
