@@ -15,16 +15,21 @@ const FormRegister: React.FC = () => {
         console.log(values);
         try {
             const response = await RegisterSubmit(values);
-            console.log(response);
-            if (response?.status === 201) {
-                toast.success('¡Usuario registrado! Redirigiendo al Login...', { duration: 2000 });
+            console.log("respuesta de entrada: ", response);
+            if (response?.success === true) {
+                toast.success('¡Usuario registrado! Redirigiendo al Login...', { duration: 2500 });
                 setTimeout(() => {
                     router.push('/login');
                 }, 2000);
+                return;
             } else {
+                console.log("mensaje de error else: ", response);
+                
                 toast.error('Dato repetido. Ingresa un valor distinto en Email.', { duration: 2000 });
             }
         } catch (error) {
+            console.log("mensaje de error catch: ",error);
+
             toast.error('Hubo un problema al querer registrarse.', { duration: 2000 });
             console.log('error en el register:', error);
         }

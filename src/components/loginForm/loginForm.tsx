@@ -3,8 +3,10 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useAuthContext } from '../../../context/authContext';
-import { loginService } from '../../service/auth';
+import { loginService } from '@/services/authService';
 import { useRouter } from "next/navigation";
+import Image from 'next/image';
+import toast from 'react-hot-toast';
 
 const schema = yup.object().shape({
   email: yup.string().email('Email inválido').required('El email es obligatorio'),
@@ -35,17 +37,29 @@ export default function LoginForm() {
 
   const onSubmit = async (data: FormData) => {
     try {
+      console.log('Enviando datos al loginService...');
       const resultado = await loginService(data);
-
-      
+      console.log('resultado del Login:', resultado);
       SaveUserData({
         user: resultado.user,
         token: resultado.token,
       });
-
+      // A PARTIR DE ACA
+      if (resultado && resultado.user) {
+                toast.success('¡Usuario Logueado! Redirigiendo al Home...', { duration: 2000 });
+                setTimeout(() => {
+                    router.push('/login');
+                }, 2000);
+                return;
+            } else {
+                console.log("mensaje de error else: ", resultado);
+                toast.error('Dato repetido. Ingresa un valor distinto en Email.', { duration: 2000 });
+            }
+      // HASTA ACA ES EL TOAST DEL LOGIN JOACO
       handleGoHome();
     } catch (error) {
       console.error('Error enviando datos:', error);
+      toast.error('Hubo un problema al querer Loguearse, intente nuevamente.', { duration: 2000 });
     }
   };
 
@@ -53,7 +67,7 @@ export default function LoginForm() {
     <div className="flex items-center justify-center min-h-screen bg-[url('/RegisterImg.png')] bg-cover bg-center px-2">
       <div className="bg-white border border-gray-600 p-4 md:p-8 rounded shadow-md w-full max-w-xs md:max-w-md mx-auto">
         <div className="flex flex-col items-center mb-6">
-          <img src="/iconoKasapp.png" alt="Logo" width={80} height={80} className="w-[80px] h-[80px] md:w-[120px] md:h-[120px]" />
+          <Image src="/iconoKasapp.png" alt="Logo" width={80} height={80} className="w-[80px] h-[80px] md:w-[120px] md:h-[120px]" />
           <h2 className="text-lg md:text-2xl font-bold text-gray-900">Iniciar sesión</h2>
         </div>
 
