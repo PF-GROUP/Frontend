@@ -2,12 +2,16 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import React from "react";
-import { useAuthContext } from '../../../context/authContext';
+import { useAuthContext, decodeUserCookie } from '../../../context/authContext';
 
 
 const Navbar: React.FC = () => {
   const [showMenu, setShowMenu] = React.useState(false);
   const { isAuth } = useAuthContext();
+
+  const cookie = 'j%3A%7B%22deletedAt%22%3Anull%2C%22id%22%3A12%2C%22name%22%3A%22Joaquin%22%2C%22surname%22%3A%22Martinez%22%2C%22phone%22%3A%223517474105%22%2C%22email%22%3A%22joaco.martinez1480%40gmail.com%22%2C%22password%22%3A%22%242b%2410%24WqdnwnKEvitMkhfSHvEb7OT1vIv8UUgkBrIU6ymzRz0BNzBh4lI8K%22%2C%22isAdmin%22%3Afalse%2C%22agency%22%3Anull%7D';
+const userObj = decodeUserCookie(cookie);
+console.log(userObj);
 
   const logeado = isAuth;
   return (

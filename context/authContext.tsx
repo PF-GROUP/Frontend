@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { IUser } from "../interface/User";
 
-// Función para leer cookies
+
 function getCookie(name: string) {
     return document.cookie.split('; ').reduce((r, v) => {
         const parts = v.split('=');
@@ -21,6 +21,18 @@ interface AuthContextType {
     token?: string | null;
     SaveUserData: (data: { user: IUser, token: string }) => void;
     ResetUserData: () => void;
+}
+
+export const decodeUserCookie = (cookieValue: string) => {
+  try {
+    const decoded = decodeURIComponent(cookieValue);
+    // Elimina el prefijo "j:" si existe
+    const jsonString = decoded.startsWith('j:') ? decoded.slice(2) : decoded;
+    return JSON.parse(jsonString);
+  } catch (e) {
+    console.error("No se pudo decodificar la cookie:", e);
+    return null;
+  }
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -52,7 +64,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(data.user);
         setIsAuth(true);
         setToken(data.token);
-        // No seteamos cookies aquí porque el backend ya lo hace
     };
 
     const ResetUserData = () => {
