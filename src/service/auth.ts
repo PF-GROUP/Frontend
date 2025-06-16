@@ -16,9 +16,7 @@ interface IformInput {
 
 export const postRegister = async (data: IformInput) => {
     try {
-        const res = await axiosApiBack.post('/auth/register', data, {
-            withCredentials: true
-        })
+        const res = await axiosApiBack.post('/auth/register', data)
 
         return res.data
     } catch (e) {
