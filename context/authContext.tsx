@@ -4,12 +4,6 @@ import { createContext, useEffect } from "react"
 import { useContext, ReactNode, useState } from "react";
 import { IUser } from "../interface/User";
 
-
-// function setCookie(name: string, value: string, days = 7) {
-//     const expires = new Date(Date.now() + days * 864e5).toUTCString();
-//     document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
-// }
-
 function getCookie(name: string) {
     return document.cookie.split('; ').reduce((r, v) => {
         const parts = v.split('=');
@@ -25,7 +19,7 @@ interface AuthContextType {
     user: IUser | null;
     isAuth: boolean | null;
     token?: string | null;
-    // SaveUserData: (data:{ user: IUser, token: string }) => void;
+    SaveUserData: (data:{ user: IUser, token: string }) => void;
     ResetUserData: () => void;
 }
 
@@ -49,14 +43,12 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         }
     }, [])
 
-    // const SaveUserData = (data: { user: IUser, token: string }) => {
-    //     setUser(data.user);
-    //     setIsAuth(true);
-    //     setToken(data.token);
-
-    //     setCookie('token', data.token);
-    //     setCookie('user', JSON.stringify(data.user));
-    // }
+    // Solo actualiza el estado, no escribe cookies
+    const SaveUserData = (data: { user: IUser, token: string }) => {
+        setUser(data.user);
+        setIsAuth(true);
+        setToken(data.token);
+    }
 
     const ResetUserData = () => {
         setUser(null);
@@ -70,7 +62,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         <AuthContext.Provider value={{
             user: user || null,
             isAuth,
-            // SaveUserData,
+            SaveUserData,
             ResetUserData,
             token,
         }}>
