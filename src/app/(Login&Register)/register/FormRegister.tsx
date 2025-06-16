@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react";
-import { RegisterSubmit } from "@/services/postRegisterForm";
+import { RegisterSubmit } from "@/services/authService";
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import registerValidations from "@/components/FormRegister/registerValidations";
