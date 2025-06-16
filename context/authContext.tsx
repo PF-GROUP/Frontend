@@ -19,7 +19,7 @@ interface AuthContextType {
     user: IUser | null;
     isAuth: boolean;
     token?: string | null;
-    SaveUserData: (data: { user: IUser, token: string }) => void;
+    SaveUserData: (data: { token: string }) => void;
     ResetUserData: () => void;
 }
 
@@ -60,8 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     }, []);
 
-    const SaveUserData = (data: { user: IUser, token: string }) => {
-        setUser(data.user);
+    const SaveUserData = (data: { token: string }) => {
         setIsAuth(true);
         setToken(data.token);
     };

@@ -2,11 +2,14 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useAuthContext } from '../../../context/authContext';
-import { loginService } from '@/services/authService';
+import { loginService } from '../../services/authService';
 import { useRouter } from "next/navigation";
-import Image from 'next/image';
+import dynamic from 'next/dynamic';
+import { useAuthContext } from '../../../context/authContext';
 import toast from 'react-hot-toast';
+
+import Image from 'next/image';
+
 
 const schema = yup.object().shape({
   email: yup.string().email('Email inválido').required('El email es obligatorio'),
@@ -18,6 +21,10 @@ type FormData = {
   email: string;
   password: string;
 };
+const GoogleSignIn = dynamic(
+  () => import('./googleButton'),
+  { ssr: false }
+);
 
 export default function LoginForm() {
   const router = useRouter();
@@ -37,25 +44,22 @@ export default function LoginForm() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      console.log('Enviando datos al loginService...');
-      const resultado = await loginService(data);
-      console.log('resultado del Login:', resultado);
-      SaveUserData({
-        user: resultado.user,
-        token: resultado.token,
-      });
-      // A PARTIR DE ACA
-      if (resultado && resultado.user) {
+      const token = await loginService(data, SaveUserData) ;
+      if (!token) {
+        console.error('No se recibió un token válido');
+        return;
+      }
+
+      if (token) {
                 toast.success('¡Usuario Logueado! Redirigiendo al Home...', { duration: 2000 });
                 setTimeout(() => {
                     router.push('/login');
                 }, 2000);
                 return;
             } else {
-                console.log("mensaje de error else: ", resultado);
                 toast.error('Dato repetido. Ingresa un valor distinto en Email.', { duration: 2000 });
             }
-      // HASTA ACA ES EL TOAST DEL LOGIN JOACO
+      //CERRA EL ORTO - DANI
       handleGoHome();
     } catch (error) {
       console.error('Error enviando datos:', error);
@@ -102,7 +106,18 @@ export default function LoginForm() {
           >
             Inicia sesión
           </button>
+          
         </form>
+
+        <div className="flex justify-center mt-4">
+          <p className="text-sm text-gray-600">
+            O sino inicia sesion con{' '}
+
+             
+
+          </p>
+ <GoogleSignIn/>
+        </div>
       </div>
     </div>
   );

@@ -33,6 +33,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="google-signin-client_id" content="745314741297-e7g0kviikp9dfs9semi71h1nplcaud5h.apps.googleusercontent.com"></meta>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
