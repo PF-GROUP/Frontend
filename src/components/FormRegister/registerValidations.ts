@@ -7,7 +7,7 @@ const registerValidations = Yup.object().shape({
     .min(2, 'El nombre debe tener al menos 2 caracteres')
     .max(50, 'El nombre no debe superar los 50 caracteres'),
     
-    lastname: Yup.string()
+    surname: Yup.string()
     .required('El apellido es obligatorio')
     .min(2, 'El apellido debe tener al menos 2 caracteres')
     .max(50, 'El apellido no debe superar los 50 caracteres'),

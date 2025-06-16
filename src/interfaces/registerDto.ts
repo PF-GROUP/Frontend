@@ -1,6 +1,6 @@
 interface RegisterUserDtoFront {
     name: string
-    lastname: string
+    surname: string
     phone: number
     email: string
     password: string

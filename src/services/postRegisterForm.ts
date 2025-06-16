@@ -3,7 +3,8 @@ import RegisterUserDtoFront from "@/interfaces/registerDto";
 
 // CAMBIAR LA URL DEL REGISTER CUANDO TERMINE EL BACKEND
 const axiosRegisterPost = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_POST_CREDENCIALES_BACK
+    // baseURL: process.env.NEXT_PUBLIC_POST_CREDENCIALES_BACK
+    baseURL: "http://191.235.34.31:3000/auth"
 })
 
 export const RegisterSubmit = async (data:  RegisterUserDtoFront) => {

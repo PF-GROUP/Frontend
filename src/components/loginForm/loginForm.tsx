@@ -25,17 +25,18 @@ export default function LoginForm() {
     resolver: yupResolver(schema),
   });
 
-  const { SaveUserData } = useAuthContext();
+  // const { SaveUserData } = useAuthContext();
 
   const onSubmit = async (data: FormData) => {
     console.log(data)
     try {
       const resultado = await loginService(data);
 
-      SaveUserData({
-        user: resultado.user,
-        token: resultado.token,
-      });
+      // SaveUserData({
+      //   user: resultado.user,
+      //   token: resultado.token,
+      // });
+      console.log(resultado)
       setTimeout(() => {
           location.href = '/home';
 

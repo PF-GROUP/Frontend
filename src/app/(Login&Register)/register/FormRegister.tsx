@@ -12,8 +12,10 @@ import Image from "next/image";
 const FormRegister: React.FC = () => {
     const router = useRouter();
     const handleOnSubmit = async (values: RegisterUserDtoFront) => {
+        console.log(values);
         try {
             const response = await RegisterSubmit(values);
+            console.log(response);
             if (response?.status === 201) {
                 toast.success('¡Usuario registrado! Redirigiendo al Login...', { duration: 2000 });
                 setTimeout(() => {
@@ -31,7 +33,7 @@ const FormRegister: React.FC = () => {
     return (
         <>
             <Formik
-                initialValues={{ name: "", lastname: "", phone:"" , email: '', password: '' }}
+                initialValues={{ name: "", surname: "", phone:"" , email: '', password: '' }}
                 validationSchema={registerValidations}
                 onSubmit={handleOnSubmit}
             >
@@ -69,18 +71,18 @@ const FormRegister: React.FC = () => {
                         </div>
 
                         <div className="flex flex-col w-full m-1">
-                            <label htmlFor="lastname" className="text-black text-base md:text-xl">Apellido</label>
+                            <label htmlFor="surname" className="text-black text-base md:text-xl">Apellido</label>
                             <input
                                 type="text"
-                                id="lastname"
-                                name="lastname"
+                                id="surname"
+                                name="surname"
                                 placeholder="Diaz"
-                                value={values.lastname}
+                                value={values.surname}
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 className="text-black outline-none bg-white border border-[#4e4b4b] rounded-sm p-2 focus:border-[#a0a0a0]"
                             />
-                            <p className="text-sm md:text-lg text-red-500 mb-2">{errors.lastname && touched.lastname && errors.lastname}</p>
+                            <p className="text-sm md:text-lg text-red-500 mb-2">{errors.surname && touched.surname && errors.surname}</p>
                         </div>
 
                         <div className="flex flex-col w-full m-1">
