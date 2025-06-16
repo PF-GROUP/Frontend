@@ -6,6 +6,10 @@ import { loginService } from '../../services/authService';
 import { useRouter } from "next/navigation";
 import dynamic from 'next/dynamic';
 import { useAuthContext } from '../../../context/authContext';
+import toast from 'react-hot-toast';
+
+import Image from 'next/image';
+
 
 const schema = yup.object().shape({
   email: yup.string().email('Email inválido').required('El email es obligatorio'),
@@ -40,14 +44,26 @@ export default function LoginForm() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const token = await loginService(data as unknown as globalThis.FormData, SaveUserData) ;
+      const token = await loginService(data, SaveUserData) ;
       if (!token) {
         console.error('No se recibió un token válido');
         return;
       }
+
+      if (token) {
+                toast.success('¡Usuario Logueado! Redirigiendo al Home...', { duration: 2000 });
+                setTimeout(() => {
+                    router.push('/login');
+                }, 2000);
+                return;
+            } else {
+                toast.error('Dato repetido. Ingresa un valor distinto en Email.', { duration: 2000 });
+            }
+      //CERRA EL ORTO - DANI
       handleGoHome();
     } catch (error) {
       console.error('Error enviando datos:', error);
+      toast.error('Hubo un problema al querer Loguearse, intente nuevamente.', { duration: 2000 });
     }
   };
 
@@ -55,7 +71,7 @@ export default function LoginForm() {
     <div className="flex items-center justify-center min-h-screen bg-[url('/RegisterImg.png')] bg-cover bg-center px-2">
       <div className="bg-white border border-gray-600 p-4 md:p-8 rounded shadow-md w-full max-w-xs md:max-w-md mx-auto">
         <div className="flex flex-col items-center mb-6">
-          <img src="/iconoKasapp.png" alt="Logo" width={80} height={80} className="w-[80px] h-[80px] md:w-[120px] md:h-[120px]" />
+          <Image src="/iconoKasapp.png" alt="Logo" width={80} height={80} className="w-[80px] h-[80px] md:w-[120px] md:h-[120px]" />
           <h2 className="text-lg md:text-2xl font-bold text-gray-900">Iniciar sesión</h2>
         </div>
 
