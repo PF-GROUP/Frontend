@@ -2,16 +2,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import React from "react";
-import { useAuthContext, decodeUserCookie, getCookie } from '../../../context/authContext';
+import { useAuthContext, } from '../../../context/authContext';
 
 
 const Navbar: React.FC = () => {
   const [showMenu, setShowMenu] = React.useState(false);
   const { isAuth } = useAuthContext();
-
-  const cookie = getCookie("user");
-  const userObj = decodeUserCookie(cookie);
-console.log(userObj);
 
   const logeado = isAuth;
   return (
@@ -32,7 +28,7 @@ console.log(userObj);
     {/* Escritorio */}
     <div className="hidden md:flex items-center space-x-4">
       <Link href="/home">Home</Link>
-      <Link href="/nosotros">Nosotros</Link>
+      <Link href="/#sección0">Nosotros</Link>
       <Link href="/contacto">Contacto</Link>
       {logeado ? (
         <Link href="/perfil">
@@ -67,7 +63,7 @@ console.log(userObj);
     {showMenu && (
       <div className="absolute right-6 top-full mt-2 md:hidden flex flex-col space-y-2 bg-white shadow-lg p-4 rounded z-50">
         <Link href="/home">Home</Link>
-        <Link href="/nosotros">Nosotros</Link>
+        <Link href="/#sección0">Nosotros</Link>
         <Link href="/contacto">Contacto</Link>
         {logeado ? (
         <Link href="/perfil">
