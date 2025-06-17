@@ -1,13 +1,19 @@
 "use client"
-import Cookies from 'js-cookie';
+
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { IUser } from "../interface/User";
-import {jwtDecode} from "jwt-decode";
-export  function getCookie(name: string) {
-console.log(document.cookie)
-return  Cookies.get(name) || null;
+
+
+export function getCookie(name: string) {
+    return document.cookie.split('; ').reduce((r, v) => {
+        const parts = v.split('=');
+        return parts[0] === name ? decodeURIComponent(parts[1]) : r
+    }, '');
 }
 
+function deleteCookie(name: string) {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+}
 
 interface AuthContextType {
     user: IUser | null;
@@ -17,71 +23,67 @@ interface AuthContextType {
     ResetUserData: () => void;
 }
 
-export const decodeUserCookie = (token: string) => {
+export const decodeUserCookie = (cookieValue: string) => {
   try {
-    console.log("Decodificando JWT:", token);
-    console.log("JWT Decode:", jwtDecode(token));
-    return jwtDecode(token);
+    const decoded = decodeURIComponent(cookieValue);
+    
+    const jsonString = decoded.startsWith('j:') ? decoded.slice(2) : decoded;
+    return JSON.parse(jsonString);
   } catch (e) {
-    console.error("JWT inválido", e);
+    console.error("No se pudo decodificar la cookie:", e);
     return null;
   }
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<IUser | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [isAuth, setIsAuth] = useState<boolean>(false);
 
-  useEffect(() => {
-    const checkAuth = () => {
-      const storedToken = getCookie("token");
-      if (storedToken) {
-        try {
-            setToken(storedToken);
-          setUser(decodeUserCookie(storedToken) as IUser);
-          setIsAuth(true);
-        } catch (e) {
-          console.error("Error decoding cookies:", e);
-          ResetUserData();
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+    const [user, setUser] = useState<IUser | null>(null);
+    const [token, setToken] = useState<string | null>(null);
+    const [isAuth, setIsAuth] = useState<boolean>(false);
+
+    useEffect(() => {
+        const storedToken = getCookie('token');
+        const storedUser = getCookie('user');
+        if (storedToken && storedUser) {
+            try {
+                setToken(storedToken);
+                setUser(JSON.parse(storedUser));
+                setIsAuth(true);
+            } catch {
+                setUser(null);
+                setIsAuth(false);
+            }
+        } else {
+            setUser(null);
+            setIsAuth(false);
         }
-      } else {
-        ResetUserData();
-      }
+    }, []);
+
+    const SaveUserData = (data: { token: string }) => {
+        setIsAuth(true);
+        setToken(data.token);
     };
 
+    const ResetUserData = () => {
+        setUser(null);
+        setIsAuth(false);
+        setToken(null);
+        deleteCookie('token');
+        deleteCookie('user');
+    };
 
-    const timer = setTimeout(checkAuth, 50);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const SaveUserData = (data: { token: string}) => {
-
-    setToken(data.token || null);
-    const user = decodeUserCookie(data.token || "")
-    if (user) {
-      setUser(user as IUser);
-    } else {
-      console.warn("No se pudo decodificar el usuario desde la cookie");
-      setUser(null);
-    }
-    setIsAuth(true);
-  };
-
-  const ResetUserData = () => {
-    Cookies.remove("token");
-    Cookies.remove("user");
-    setUser(null);
-    setToken(null);
-    setIsAuth(false);
-  };
-
-  return (
-    <AuthContext.Provider value={{ user, isAuth, token, SaveUserData, ResetUserData }}>
-      {children}
-    </AuthContext.Provider>
-  );
+    return (
+        <AuthContext.Provider value={{
+            user,
+            isAuth,
+            SaveUserData,
+            ResetUserData,
+            token,
+        }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
 
 export const useAuthContext = () => {

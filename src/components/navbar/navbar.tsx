@@ -3,13 +3,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import React from "react";
 import { useAuthContext, } from '../../../context/authContext';
+import Loader from '../Loader/Loader';
 
 
 const Navbar: React.FC = () => {
   const [showMenu, setShowMenu] = React.useState(false);
   const { isAuth } = useAuthContext();
-
   const logeado = isAuth;
+
   return (
   <nav className="relative flex justify-between items-center px-6 py-4 bg-white shadow-md h-16   mx-auto">
      <Link href="/home" className="flex items-center space-x-2 h-full"> 
@@ -30,7 +31,9 @@ const Navbar: React.FC = () => {
       <Link href="/home">Home</Link>
       <Link href="/#sección0">Nosotros</Link>
       <Link href="/contacto">Contacto</Link>
-      {logeado ? (
+      {logeado === null ? (
+        <Loader />
+      ) : logeado ? (
         <Link href="/perfil">
           <button className="bg-[#A62F55] hover:bg-[#922749] text-white px-2 py-1 cursor-pointer rounded">
             Dashboard
