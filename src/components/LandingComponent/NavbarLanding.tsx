@@ -6,7 +6,7 @@ const NavbarLanding: React.FC = () => {
   const [showMenu, setShowMenu] = useState(false);
 
   return (
-    <nav className="relative flex justify-between items-center px-6 py-4 bg-white shadow-md h-16 mx-auto">
+    <nav id="landing" className="relative flex justify-between items-center px-6 py-4 bg-white shadow-md h-16 mx-auto">
       <Link href="/home" className="flex items-center space-x-2 h-full">
         <div className="flex items-center space-x-2 h-full">
           <Image
@@ -21,7 +21,7 @@ const NavbarLanding: React.FC = () => {
       </Link>
 
       {/* Escritorio */}
-      <div className="hidden md:flex items-center space-x-4">
+      <div  className="hidden md:flex items-center space-x-4">
         <Link href="/#sección0">
           <button className="bg-[#A62F55] hover:bg-[#922749] text-white px-2 py-1 cursor-pointer rounded">
             Sobre Nosotros
