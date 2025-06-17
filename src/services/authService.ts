@@ -34,3 +34,21 @@ export const RegisterSubmit = async (data:  RegisterUserDtoFront) => {
     return null;
   }
 }
+export const tokenSigninService = async (tokenGoogle:string, SaveUserData: (data: { token: string }) => void) => {
+  try {
+     await apiService.post("/auth/login/tokenSignin", {token:tokenGoogle}, true);
+    const token = getCookie("token");
+    
+    if (token) {
+      console.log("Token obtenido:", token);
+      SaveUserData({ token });
+      return token;
+    } else {
+      console.warn("La cookie 'token' no se encontró después de 3 intentos");
+      return null;
+    }
+  } catch (e) {
+    console.error("Error al hacer login:", e);
+    return null;
+  }
+}
