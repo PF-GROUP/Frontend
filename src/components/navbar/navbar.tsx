@@ -34,7 +34,7 @@ const Navbar: React.FC = () => {
       {logeado === null ? (
         <Loader />
       ) : logeado ? (
-        <Link href="/perfil">
+        <Link href="/DashboarAgente">
           <button className="bg-[#A62F55] hover:bg-[#922749] text-white px-2 py-1 cursor-pointer rounded">
             Dashboard
           </button>
