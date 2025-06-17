@@ -1,6 +1,6 @@
 import { getCookie } from "../../context/authContext";
 import apiService from "./apiService";
-import RegisterUserDtoFront from "@/interfaces/registerDto";
+import RegisterUserDtoFront from "../interfaces/registerDto";
 ;
 
 type FormData = {
