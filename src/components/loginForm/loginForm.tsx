@@ -53,7 +53,7 @@ export default function LoginForm() {
       if (token) {
                 toast.success('¡Usuario Logueado! Redirigiendo al Home...', { duration: 2000 });
                 setTimeout(() => {
-                    router.push('/login');
+                    router.push('/home');
                 }, 2000);
                 return;
             } else {

@@ -16,15 +16,21 @@ export const RegisterSubmit = async (data:  RegisterUserDtoFront) => {
         console.error("Ocurrio un error al Realizar el Register",error);
     }
 };  
-    export const loginService = async (data: FormData, SaveUserData: (data: {token: string }) => void) => {
-        try {
-             await apiService.post("/auth/login", data, true)
-             const token = getCookie('token');
-            SaveUserData({
-                    token
-                });
-            return token
-        } catch (e) {
-            console.warn("error al hacer login", e);
-        }
+    export const loginService = async (data: FormData, SaveUserData: (data: { token: string }) => void) => {
+  try {
+     await apiService.post("/auth/login", data, true);
+    const token = getCookie("token");
+    
+    if (token) {
+      console.log("Token obtenido:", token);
+      SaveUserData({ token });
+      return token;
+    } else {
+      console.warn("La cookie 'token' no se encontró después de 3 intentos");
+      return null;
+    }
+  } catch (e) {
+    console.error("Error al hacer login:", e);
+    return null;
+  }
 }
