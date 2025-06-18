@@ -1,5 +1,5 @@
 "use client"
-
+import  { jwtDecode } from "jwt-decode"
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { IUser } from "../interface/User";
 
@@ -25,10 +25,8 @@ interface AuthContextType {
 
 export const decodeUserCookie = (cookieValue: string) => {
   try {
-    const decoded = decodeURIComponent(cookieValue);
-    
-    const jsonString = decoded.startsWith('j:') ? decoded.slice(2) : decoded;
-    return JSON.parse(jsonString);
+    const decoded = jwtDecode(cookieValue);
+    return decoded as IUser;
   } catch (e) {
     console.error("No se pudo decodificar la cookie:", e);
     return null;
@@ -43,12 +41,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isAuth, setIsAuth] = useState<boolean>(false);
 
     useEffect(() => {
-        const storedToken = getCookie('token');
-        const storedUser = getCookie('user');
-        if (storedToken && storedUser) {
+        const storedToken = getCookie('token');;
+        if (storedToken) {
             try {
                 setToken(storedToken);
-                setUser(JSON.parse(storedUser));
+                const decodedUser = decodeUserCookie(getCookie('user'));
+                setUser(decodedUser);
                 setIsAuth(true);
             } catch {
                 setUser(null);
