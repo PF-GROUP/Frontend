@@ -24,6 +24,7 @@ const EditarTitulo: React.FC = () => {
         id="descripcion"
         name="descripcion"
         placeholder="Descripción"
+        value={""}
         className="border border-gray-400 text-gray-600 rounded-lg p-2 shadow w-full min-h-[120px]"
       >Descripción</textarea>
     </div>
