@@ -5,7 +5,6 @@ import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import {jwtDecode} from 'jwt-decode';
 import { useAuthContext } from "../../../context/authContext";
 import toast from "react-hot-toast";
-import { useRouter } from "next/router";
 
 export default function GoogleSignIn() {
   const { SaveUserData } = useAuthContext();
@@ -16,6 +15,7 @@ export default function GoogleSignIn() {
           // Decodificar el token JWT
           const credential = credentialResponse.credential;
           if (credential) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const decodedToken: any = jwtDecode(credential);
             console.log('Token decodificado:', decodedToken);
             console.log('Email:', decodedToken.email);
