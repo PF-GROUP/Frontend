@@ -10,6 +10,6 @@ const Filtros: React.FC = () => {
   </p>
 </div>
 
-)};
+)}; 
 
 export default Filtros

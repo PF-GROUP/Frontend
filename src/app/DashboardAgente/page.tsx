@@ -1,5 +1,6 @@
 'use client';
 
+// Este hook te permite leer los parámetros que están en la URL, justo después del signo ?.
 import { useSearchParams } from 'next/navigation';
 
 // import Dashboard from '@/components/DashBoard-Agente/DashboardInicio';
@@ -23,7 +24,7 @@ import Preferencias from '@/components/DashBoard-Agente/ComponentesDashboard/con
 import Seguridad from '@/components/DashBoard-Agente/ComponentesDashboard/configuracion/Seguridad';
 
 export default function DashboardPage() {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams(); 
   const view = searchParams.get('view');
 
   const renderContent = () => {
@@ -65,16 +66,20 @@ export default function DashboardPage() {
       case 'seguridad':
         return <Seguridad />;
       default:
-        // return <Dashboard />;
+        return(
+          <div className="bg-gray-200 border-l-8 border-[#4A0E1B] shadow-lg rounded-lg p-6">
+            <h1 className="text-2xl font-bold text-[#4A0E1B] mb-2">¡Bienvenido Matias Diaz!</h1>
+            <p className="text-gray-700"> Aquí podrás gestionar todo lo relacionado con tu sitio, propiedades, clientes y mucho más. 🚀
+            </p>
+          </div>
+          )
     }
   };
 
   return (
     <>
-      <div className="flex ">
-        <main className="flex-1 p-6 ml-6 border-gray-300 flex-col border rounded-tr-none bg-white pl-4 pt-5.5 rounded-lg mt-4 shadow-[4px_5px_8px_4px_rgba(0,0,0,0.4)]">
+      <div className="flex m-auto w-[50vw] item-center justify-center ">
           {renderContent()}
-        </main>
       </div>
     </>
   );

@@ -10,7 +10,7 @@ import {
   LogOut,
   Home
 } from 'lucide-react';
-
+ 
 const SidebarDashboard: React.FC = () => {
     return(
         <>
@@ -49,7 +49,7 @@ const SidebarDashboard: React.FC = () => {
   <details className="[&>summary]:list-none [&>summary::-webkit-details-marker]:hidden w-full">
     <summary className="font-semibold text-xl">Mi Sitio</summary>
     <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
-      <li><Link href="/DashboardAgente?view=editar-titulo" className="block text-gray-800 hover:text-blue-600 transition-colors">Editar título y descripción</Link></li>
+      <li><Link href="/DashboardAgente?view=editar-titulo" className="block text-gray-800 hover:text-blue-600 transition-colors">Editar Nombre y descripción</Link></li>
       <li><Link href="/DashboardAgente?view=cambiar-colores" className="block text-gray-800 hover:text-blue-600 transition-colors mt-2">Cambiar colores</Link></li>
       <li><Link href="/DashboardAgente?view=configurar-filtros" className="block text-gray-800 hover:text-blue-600 transition-colors mt-2">Configurar filtros</Link></li>
     </ul>
