@@ -45,14 +45,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (storedToken) {
             try {
                 setToken(storedToken);
-                const decodedUser = decodeUserCookie(getCookie('user'));
+                const decodedUser = decodeUserCookie(storedToken);
                 setUser(decodedUser);
                 setIsAuth(true);
             } catch {
+                console.log("borrando cookie");
                 setUser(null);
                 setIsAuth(false);
             }
         } else {
+            console.log("borrando cookie");
             setUser(null);
             setIsAuth(false);
         }
@@ -60,7 +62,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const SaveUserData = (data: { token: string }) => {
         setIsAuth(true);
+        const decodedUser = decodeUserCookie(data.token);
+        setUser(decodedUser);
         setToken(data.token);
+        console.log("decodedUser");
+        console.log(decodedUser);
     };
 
     const ResetUserData = () => {
@@ -69,6 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setToken(null);
         deleteCookie('token');
         deleteCookie('user');
+        console.log("borrando cookie aaaa");
     };
 
     return (

@@ -1,28 +1,40 @@
 // pages/pago.tsx
 "use client";
 import { loadStripe } from '@stripe/stripe-js';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CheckCircle } from 'lucide-react';
+import { useAuthContext } from '../../../../context/authContext';
+import apiService from '@/services/apiService';
 
 const stripePromise = loadStripe('pk_test_...'); // Reemplaza con tu public key
 
 export default function Pago() {
-  const [loading, setLoading] = useState(false);
+  const {user} = useAuthContext();
+  const[agencia, setAgencia] = useState({id:"1"});
 
+useEffect(() => {
+  console.log(user)
+  if (!user?.id) return;
+
+  apiService.get(`agency/getByUser/${user.id}`).then((res) => {
+    setAgencia(res);
+    console.log(res)
+  });
+}, [user?.id]);
+
+  const [loading, setLoading] = useState(false);
+   
   const handleCheckout = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://181.87.251.31:3001/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'cliente@email.com' }),
-      });
+      console.log(user);
+      const res = await apiService.post(`stripe/checkout/${agencia?.id}`, { email: user?.email }, true);
+      console.log(res);
 
-      const data = await res.json();
       const stripe = await stripePromise;
 
-      if (stripe && data.id) {
-        await stripe.redirectToCheckout({ sessionId: data.id });
+      if (stripe && res.id) {
+        await stripe.redirectToCheckout({ sessionId: res.id });
       } else {
         alert("Error al redirigir al checkout.");
       }

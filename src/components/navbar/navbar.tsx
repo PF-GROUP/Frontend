@@ -4,15 +4,16 @@ import Image from 'next/image';
 import React from "react";
 import { useAuthContext, } from '../../../context/authContext';
 import Loader from '../Loader/Loader';
-import { adminUser, agenteUser } from "../../../helper/user";
+// import { adminUser, agenteUser } from "../../../helper/user";
 
 const Navbar: React.FC = () => {
   const [showMenu, setShowMenu] = React.useState(false);
-  const { isAuth } = useAuthContext();
-  console.log(isAuth);
-  console.log(adminUser);
+  const { isAuth, user } = useAuthContext();
+  // console.log(isAuth);
+  // console.log(adminUser);
   const logeado = isAuth;
-  const user = agenteUser;
+  
+
   return (
   <nav className="relative flex justify-between items-center px-6 py-4 bg-white shadow-md h-16   mx-auto">
      <Link href="/home" className="flex items-center space-x-2 h-full"> 
@@ -36,7 +37,7 @@ const Navbar: React.FC = () => {
      {logeado === null ? (
   <Loader />
 ) : logeado ? (
-  user?.rol === 0 ? (
+  user?.isAdmin  ? (
     <Link href="/DashboardAdmin">
       <button className="bg-[#A62F55] hover:bg-[#922749] text-white px-2 py-1 cursor-pointer rounded">
         Dashboard
@@ -79,7 +80,7 @@ const Navbar: React.FC = () => {
         <Link href="/#sección0">Nosotros</Link>
         <Link href="/contacto">Contacto</Link>
         {logeado ? (
-  user?.rol === 0 ? (
+  user?.isAdmin  ? (
     <Link href="/DashboardAdmin">
       <button className="bg-[#A62F55] hover:bg-[#922749] text-white px-2 py-1 rounded">
         Dashboard
