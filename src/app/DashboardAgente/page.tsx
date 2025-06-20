@@ -12,9 +12,7 @@ import Borrar from '@/components/DashBoard-Agente/ComponentesDashboard/propiedad
 import Facturacion from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Facturacion';
 import Contrasena from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Cambiar-contraseña';
 import FotoPerfil from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Cambiar-fotoPerfil';
-import Suscripcion from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Suscripcion';
 import ReportarError from '@/components/DashBoard-Agente/ComponentesDashboard/soporte/Reportar-error';
-import TicketsSoporte from '@/components/DashBoard-Agente/ComponentesDashboard/soporte/Tickets';
 import Preferencias from '@/components/DashBoard-Agente/ComponentesDashboard/configuracion/Preferencias';
 import Seguridad from '@/components/DashBoard-Agente/ComponentesDashboard/configuracion/Seguridad';
 
@@ -40,12 +38,8 @@ export default function DashboardPage() {
         return <Contrasena />;
       case 'cambiar-foto-perfil':
         return <FotoPerfil />;
-      case 'suscripcion':
-        return <Suscripcion />;
       case 'reportar-error':
         return <ReportarError />;
-      case 'tickets-soporte':
-        return <TicketsSoporte />;
       case 'preferencias':
         return <Preferencias />;
       case 'seguridad':

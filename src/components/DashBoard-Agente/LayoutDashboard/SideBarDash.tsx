@@ -102,7 +102,6 @@ const SidebarDashboard: React.FC = () => {
                 <li><Link href="/DashboardAgente?view=facturacion" className="block text-gray-800 hover:text-[#870505] transition-colors">Facturación</Link></li>
                 <li><Link href="/DashboardAgente?view=cambiar-contrasena" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Cambiar contraseña</Link></li>
                 <li><Link href="/DashboardAgente?view=cambiar-foto-perfil" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Cambiar Foto</Link></li>
-                <li><Link href="/DashboardAgente?view=suscripcion" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Suscripción</Link></li>
               </ul>
             </details>
           </div>
@@ -114,7 +113,6 @@ const SidebarDashboard: React.FC = () => {
               <summary className="font-semibold text-base md:text-xl">Soporte</summary>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
                 <li><Link href="/DashboardAgente?view=reportar-error" className="block text-gray-800 hover:text-[#870505] transition-colors">Reportar error</Link></li>
-                <li><Link href="/DashboardAgente?view=tickets-soporte" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Tickets</Link></li>
               </ul>
             </details>
           </div>

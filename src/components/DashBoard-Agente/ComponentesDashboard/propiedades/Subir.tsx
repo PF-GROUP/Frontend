@@ -6,6 +6,7 @@ import * as Yup from 'yup'
 
 const validationSchema = Yup.object({
   nombre: Yup.string().required('Campo obligatorio'),
+  tipoOperacion: Yup.string().required('Campo obligatorio'),
   tipoPropiedad: Yup.string().required('Campo obligatorio'),
   estatus: Yup.string().required('Campo obligatorio'),
   precio: Yup.number().typeError('Debe ser un número').positive('Debe ser positivo').required('Campo obligatorio'),
@@ -40,6 +41,7 @@ const DashboardPage = () => {
         <Formik
           initialValues={{
             nombre: '',
+            tipoOperacion: '',
             tipoPropiedad: '',
             estatus: '',
             precio: '',
@@ -71,39 +73,67 @@ const DashboardPage = () => {
                 {errors.nombre && touched.nombre && <p className="text-red-600 text-sm mt-1">{errors.nombre}</p>}
               </div>
 
-              {/* Tipo de propiedad y Estatus */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col">
-                  <label htmlFor='tipoPropiedad' className="text-lg md:text-xl font-bold mb-1">Tipo de propiedad</label>
-                  <input
-                    type="text"
-                    id='tipoPropiedad'
-                    name="tipoPropiedad"
-                    value={values.tipoPropiedad}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`border ${errors.tipoPropiedad && touched.tipoPropiedad ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
-                  />
-                  {errors.tipoPropiedad && touched.tipoPropiedad && <p className="text-red-600 text-sm mt-1">{errors.tipoPropiedad}</p>}
-                </div>
+              {/* Tipo de Operación */}
+              <div className="flex flex-col">
+                <label htmlFor='tipoOperacion' className="text-lg md:text-xl font-bold mb-1">Alquiler / Venta</label>
+                <select
+                  id='tipoOperacion'
+                  name="tipoOperacion"
+                  value={values.tipoOperacion}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`border ${errors.tipoOperacion && touched.tipoOperacion ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
+                >
+                  <option value="">Seleccionar</option>
+                  <option value="Alquiler">Alquiler</option>
+                  <option value="Venta">Venta</option>
+                </select>
+                {errors.tipoOperacion && touched.tipoOperacion && (
+                  <p className="text-red-600 text-sm mt-1">{errors.tipoOperacion}</p>
+                )}
+              </div>
 
-                <div className="flex flex-col">
-                  <label htmlFor='estatus' className="text-lg md:text-xl font-bold mb-1">Estatus</label>
-                  <select
-                    name="estatus"
-                    id='estatus'
-                    value={values.estatus}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`border ${errors.estatus && touched.estatus ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
-                  >
-                    <option value="">Seleccionar</option>
-                    <option value="Disponible">Disponible</option>
-                    <option value="Reservado">Reservado</option>
-                    <option value="Vendido">Vendido</option>
-                  </select>
-                  {errors.estatus && touched.estatus && <p className="text-red-600 text-sm mt-1">{errors.estatus}</p>}
-                </div>
+              {/* Tipo de Propiedad */}
+              <div className="flex flex-col">
+                <label htmlFor='tipoPropiedad' className="text-lg md:text-xl font-bold mb-1">Tipo de propiedad</label>
+                <select
+                  id='tipoPropiedad'
+                  name="tipoPropiedad"
+                  value={values.tipoPropiedad}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`border ${errors.tipoPropiedad && touched.tipoPropiedad ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
+                >
+                  <option value="">Seleccionar</option>
+                  <option value="CASA">CASA</option>
+                  <option value="CHALET">CHALET</option>
+                  <option value="LOCAL_COMERCIAL">LOCAL COMERCIAL</option>
+                  <option value="TERRENO">TERRENO</option>
+                  <option value="OFICINA">OFICINA</option>
+                  <option value="GALPON">GALPÓN</option>
+                </select>
+                {errors.tipoPropiedad && touched.tipoPropiedad && (
+                  <p className="text-red-600 text-sm mt-1">{errors.tipoPropiedad}</p>
+                )}
+              </div>
+
+              {/* Estatus */}
+              <div className="flex flex-col">
+                <label htmlFor='estatus' className="text-lg md:text-xl font-bold mb-1">Estado</label>
+                <select
+                  name="estatus"
+                  id='estatus'
+                  value={values.estatus}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`border ${errors.estatus && touched.estatus ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
+                >
+                  <option value="">Seleccionar</option>
+                  <option value="Disponible">Disponible</option>
+                  <option value="Reservado">Reservado</option>
+                  <option value="Vendido">Vendido</option>
+                </select>
+                {errors.estatus && touched.estatus && <p className="text-red-600 text-sm mt-1">{errors.estatus}</p>}
               </div>
 
               {/* Precio y Metros */}
@@ -214,4 +244,4 @@ const DashboardPage = () => {
   )
 }
 
-export default DashboardPage;
+export default DashboardPage
