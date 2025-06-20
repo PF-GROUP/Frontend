@@ -1,4 +1,4 @@
-import { getCookie } from "../../context/authContext";
+import { IUser } from "../../interface/User";
 import apiService from "./apiService";
 import RegisterUserDtoFront from "@/interfaces/registerDto";
 ;
@@ -16,37 +16,29 @@ export const RegisterSubmit = async (data:  RegisterUserDtoFront) => {
         console.error("Ocurrio un error al Realizar el Register",error);
     }
 };  
-    export const loginService = async (data: FormData, SaveUserData: (data: { token: string }) => void) => {
+    export const loginService = async (data: FormData, SaveUserData: (data: { user: IUser }) => void) => {
   try {
-     await apiService.post("/auth/login", data, true);
-    const token = getCookie("token");
-    
-    if (token) {
-      console.log("Token obtenido:", token);
-      SaveUserData({ token });
-      return token;
-    } else {
-      console.warn("La cookie 'token' no se encontró después de 3 intentos");
+    const user =  await apiService.post("/auth/login", data, true);
+    if (!user){
       return null;
     }
+    SaveUserData({ user });
+    return user;
+    
   } catch (e) {
     console.error("Error al hacer login:", e);
     return null;
   }
 }
-export const tokenSigninService = async (tokenGoogle:string, SaveUserData: (data: { token: string }) => void) => {
+export const tokenSigninService = async (tokenGoogle:string, SaveUserData: (data: { user: IUser }) => void) => {
   try {
-     await apiService.post("/auth/login/tokenSignin", {token:tokenGoogle}, true);
-    const token = getCookie("token");
-    
-    if (token) {
-      console.log("Token obtenido:", token);
-      SaveUserData({ token });
-      return token;
-    } else {
-      console.warn("La cookie 'token' no se encontró después de 3 intentos");
+     const user = await apiService.post("/auth/login/tokenSignin", {token:tokenGoogle}, true);
+     console.log(user);
+    if (!user){
       return null;
     }
+    SaveUserData({ user });
+    return user;
   } catch (e) {
     console.error("Error al hacer login:", e);
     return null;
