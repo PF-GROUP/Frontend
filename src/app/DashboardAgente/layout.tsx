@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Upload, ArrowDownCircle, Calendar } from 'lucide-react';
-import NavbarDashboard from "@/components/DashBoard-Agente/LayoutDashboard/NavbarDash";
+import { Upload, ArrowDownCircle,  Trash2 } from 'lucide-react';
 import SidebarDashboard from "@/components/DashBoard-Agente/LayoutDashboard/SideBarDash";
+import NavbarDashboard from "@/components/DashBoard-Agente/LayoutDashboard/NavbarDash";
+// import NavbarLanding from "@/components/LandingComponent/NavbarLanding";
 
 export default function LayoutSidebar({children,}: Readonly<{ children: React.ReactNode }>) {
     return (
@@ -14,25 +15,40 @@ export default function LayoutSidebar({children,}: Readonly<{ children: React.Re
             <SidebarDashboard/>
 
         {/* Main que se va reenderizando */}
-            <main className="flex-1 flex-col  p-6  ml-6  border-gray-300  border rounded-tr-none bg-white w-[300px] pl-4 pt-5.5 rounded-lg mt-4 shadow-[4px_5px_8px_4px_rgba(0,0,0,0.4)] ">
-                <div className="flex items-center justify-start border-b m-auto border-gray-400 pb-5.5 mb-5 ">
+      <main className="flex-1 flex flex-col  p-2 ml-11 md:p-5 bg-white border border-gray-300 rounded-lg mt-4  md:ml-6 shadow-[4px_5px_8px_4px_rgba(0,0,0,0.4)] w-full md:w-auto ">
+      
+      {/* Botones principales */}
+      <div className="flex flex-col md:flex-row items-start  md:items-center justify-end border-b mr-11 border-gray-400 pb-6  gap-4 md:gap-5">
+        
+        
+        <Link
+          href="/DashboardAgente?view=subir-propiedad"
+          className="flex items-center justify-center bg-gray-200 text-base md:text-lg px-4 py-2 rounded border border-gray-300 hover:bg-gray-400 w-full md:w-auto"
+        >
+          <Upload size={22} className="text-blue-800 mr-3" />
+          Subir Propiedad
+        </Link>
 
-                    <Link href="/DashboardAgente?view=subir-propiedad" className="flex items-center justify-center bg-gray-200 text-lg px-4 py-2 rounded border border-gray-300 ml-5 hover:bg-gray-400">
-                    <Upload size={24} className="text-blue-800 mr-3" />
-                    Subir Propiedad
-                    </Link> 
-                    
-                    <Link href="/DashboardAgente?view=notificaciones" className="flex items-center justify-center text-center bg-gray-200 text-lg px-4 py-2 rounded border border-gray-300 ml-5 hover:bg-gray-400">
-                    <Calendar size={24} className="text-blue-800 mr-3" />
-                    Ver Citas</Link>
+        <Link
+          href="/DashboardAgente?view=borrar-propiedad"
+          className="flex items-center justify-center bg-gray-200 text-base md:text-lg px-4 py-2 rounded border border-gray-300 hover:bg-gray-400 w-full md:w-auto"
+        >
+          <Trash2 size={22} className="text-blue-800 mr-3" />
+          Eliminar Propiedad
+        </Link>
 
-                    <Link href="/DashboardAgente?view=cambiar-colores" className="flex items-center justify-center  text-center bg-gray-200 text-lg px-4 py-2  rounded border border-gray-300 ml-5 hover:bg-gray-400">
-                    <ArrowDownCircle size={24} className="text-blue-800 mr-3" />
-                    Editar Sitio</Link>
-                </div>
+        <Link
+          href="/DashboardAgente?view=cambiar-colores"
+          className="flex items-center justify-center bg-gray-200 text-base md:text-lg px-4 py-2 rounded border border-gray-300 hover:bg-gray-400 w-full md:w-auto"
+        >
+          <ArrowDownCircle size={22} className="text-blue-800 mr-3" />
+          Editar Sitio
+        </Link>
+      </div>
 
-            {children}
-            </main>
+      {/* Contenido dinámico renderizado */}
+      {children}
+    </main>
         </div>
     </>
 )}

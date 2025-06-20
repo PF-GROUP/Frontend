@@ -8,18 +8,13 @@ import EditarTitulo from '@/components/DashBoard-Agente/ComponentesDashboard/miS
 import CambiarColores from '@/components/DashBoard-Agente/ComponentesDashboard/miSitio/Cambiar-colores';
 import Filtros from '@/components/DashBoard-Agente/ComponentesDashboard/miSitio/Configurar-filtros';
 import SubirPropiedad from '@/components/DashBoard-Agente/ComponentesDashboard/propiedades/Subir';
-import AgregarFoto from '@/components/DashBoard-Agente/ComponentesDashboard/propiedades/Agregar-foto';
-import Precio from '@/components/DashBoard-Agente/ComponentesDashboard/propiedades/Precio';
 import Borrar from '@/components/DashBoard-Agente/ComponentesDashboard/propiedades/Borrar';
-import Notificaciones from '@/components/DashBoard-Agente/ComponentesDashboard/clientes/Notificaciones';
-import Clientes from '@/components/DashBoard-Agente/ComponentesDashboard/clientes/Editar';
 import Facturacion from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Facturacion';
 import Contrasena from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Cambiar-contraseña';
 import FotoPerfil from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Cambiar-fotoPerfil';
 import Suscripcion from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Suscripcion';
 import ReportarError from '@/components/DashBoard-Agente/ComponentesDashboard/soporte/Reportar-error';
 import TicketsSoporte from '@/components/DashBoard-Agente/ComponentesDashboard/soporte/Tickets';
-import Sugerencias from '@/components/DashBoard-Agente/ComponentesDashboard/soporte/Sugerencias';
 import Preferencias from '@/components/DashBoard-Agente/ComponentesDashboard/configuracion/Preferencias';
 import Seguridad from '@/components/DashBoard-Agente/ComponentesDashboard/configuracion/Seguridad';
 
@@ -37,16 +32,8 @@ export default function DashboardPage() {
         return <Filtros />;
       case 'subir-propiedad':
         return <SubirPropiedad />;
-      case 'agregar-foto':
-        return <AgregarFoto />;
-      case 'precio-propiedad':
-        return <Precio />;
       case 'borrar-propiedad':
         return <Borrar />;
-      case 'notificaciones':
-        return <Notificaciones />;
-      case 'editar-clientes':
-        return <Clientes />;
       case 'facturacion':
         return <Facturacion />;
       case 'cambiar-contrasena':
@@ -59,8 +46,6 @@ export default function DashboardPage() {
         return <ReportarError />;
       case 'tickets-soporte':
         return <TicketsSoporte />;
-      case 'sugerencias':
-        return <Sugerencias />;
       case 'preferencias':
         return <Preferencias />;
       case 'seguridad':
@@ -78,7 +63,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <div className="flex m-auto w-[50vw] item-center justify-center ">
+      <div className="flex m-auto mt-10 w-[70vw] item-center justify-betwenn ">
           {renderContent()}
       </div>
     </>
