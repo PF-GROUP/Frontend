@@ -20,6 +20,9 @@ const colorValidationSchema = Yup.object().shape({
   linkColor: Yup.string()
     .required("El color del link es obligatorio")
     .matches(colorValidation, "Color inválido"),
+  navbarColor: Yup.string()
+    .required("El color de la navbar es obligatorio")
+    .matches(colorValidation, "Color inválido"),
 });
 
 const MiSitio: React.FC = () => {
@@ -28,6 +31,7 @@ const MiSitio: React.FC = () => {
     textColor: string;
     buttonColor: string;
     linkColor: string;
+    navbarColor: string;
   }) => {
     console.log("🎨 Nuevos colores:", values);
     toast.success("¡Colores aplicados!");
@@ -40,6 +44,7 @@ const MiSitio: React.FC = () => {
         textColor: "#333333",
         buttonColor: "#4a90e2",
         linkColor: "#0070f3",
+        navbarColor: "#ffffff",
       }}
       validationSchema={colorValidationSchema}
       onSubmit={handleSubmit}
@@ -55,7 +60,7 @@ const MiSitio: React.FC = () => {
       }) => (
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col items-start justify-start m-auto w-full max-w-5xl rounded-lg p-6 md:p-8 space-y-8"
+          className="flex flex-col items-start justify-start m-auto w-full max-w-5xl rounded-lg p-6 pt-0 md:p-8 md:pt8 space-y-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]"
         >
           <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] mb-2">
             Cambiar colores
@@ -63,11 +68,14 @@ const MiSitio: React.FC = () => {
 
           {/* Cuadro 1 - Vista previa */}
           <div
-            className="w-full border  p-6 shadow space-y-6"
+            className="w-full border border-gray-400 pb-8 shadow mt-3 space-y-6"
             style={{ backgroundColor: values.bgColor }}
           >
             {/* Barra superior con botones */}
-            <div className="flex justify-between items-center border-b pb-3 flex-wrap gap-2">
+            <div
+              className="flex justify-between items-center border-b pb-3 pt-4 mb-11 flex-wrap gap-2 px-3 py-2"
+              style={{ backgroundColor: values.navbarColor }}
+            >
               <div className="w-24 h-10 bg-white rounded shadow" />
               <div className="flex gap-2 flex-wrap">
                 {["Home", "Category", "About Us", "Profile"].map((btn) => (
@@ -92,15 +100,15 @@ const MiSitio: React.FC = () => {
                 className="text-xl md:text-2xl font-bold"
                 style={{ color: values.textColor }}
               >
-                Mi Web Inmobiliaria 
+                Mi Web Inmobiliaria
               </h3>
               <p className="text-md" style={{ color: values.textColor }}>
-                Mi Propia Pagina Web Inmobiliaria 
+                Mi Propia Página Web Inmobiliaria
               </p>
             </div>
 
             {/* Tarjetas tipo propiedades */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-4 gap-4">
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
@@ -124,20 +132,17 @@ const MiSitio: React.FC = () => {
               ))}
             </div>
           </div>
-
           {/* Cuadro 2 - Inputs de colores */}
-          <div className="w-full border rounded-xl p-6 shadow grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="w-full  rounded-xl p-6 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
             {[
               { id: "bgColor", label: "Color de fondo" },
               { id: "textColor", label: "Color del texto" },
               { id: "buttonColor", label: "Color de botones" },
               { id: "linkColor", label: "Color de los links" },
+              { id: "navbarColor", label: "Color de la navbar" },
             ].map(({ id, label }) => (
               <div key={id} className="flex flex-col">
-                <label
-                  htmlFor={id}
-                  className="text-sm font-semibold mb-1"
-                >
+                <label htmlFor={id} className="text-sm font-semibold mb-1">
                   {label}
                 </label>
                 <input
