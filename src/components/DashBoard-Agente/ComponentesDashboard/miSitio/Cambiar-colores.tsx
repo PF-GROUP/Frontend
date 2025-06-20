@@ -55,41 +55,78 @@ const MiSitio: React.FC = () => {
       }) => (
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col items-start justify-start m-auto w-full max-w-md md:max-w-lg lg:max-w-xl rounded-lg p-6 md:p-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]"
+          className="flex flex-col items-start justify-start m-auto w-full max-w-5xl rounded-lg p-6 md:p-8 space-y-8"
         >
-          <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] mb-6">
+          <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] mb-2">
             Cambiar colores
           </h2>
 
-          {/* Vista previa */}
+          {/* Cuadro 1 - Vista previa */}
           <div
-            className="w-full mb-6 border rounded-lg p-4 shadow"
+            className="w-full border  p-6 shadow space-y-6"
             style={{ backgroundColor: values.bgColor }}
           >
-            <h3
-              className="text-lg font-semibold mb-2"
-              style={{ color: values.textColor }}
-            >
-              Vista previa del sitio
-            </h3>
-            <button
-              type="button"
-              className="py-2 px-4 rounded-lg"
-              style={{
-                backgroundColor: values.buttonColor,
-                color: "#fff",
-              }}
-            >
-              Botón ejemplo
-            </button>
-            <p className="mt-2 ml-2" style={{ color: values.linkColor }}>
-              Link de ejemplo
-            </p>
+            {/* Barra superior con botones */}
+            <div className="flex justify-between items-center border-b pb-3 flex-wrap gap-2">
+              <div className="w-24 h-10 bg-white rounded shadow" />
+              <div className="flex gap-2 flex-wrap">
+                {["Home", "Category", "About Us", "Profile"].map((btn) => (
+                  <button
+                    key={btn}
+                    type="button"
+                    className="px-4 py-2 rounded shadow text-sm font-semibold"
+                    style={{
+                      backgroundColor: values.buttonColor,
+                      color: values.textColor,
+                    }}
+                  >
+                    {btn}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Título y subtítulo */}
+            <div className="text-center space-y-1">
+              <h3
+                className="text-xl md:text-2xl font-bold"
+                style={{ color: values.textColor }}
+              >
+                Mi Web Inmobiliaria 
+              </h3>
+              <p className="text-md" style={{ color: values.textColor }}>
+                Mi Propia Pagina Web Inmobiliaria 
+              </p>
+            </div>
+
+            {/* Tarjetas tipo propiedades */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="border rounded-lg p-3 bg-white space-y-2 shadow"
+                >
+                  <div className="w-full h-24 bg-gray-300 rounded" />
+                  <button
+                    type="button"
+                    className="w-full py-1 rounded text-white font-semibold"
+                    style={{ backgroundColor: values.buttonColor }}
+                  >
+                    Ver
+                  </button>
+                  <p
+                    className="text-center text-sm"
+                    style={{ color: values.linkColor }}
+                  >
+                    Link
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Selectores de color */}
-          <div className="flex flex-col w-full space-y-6">
-            {/* Campo reutilizable */}
+          {/* Cuadro 2 - Inputs de colores */}
+          <div className="w-full border rounded-xl p-6 shadow grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {[
               { id: "bgColor", label: "Color de fondo" },
               { id: "textColor", label: "Color del texto" },
@@ -97,7 +134,10 @@ const MiSitio: React.FC = () => {
               { id: "linkColor", label: "Color de los links" },
             ].map(({ id, label }) => (
               <div key={id} className="flex flex-col">
-                <label htmlFor={id} className="text-lg md:text-xl font-bold mb-1">
+                <label
+                  htmlFor={id}
+                  className="text-sm font-semibold mb-1"
+                >
                   {label}
                 </label>
                 <input
@@ -107,7 +147,7 @@ const MiSitio: React.FC = () => {
                   value={values[id as keyof typeof values]}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full h-10 rounded p-2 pt-0.5 pb-0.5 border ${
+                  className={`w-full h-10 rounded border p-1 ${
                     touched[id as keyof typeof touched] &&
                     errors[id as keyof typeof errors]
                       ? "border-red-500"
@@ -116,7 +156,7 @@ const MiSitio: React.FC = () => {
                 />
                 {touched[id as keyof typeof touched] &&
                   errors[id as keyof typeof errors] && (
-                    <p className="text-red-500 text-sm mt-1">
+                    <p className="text-red-500 text-xs mt-1">
                       {errors[id as keyof typeof errors]}
                     </p>
                   )}
@@ -124,7 +164,7 @@ const MiSitio: React.FC = () => {
             ))}
           </div>
 
-          {/* Botón */}
+          {/* Botón de enviar */}
           <div className="flex justify-between items-center w-full mt-6">
             <button
               type="submit"
