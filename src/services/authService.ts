@@ -8,10 +8,18 @@ type FormData = {
   password: string;
 };
 
-export const RegisterSubmit = async (data:  RegisterUserDtoFront) => {
+export const RegisterSubmit = async (data:  RegisterUserDtoFront, SaveUserData: (data: { user: IUser }) => void) => {
     
     try {
-        return await apiService.post("/auth/register", data)
+        const res =  await apiService.post("/auth/createBoth", data)
+        console.log("res", res)
+        const user = await apiService.post("/auth/login", {email: data.email, password: data.password}, true);
+        console.log("user", user)
+        if (!user){
+          return null;
+        }
+        SaveUserData({ user });
+        return res
     } catch (error) {
         console.error("Ocurrio un error al Realizar el Register",error);
     }

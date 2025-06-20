@@ -8,18 +8,20 @@ import registerValidations from "@/components/FormRegister/registerValidations";
 import { Formik } from "formik";
 import RegisterUserDtoFront from "@/interfaces/registerDto";
 import Image from "next/image";
+import { useAuthContext } from "../../../../context/authContext";
 
 const FormRegister: React.FC = () => {
     const router = useRouter();
+    const { SaveUserData} = useAuthContext()
     const handleOnSubmit = async (values: RegisterUserDtoFront) => {
         console.log(values);
         try {
-            const response = await RegisterSubmit(values);
+            const response = await RegisterSubmit(values , SaveUserData);
             console.log("respuesta de entrada: ", response);
             if (response?.success === true) {
                 toast.success('¡Usuario registrado! Redirigiendo al Login...', { duration: 2500 });
                 setTimeout(() => {
-                    router.push('/login');
+                    router.push('/stripe');
                 }, 2000);
                 return;
             } else {
@@ -134,6 +136,62 @@ const FormRegister: React.FC = () => {
                             />
                             <p className="text-sm md:text-lg text-red-500 mb-2">{errors.password && touched.password && errors.password}</p>
                         </div>
+                        <div className="flex flex-col w-full m-1">
+                            <label htmlFor="document" className="text-black text-base md:text-xl">Documento</label>
+                            <input
+                                type="text"
+                                id="document"
+                                name="document"
+                                placeholder="12345678"
+                                value={values.document}
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                className="text-black outline-none bg-white border border-[#4e4b4b] rounded-sm p-2 focus:border-[#a0a0a0]"
+                            />
+                            <p className="text-sm md:text-lg text-red-500 mb-2">{errors.document && touched.document && errors.document}</p>
+                        </div>
+                        <div className="flex flex-col w-full m-1"></div>
+                            <label htmlFor="agencyName" className="text-black text-base md:text-xl">Nombre de la agencia</label>
+                            <input
+                                type="text"
+                                id="agencyName"
+                                name="agencyName"
+                                placeholder="Nombre de la agencia"
+                                value={values.agencyName}
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                className="text-black outline-none bg-white border border-[#4e4b4b] rounded-sm p-2 focus:border-[#a0a0a0]"
+                            />
+                        <p className="text-sm md:text-lg text-red-500 mb-2">{errors.agencyName && touched.agencyName && errors.agencyName}</p>
+                        <div className="flex flex-col w-full m-1">
+                            <label htmlFor="agencyDescription" className="text-black text-base md:text-xl">Descripción de la agencia</label>
+                            <input
+                                type="text"
+                                id="agencyDescription"
+                                name="agencyDescription"
+                                placeholder="Descripción de la agencia"
+                                value={values.agencyDescription}
+                                onBlur={handleBlur}
+                                onChange={handleChange} className="text-black outline-none bg-white border border-[#4e4b4b] rounded-sm p-2 focus:border-[#a0a0a0]"
+                            />      
+                            <p className="text-sm md:text-lg text-red-500 mb-2">{errors.agencyDescription && touched.agencyDescription && errors.agencyDescription}</p>
+                        </div>
+                        <div className="flex flex-col w-full m-1">
+                            <label htmlFor="slug" className="text-black text-base md:text-xl">Url de la agencia</label>
+                            <input
+                                type="text"
+                                id="slug"
+                                name="slug"
+                                placeholder="Nombre de la agencia"
+                                value={values.slug}
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                className="text-black outline-none bg-white border border-[#4e4b4b] rounded-sm p-2 focus:border-[#a0a0a0]"
+                            />
+                            <p className="text-sm md:text-lg text-red-500 mb-2">{errors.slug && touched.slug && errors.slug}</p>
+                        </div>
+
+
 
                         <button
                             type="submit"

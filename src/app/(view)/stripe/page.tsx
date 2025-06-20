@@ -6,7 +6,7 @@ import { CheckCircle } from 'lucide-react';
 import { useAuthContext } from '../../../../context/authContext';
 import apiService from '@/services/apiService';
 
-const stripePromise = loadStripe('pk_test_...'); // Reemplaza con tu public key
+const stripePromise = loadStripe('pk_test_51RZHBb06zLwwPPizrSRHgPIWGJOSnyVX6OkpJscb9FC0vyQ8CYsZNBeBiqH60vD1Cq29Zig57QWJhyBj1XC2kRSJ00cC1bwyVx'); // Reemplaza con tu public key
 
 export default function Pago() {
   const {user} = useAuthContext();
