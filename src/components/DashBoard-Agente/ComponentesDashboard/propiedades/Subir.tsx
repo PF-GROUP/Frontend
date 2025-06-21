@@ -1,13 +1,12 @@
-'use client'
+'use client';
 
-import { Upload } from 'lucide-react'
-import { Formik } from 'formik'
-import { validationSchema } from '../../validacionesDashBoard/propiedades'
-import { CreateProperty } from '@/services/subirPropiedad'
-import toast from 'react-hot-toast'
-import { useRouter } from 'next/navigation'
-import { IPropertyForm } from '../../../../../interface/DashboardAgente/subirPropiedadDTO'
-
+import { Upload } from 'lucide-react';
+import { Formik } from 'formik';
+import { validationSchema } from '../../validacionesDashBoard/propiedades';
+import { CreateProperty } from '@/services/subirPropiedad';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { IPropertyForm } from '../../../../../interface/DashboardAgente/subirPropiedadDTO';
 
 const DashboardPage = () => {
   const router = useRouter();
@@ -29,51 +28,103 @@ const DashboardPage = () => {
       }
     } catch (error) {
       console.error("❌ Error en los datos:", error);
-      toast.error('Hubo un problema al querer crear el Formulario.', { duration: 2000 });
+      toast.error('Hubo un problema al querer crear la propiedad.', { duration: 2000 });
     }
   };
 
   return (
-    <div className="w-full p-4 md:p-6 lg:pt-0 flex flex-col gap-8 lg:flex-row">
-      {/* Subir imágenes */}
-      <div className="flex flex-col items-start justify-start md:h-[50vh] lg:w-1/2 rounded-lg p-6 md:p-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
-        <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] mb-5">Seleccionar Imágenes</h2>
-        <div className="w-full space-y-4">
-          <div className="border border-gray-400 rounded-lg p-4 bg-gray-200 h-[200px] shadow"></div>
-          <div className="flex justify-center mt-7">
-            <label htmlFor="file-upload" className="flex items-center gap-2 bg-blue-700 text-white font-semibold text-lg py-2 px-4 rounded-lg cursor-pointer">
-              <Upload size={22} /> Subir imagen
-              <input id="file-upload" type="file" multiple accept="image/*" className="hidden" />
-            </label>
-          </div>
+    <div className="w-full p-4 md:p-6 lg:pt-0">
+      <Formik
+        initialValues={{
+          name: '',
+          status: '',
+          type: '',
+          address: '',
+          city: '',
+          price: 0,
+          m2: 0,
+          bathrooms: 0,
+          rooms: 0,
+          description: '',
+          id_images: []
+        }}
+        onSubmit={handleOnSubmit}
+        validationSchema={validationSchema}
+      >
+        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue }) => (
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
+
+          <div className="flex flex-col items-start justify-start rounded-lg p-6 md:p-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
+  <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] mb-5">Seleccionar Imágenes</h2>
+  <div className="w-full space-y-4">
+
+    {/* Vista previa de imágenes */}
+    <div className="border border-gray-400 rounded-lg p-4 bg-gray-400 min-h-[200px] shadow overflow-y-auto">
+      {values.id_images && values.id_images.length > 0 ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          {values.id_images.map((file, index) => (
+            <div key={index} className="relative group">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={URL.createObjectURL(file)}
+                alt={`img-${index}`}
+                className="w-full h-28 object-cover rounded-md border"
+              />
+              <button
+                type="button"
+                className="absolute top-1 right-1 bg-red-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition"
+                onClick={() => {
+                  const newImages = values.id_images.filter((_, i) => i !== index);
+                  setFieldValue('id_images', newImages);
+                }}
+              >
+                X
+              </button>
+            </div>
+          ))}
         </div>
-      </div>
+      ) : (
+        <p className="text-white text-lg font-semibold text-center mt-11">Sube imagenes de tus Propiedades</p>
+      )}
+    </div>
 
-      {/* Formulario */}
-      <div className="flex flex-col items-start justify-start w-full lg:w-1/2 rounded-lg p-6 md:p-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
-        <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] w-full mb-6">Datos del Inmueble</h2>
-
-        <Formik
-          initialValues={{
-            name: '',
-            status: '',      // Enum string
-            type: '',        // Enum string
-            address: '',
-            city: '',
-            price: 0,
-            m2: 0,
-            bathrooms: 0,
-            rooms: 0,
-            description: '',
-            id_images: []
+    {/* Input para subir imágenes */}
+    <div className="flex justify-center mt-7">
+      <label htmlFor="file-upload" className="flex items-center gap-2 bg-blue-700 text-white font-semibold text-lg py-2 px-4 rounded-lg cursor-pointer">
+        <Upload size={22} /> Subir imagen
+        <input
+          id="file-upload"
+          type="file"
+          multiple
+          accept="image/*"
+          className="hidden"
+          onChange={(event) => {
+            const files = event.currentTarget.files;
+            if (files) {
+              const fileArray = Array.from(files);
+              setFieldValue('id_images', [...values.id_images, ...fileArray]);
+            }
           }}
-          onSubmit={handleOnSubmit}
-          validationSchema={validationSchema}
-        >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-            <form onSubmit={handleSubmit} className="flex flex-col w-full space-y-4">
+          onBlur={handleBlur}
+        />
+      </label>
+    </div>
+
+    {/* Validación de errores */}
+    {errors.id_images && touched.id_images && (
+      <p className="text-red-600 text-sm mt-1">{errors.id_images}</p>
+    )}
+  </div>
+</div>
+
+
+
+            {/* SECCIÓN: Datos del Inmueble */}
+            <div className="flex flex-col items-start justify-start rounded-lg p-6 md:p-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
+              <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] w-full mb-6">Datos del Inmueble</h2>
+
               {/* Nombre */}
-              <div className="flex flex-col w-full">
+              <div className="flex flex-col w-full mb-4">
                 <label htmlFor="name" className="text-lg md:text-xl font-bold mb-1">Nombre</label>
                 <input
                   type="text"
@@ -87,8 +138,8 @@ const DashboardPage = () => {
                 {errors.name && touched.name && <p className="text-red-600 text-sm mt-1">{errors.name}</p>}
               </div>
 
-              {/* Tipo de Operación (status) */}
-              <div className="flex flex-col">
+              {/* Tipo de operación */}
+              <div className="flex flex-col w-full mb-4">
                 <label htmlFor="status" className="text-lg md:text-xl font-bold mb-1">Alquiler / Venta</label>
                 <select
                   id="status"
@@ -102,13 +153,11 @@ const DashboardPage = () => {
                   <option value="AVAILABLE">Alquiler</option>
                   <option value="SOLD">Venta</option>
                 </select>
-                {errors.status && touched.status && (
-                  <p className="text-red-600 text-sm mt-1">{errors.status}</p>
-                )}
+                {errors.status && touched.status && <p className="text-red-600 text-sm mt-1">{errors.status}</p>}
               </div>
 
-              {/* Tipo de Propiedad (type) */}
-              <div className="flex flex-col">
+              {/* Tipo de propiedad */}
+              <div className="flex flex-col w-full mb-4">
                 <label htmlFor="type" className="text-lg md:text-xl font-bold mb-1">Tipo de propiedad</label>
                 <select
                   id="type"
@@ -126,13 +175,11 @@ const DashboardPage = () => {
                   <option value="OFFICE">OFICINA</option>
                   <option value="WAREHOUSE">GALPÓN</option>
                 </select>
-                {errors.type && touched.type && (
-                  <p className="text-red-600 text-sm mt-1">{errors.type}</p>
-                )}
+                {errors.type && touched.type && <p className="text-red-600 text-sm mt-1">{errors.type}</p>}
               </div>
 
               {/* Ciudad */}
-              <div className="flex flex-col">
+              <div className="flex flex-col w-full mb-4">
                 <label htmlFor="city" className="text-lg md:text-xl font-bold mb-1">Ciudad</label>
                 <input
                   type="text"
@@ -146,8 +193,8 @@ const DashboardPage = () => {
                 {errors.city && touched.city && <p className="text-red-600 text-sm mt-1">{errors.city}</p>}
               </div>
 
-              {/* Dirección (address) */}
-              <div className="flex flex-col">
+              {/* Dirección */}
+              <div className="flex flex-col w-full mb-4">
                 <label htmlFor="address" className="text-lg md:text-xl font-bold mb-1">Dirección</label>
                 <input
                   type="text"
@@ -162,15 +209,14 @@ const DashboardPage = () => {
                 {errors.address && touched.address && <p className="text-red-600 text-sm mt-1">{errors.address}</p>}
               </div>
 
-              {/* Precio y Metros */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Precio y metros cuadrados */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mb-4">
                 <div className="flex flex-col">
                   <label htmlFor="price" className="text-lg md:text-xl font-bold mb-1">Precio</label>
                   <input
                     type="number"
                     id="price"
                     name="price"
-                    placeholder="$"
                     value={values.price}
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -178,14 +224,12 @@ const DashboardPage = () => {
                   />
                   {errors.price && touched.price && <p className="text-red-600 text-sm mt-1">{errors.price}</p>}
                 </div>
-
                 <div className="flex flex-col">
                   <label htmlFor="m2" className="text-lg md:text-xl font-bold mb-1">m²</label>
                   <input
                     type="number"
                     id="m2"
                     name="m2"
-                    placeholder="m²"
                     value={values.m2}
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -195,8 +239,8 @@ const DashboardPage = () => {
                 </div>
               </div>
 
-              {/* Baños y Habitaciones */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Baños y habitaciones */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mb-4">
                 <div className="flex flex-col">
                   <label htmlFor="bathrooms" className="text-lg md:text-xl font-bold mb-1">Baños</label>
                   <input
@@ -210,7 +254,6 @@ const DashboardPage = () => {
                   />
                   {errors.bathrooms && touched.bathrooms && <p className="text-red-600 text-sm mt-1">{errors.bathrooms}</p>}
                 </div>
-
                 <div className="flex flex-col">
                   <label htmlFor="rooms" className="text-lg md:text-xl font-bold mb-1">Habitaciones</label>
                   <input
@@ -227,7 +270,7 @@ const DashboardPage = () => {
               </div>
 
               {/* Descripción */}
-              <div className="flex flex-col">
+              <div className="flex flex-col w-full mb-6">
                 <label htmlFor="description" className="text-lg md:text-xl font-bold mb-1">Descripción</label>
                 <textarea
                   id="description"
@@ -235,14 +278,13 @@ const DashboardPage = () => {
                   value={values.description}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  placeholder="Descripción"
                   className={`border ${errors.description && touched.description ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full min-h-[120px]`}
                 />
                 {errors.description && touched.description && <p className="text-red-600 text-sm mt-1">{errors.description}</p>}
               </div>
 
               {/* Botones */}
-              <div className="flex flex-col md:flex-row justify-between items-center mt-6 gap-4">
+              <div className="flex flex-col md:flex-row justify-between items-center w-full gap-4">
                 <button type="submit" className="text-white bg-blue-700 py-3 px-4 rounded-lg w-full md:w-[250px] text-lg">
                   Subir Propiedad
                 </button>
@@ -250,10 +292,11 @@ const DashboardPage = () => {
                   Cancelar
                 </button>
               </div>
-            </form>
-          )}
-        </Formik>
-      </div>
+            </div>
+
+          </form>
+        )}
+      </Formik>
     </div>
   );
 };
