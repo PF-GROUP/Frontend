@@ -24,7 +24,9 @@ export const RegisterSubmit = async (data:  RegisterUserDtoFront, SaveUserData: 
         console.error("Ocurrio un error al Realizar el Register",error);
     }
 };  
-    export const loginService = async (data: FormData, SaveUserData: (data: { user: IUser }) => void) => {
+
+
+export const loginService = async (data: FormData, SaveUserData: (data: { user: IUser }) => void) => {
   try {
     const user =  await apiService.post("/auth/login", data, true);
     if (!user){
@@ -40,8 +42,8 @@ export const RegisterSubmit = async (data:  RegisterUserDtoFront, SaveUserData: 
 }
 export const tokenSigninService = async (tokenGoogle:string, SaveUserData: (data: { user: IUser }) => void) => {
   try {
-     const user = await apiService.post("/auth/login/tokenSignin", {token:tokenGoogle}, true);
-     console.log(user);
+    const user = await apiService.post("/auth/login/tokenSignin", {token:tokenGoogle}, true);
+    console.log(user);
     if (!user){
       return null;
     }
