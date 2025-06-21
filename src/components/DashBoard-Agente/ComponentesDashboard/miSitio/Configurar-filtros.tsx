@@ -33,6 +33,7 @@ const ConfigurarFiltros: React.FC = () => {
   const handleGuardar = () => {
     // Aquí podrías enviar los filtros a un backend o guardar localmente
     const filtrosActivos = Object.entries(filtros)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .filter(([_, activo]) => activo)
       .map(([key]) => key);
     alert(`Filtros activos: ${filtrosActivos.join(", ")}`);

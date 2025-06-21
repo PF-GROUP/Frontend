@@ -1,17 +1,10 @@
 'use client'
 import React, { useState } from "react";
 import { Formik, Form, useField } from "formik";
-import * as Yup from "yup";
+import { validationCambiarContraseña } from "../../validacionesDashBoard/cuenta";
 import { Eye, EyeOff } from "lucide-react";
 
-// Validación con Yup
-const validationSchema = Yup.object({
-  currentPassword: Yup.string().required("Requerido"),
-  newPassword: Yup.string().required("Requerido"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("newPassword"), null], "Las contraseñas no coinciden")
-    .required("Requerido"),
-});
+
 
 // Input con botón para mostrar/ocultar contraseña y borde rojo si hay error
 const InputPasswordToggle: React.FC<{
@@ -57,7 +50,7 @@ const Contrasena: React.FC = () => {
           newPassword: "",
           confirmPassword: "",
         }}
-        validationSchema={validationSchema}
+        validationSchema={validationCambiarContraseña}
         onSubmit={(values, { resetForm }) => {
           alert("Contraseña cambiada con éxito!");
           resetForm();

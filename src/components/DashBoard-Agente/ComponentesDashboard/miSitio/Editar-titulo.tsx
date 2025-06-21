@@ -2,19 +2,9 @@
 
 import React from "react";
 import { Formik } from "formik";
-import * as Yup from "yup";
 import { toast } from "react-hot-toast";
+import { tituloValidations } from "../../validacionesDashBoard/miSitio";
 
-const tituloValidations = Yup.object().shape({
-  titulo: Yup.string()
-    .required("El título es obligatorio")
-    .min(3, "Debe tener al menos 3 caracteres")
-    .max(60, "No debe superar los 60 caracteres"),
-  descripcion: Yup.string()
-    .required("La descripción es obligatoria")
-    .min(10, "Debe tener al menos 10 caracteres")
-    .max(300, "No debe superar los 300 caracteres"),
-});
 
 const EditarTitulo: React.FC = () => {
   const handleSubmit = (values: { titulo: string; descripcion: string }) => {

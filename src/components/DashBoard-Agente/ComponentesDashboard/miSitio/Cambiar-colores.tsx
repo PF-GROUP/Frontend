@@ -2,28 +2,9 @@
 
 import React from "react";
 import { Formik } from "formik";
-import * as Yup from "yup";
 import { toast } from "react-hot-toast";
+import {  colorValidationSchema } from "../../validacionesDashBoard/miSitio";
 
-const colorValidation = /^#([0-9A-F]{3}){1,2}$/i;
-
-const colorValidationSchema = Yup.object().shape({
-  bgColor: Yup.string()
-    .required("El color de fondo es obligatorio")
-    .matches(colorValidation, "Color inválido"),
-  textColor: Yup.string()
-    .required("El color del texto es obligatorio")
-    .matches(colorValidation, "Color inválido"),
-  buttonColor: Yup.string()
-    .required("El color del botón es obligatorio")
-    .matches(colorValidation, "Color inválido"),
-  linkColor: Yup.string()
-    .required("El color del link es obligatorio")
-    .matches(colorValidation, "Color inválido"),
-  navbarColor: Yup.string()
-    .required("El color de la navbar es obligatorio")
-    .matches(colorValidation, "Color inválido"),
-});
 
 const MiSitio: React.FC = () => {
   const handleSubmit = (values: {
@@ -44,7 +25,7 @@ const MiSitio: React.FC = () => {
         textColor: "#333333",
         buttonColor: "#4a90e2",
         linkColor: "#0070f3",
-        navbarColor: "#ffffff",
+        navbarColor: "#d9d9d9",
       }}
       validationSchema={colorValidationSchema}
       onSubmit={handleSubmit}

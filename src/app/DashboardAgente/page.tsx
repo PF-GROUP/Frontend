@@ -13,7 +13,6 @@ import Facturacion from '@/components/DashBoard-Agente/ComponentesDashboard/cuen
 import Contrasena from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Cambiar-contraseña';
 import FotoPerfil from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Cambiar-fotoPerfil';
 import ReportarError from '@/components/DashBoard-Agente/ComponentesDashboard/soporte/Reportar-error';
-import Preferencias from '@/components/DashBoard-Agente/ComponentesDashboard/configuracion/Preferencias';
 import Seguridad from '@/components/DashBoard-Agente/ComponentesDashboard/configuracion/Seguridad';
 
 export default function DashboardPage() {
@@ -40,8 +39,6 @@ export default function DashboardPage() {
         return <FotoPerfil />;
       case 'reportar-error':
         return <ReportarError />;
-      case 'preferencias':
-        return <Preferencias />;
       case 'seguridad':
         return <Seguridad />;
       default:

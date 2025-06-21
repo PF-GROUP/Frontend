@@ -6,10 +6,10 @@ import {
   User,
   Wallet,
   HelpCircle,
-  Settings,
   LogOut,
   Home,
-  Menu
+  Menu,
+  ShieldCheck
 } from 'lucide-react';
 
 const SidebarDashboard: React.FC = () => {
@@ -119,9 +119,9 @@ const SidebarDashboard: React.FC = () => {
 
           {/* --- ITEM - Configuración --- */}
           <div className="flex items-start gap-2 mt-6 hover:bg-gray-300 rounded-md p-2 cursor-pointer w-full">
-            <Settings size={24} className="text-gray-750" />
+            <ShieldCheck size={24} className="text-gray-750" />
             <details className="[&>summary]:list-none [&>summary::-webkit-details-marker]:hidden w-full">
-              <summary className="font-semibold text-base md:text-xl">Configuración</summary>
+              <summary className="font-semibold text-base md:text-xl">Seguridad</summary>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
                 <li><Link href="/DashboardAgente?view=seguridad" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Seguridad</Link></li>
               </ul>

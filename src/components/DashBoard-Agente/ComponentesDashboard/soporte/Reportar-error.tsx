@@ -1,6 +1,6 @@
 import React from "react";
 import { useFormik } from "formik";
-import * as Yup from "yup";
+import { reportarErrorSchema } from "../../validacionesDashBoard/soporte";
 
 const ReportarError: React.FC = () => {
   const formik = useFormik({
@@ -9,20 +9,9 @@ const ReportarError: React.FC = () => {
       emailAgente: "",
       descripcion: "",
     },
-    validationSchema: Yup.object({
-      emailAdmin: Yup.string()
-        .email("Email inválido")
-        .required("Requerido"),
-      emailAgente: Yup.string()
-        .email("Email inválido")
-        .required("Requerido"),
-      descripcion: Yup.string()
-        .min(10, "Debe tener al menos 10 caracteres")
-        .required("Requerido"),
-    }),
+    validationSchema: reportarErrorSchema,
     onSubmit: (values) => {
       alert("Formulario enviado con éxito:\n" + JSON.stringify(values, null, 2));
-      // Aquí iría la lógica para enviar el reporte
     },
   });
 
