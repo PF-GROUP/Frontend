@@ -4,15 +4,15 @@ import Image from 'next/image';
 import React from "react";
 import { useAuthContext, } from '../../../context/authContext';
 import Loader from '../Loader/Loader';
-import { adminUser, agenteUser } from "../../../helper/user";
+// import { adminUser, agenteUser } from "../../../helper/user";
 
 const Navbar: React.FC = () => {
   const [showMenu, setShowMenu] = React.useState(false);
   const { isAuth } = useAuthContext();
   console.log(isAuth);
-  console.log(adminUser);
+  // console.log(adminUser);
   const logeado = isAuth;
-  const user = agenteUser;
+  // const user = agenteUser;
   return (
   <nav className="relative flex justify-between items-center px-6 py-4 bg-white shadow-md h-16   mx-auto">
      <Link href="/home" className="flex items-center space-x-2 h-full"> 

@@ -1,30 +1,27 @@
 
-// import { UserRole } from "./enum";
 
 
-export interface IUser {
+
+export interface UserDTO {
   id: number;
   name: string;
   surname: string;
   email: string;
   phone: string;
   password?: string;
-  rol: 1 | 0; // 0 admin, 1 agente
+  rol: "admin" | "User";
 }
 
-export interface ICreateUser {
+export interface CreateUserDTO {
   name: string;
   surname: string;
   email: string;
   phone: string;
   password: string;
-  rol: 1 | 0; // 0 admin, 1 agente
+  rol: "admin" | "User";
 }
 
-// 0 admin 
-// 1 agente
-
-export interface ILoginUser {
+export interface LoginUserDTO {
   email: string;
   password: string;
 }
