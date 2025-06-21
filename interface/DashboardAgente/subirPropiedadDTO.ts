@@ -5,6 +5,7 @@ export enum Status {
     RESERVED = 'RESERVED',
   // etc
 }
+
 export enum Type {
   HOUSE = 'HOUSE',             // CASA
   APARTMENT = 'APARTMENT',     // DEPARTAMENTO
@@ -13,8 +14,6 @@ export enum Type {
   OFFICE = 'OFFICE',           // OFICINA
   WAREHOUSE = 'WAREHOUSE',     // GALPÓN
 }
-
-
 
 export interface IPropertyForm {
     name: string;

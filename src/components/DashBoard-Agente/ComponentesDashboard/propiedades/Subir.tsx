@@ -37,7 +37,7 @@ const DashboardPage = () => {
       <Formik
         initialValues={{
           name: '',
-          status: '',
+          status: "",
           type: '',
           address: '',
           city: '',
@@ -52,70 +52,70 @@ const DashboardPage = () => {
         validationSchema={validationSchema}
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue }) => (
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
-
-          <div className="flex flex-col items-start justify-start rounded-lg p-6 md:p-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
-  <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] mb-5">Seleccionar Imágenes</h2>
-  <div className="w-full space-y-4">
+        
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
+        <div className="flex flex-col items-start justify-start rounded-lg p-6 md:p-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
+        <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] mb-5">Seleccionar Imágenes</h2>
+        <div className="w-full space-y-4">
 
     {/* Vista previa de imágenes */}
-    <div className="border border-gray-400 rounded-lg p-4 bg-gray-400 min-h-[200px] shadow overflow-y-auto">
-      {values.id_images && values.id_images.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          {values.id_images.map((file, index) => (
-            <div key={index} className="relative group">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={URL.createObjectURL(file)}
-                alt={`img-${index}`}
-                className="w-full h-28 object-cover rounded-md border"
-              />
-              <button
-                type="button"
-                className="absolute top-1 right-1 bg-red-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition"
-                onClick={() => {
-                  const newImages = values.id_images.filter((_, i) => i !== index);
-                  setFieldValue('id_images', newImages);
-                }}
-              >
-                X
-              </button>
+      <div className="border border-gray-400 rounded-lg p-4 bg-gray-400 min-h-[200px] shadow overflow-y-auto">
+          {values.id_images && values.id_images.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              {values.id_images.map((file, index) => (
+                <div key={index} className="relative group">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={`img-${index}`}
+                    className="w-full h-28 object-cover rounded-md border"
+                  />
+                  <button
+                    type="button"
+                    className="absolute top-1 right-1 bg-red-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition"
+                    onClick={() => {
+                      const newImages = values.id_images.filter((_, i) => i !== index);
+                      setFieldValue('id_images', newImages);
+                    }}
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
+              ) : (
+            <p className="text-white text-lg font-semibold text-center mt-11">Sube imagenes de tus Propiedades</p>
+            )}
+          </div>
+        
+          {/* Input para subir imágenes */}
+        <div className="flex justify-center mt-7">
+          <label htmlFor="file-upload" className="flex items-center gap-2 bg-blue-700 text-white font-semibold text-lg py-2 px-4 rounded-lg cursor-pointer">
+            <Upload size={22} /> Subir imagen
+            <input
+              id="file-upload"
+              type="file"
+              multiple
+              accept="image/*"
+              className="hidden"
+              onChange={(event) => {
+                const files = event.currentTarget.files;
+                if (files) {
+                  const fileArray = Array.from(files);
+                  setFieldValue('id_images', [...values.id_images, ...fileArray]);
+                }
+              }}
+              onBlur={handleBlur}
+            />
+          </label>
         </div>
-      ) : (
-        <p className="text-white text-lg font-semibold text-center mt-11">Sube imagenes de tus Propiedades</p>
-      )}
-    </div>
-
-    {/* Input para subir imágenes */}
-    <div className="flex justify-center mt-7">
-      <label htmlFor="file-upload" className="flex items-center gap-2 bg-blue-700 text-white font-semibold text-lg py-2 px-4 rounded-lg cursor-pointer">
-        <Upload size={22} /> Subir imagen
-        <input
-          id="file-upload"
-          type="file"
-          multiple
-          accept="image/*"
-          className="hidden"
-          onChange={(event) => {
-            const files = event.currentTarget.files;
-            if (files) {
-              const fileArray = Array.from(files);
-              setFieldValue('id_images', [...values.id_images, ...fileArray]);
-            }
-          }}
-          onBlur={handleBlur}
-        />
-      </label>
-    </div>
-
-    {/* Validación de errores */}
-    {errors.id_images && touched.id_images && (
-      <p className="text-red-600 text-sm mt-1">{errors.id_images}</p>
-    )}
-  </div>
-</div>
+            
+          {/* Validación de errores */}
+          {errors.id_images && touched.id_images && (
+            <p className="text-red-600 text-sm mt-1">{errors.id_images}</p>
+          )}
+        </div>
+      </div>
 
 
 
