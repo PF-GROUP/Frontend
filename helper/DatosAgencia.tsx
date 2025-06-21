@@ -723,7 +723,7 @@ const agencia3: AgencyDTO = {
 
 export const agencias: AgencyDTO[] = [agencia1, agencia2, agencia3];
 
-// Función para slugificar nombres (reemplaza espacios por guiones, pasa a minúsculas)
-export function slugify(name: string) {
-  return name.toLowerCase().replace(/\s+/g, "-");
-}
+// // Función para slugificar nombres (reemplaza espacios por guiones, pasa a minúsculas)
+// export function slugify(name: string) {
+//   return name.toLowerCase().replace(/\s+/g, "-");
+// }

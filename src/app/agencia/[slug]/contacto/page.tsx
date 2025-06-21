@@ -2,10 +2,14 @@
 import React from "react";
 import ContactoAgente from "../../../../components/AgenciaComponents/ContactoAgente";
 
-import { agencias, slugify } from "../../../../../helper/DatosAgencia";
+import { agencias } from "../../../../../helper/DatosAgencia";
 
 interface ContactoProps {
   params: Promise<{ slug: string }>;
+}
+
+export function slugify(name: string) {
+  return name.toLowerCase().replace(/\s+/g, "-");
 }
 
 export default async function ContactoPage({ params }: ContactoProps) {

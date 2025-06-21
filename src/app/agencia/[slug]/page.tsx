@@ -55,9 +55,6 @@ export default function AgenciaLanding({ params, SecondaryColor }: Props) {
         </div>
       </main>
 
-      <footer className="pt-8">
-        <FooterAgencia agenciaName={agencia.name} />
-      </footer>
     </div>
   );
 }
