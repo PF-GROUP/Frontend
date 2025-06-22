@@ -14,9 +14,8 @@ const registerValidations = Yup.object().shape({
     
     phone: Yup.number()
     .typeError('El teléfono debe ser un número')
-    .required('El teléfono es obligatorio')
-    .min(8, 'El Número debe tener al menos 8 caracteres')
-    .max(10, 'El Número no debe superar los 10 caracteres'),
+    .required('El teléfono es obligatorio'),
+   
     
     email: Yup.string()
     .required('El correo es obligatorio')
