@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import registerValidations from "@/components/FormRegister/registerValidations";
 import { Formik } from "formik";
-import RegisterUserDtoFront from "@/interfaces/registerDto";
+import RegisterUserDtoFront from "../../../interfaces/registerDto";
 import Image from "next/image";
 import { useAuthContext } from "../../../../context/authContext";
 
