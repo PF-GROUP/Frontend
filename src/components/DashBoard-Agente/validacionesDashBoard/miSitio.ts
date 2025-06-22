@@ -1,35 +1,47 @@
-// Validaciones:
 import * as Yup from "yup";
 
+// Validación para hex color:
+// export const colorValidation = /^#([0-9A-F]{3}){1,2}$/i;
 
-// Validaciones Cambiar Colores:
-export const colorValidation = /^#([0-9A-F]{3}){1,2}$/i;
+export const colorValidation = /^(#(?:[0-9a-fA-F]{3,8})|rgb\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)|rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0|0?\.\d+|1(\.0)?)\s*\))$/;
 
 export const colorValidationSchema = Yup.object().shape({
-  bgColor: Yup.string()
+  logoImage: Yup.mixed().required("El logo es obligatorio"),
+
+  information: Yup.string()
+    .required("La información es obligatoria")
+    .min(5, "Mínimo 5 caracteres"),
+
+  mainColors: Yup.string()
+    .required("El color principal es obligatorio")
+    .matches(colorValidation, "Color inválido"),
+
+  banner: Yup.mixed().required("El banner es obligatorio"),
+
+  navbarColor: Yup.string()
+    .required("El color de navbar es obligatorio")
+    .matches(colorValidation, "Color inválido"),
+
+  buttonColor: Yup.string()
+    .required("El color de botón es obligatorio")
+    .matches(colorValidation, "Color inválido"),
+
+  backgroundColor: Yup.string()
     .required("El color de fondo es obligatorio")
     .matches(colorValidation, "Color inválido"),
-  textColor: Yup.string()
-    .required("El color del texto es obligatorio")
-    .matches(colorValidation, "Color inválido"),
-  buttonColor: Yup.string()
-    .required("El color del botón es obligatorio")
-    .matches(colorValidation, "Color inválido"),
-  linkColor: Yup.string()
-    .required("El color del link es obligatorio")
-    .matches(colorValidation, "Color inválido"),
-  navbarColor: Yup.string()
-    .required("El color de la navbar es obligatorio")
+
+  secondaryColor: Yup.string()
+    .required("El color secundario es obligatorio")
     .matches(colorValidation, "Color inválido"),
 });
 
 // Validacion Editar titulo y descipción:
 export const tituloValidations = Yup.object().shape({
-  titulo: Yup.string()
+  name: Yup.string()
     .required("El título es obligatorio")
     .min(3, "Debe tener al menos 3 caracteres")
     .max(60, "No debe superar los 60 caracteres"),
-  descripcion: Yup.string()
+  description: Yup.string()
     .required("La descripción es obligatoria")
     .min(10, "Debe tener al menos 10 caracteres")
     .max(300, "No debe superar los 300 caracteres"),

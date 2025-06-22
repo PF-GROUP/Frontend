@@ -52,7 +52,7 @@ export const validationSchema = Yup.object({
     .min(10, 'La descripción debe tener al menos 10 caracteres')
     .max(500, 'La descripción no puede superar los 500 caracteres'),
 
-   id_images: Yup.array()
+  id_images: Yup.array()
     .of(
       Yup.mixed().test(
         'file-or-url',

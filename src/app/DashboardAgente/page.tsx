@@ -13,7 +13,7 @@ import Facturacion from '@/components/DashBoard-Agente/ComponentesDashboard/cuen
 import Contrasena from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Cambiar-contraseña';
 import FotoPerfil from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Cambiar-fotoPerfil';
 import ReportarError from '@/components/DashBoard-Agente/ComponentesDashboard/soporte/Reportar-error';
-import Seguridad from '@/components/DashBoard-Agente/ComponentesDashboard/configuracion/Seguridad';
+import Seguridad from '@/components/DashBoard-Agente/ComponentesDashboard/seguridad/Seguridad';
 
 export default function DashboardPage() {
   const searchParams = useSearchParams(); 

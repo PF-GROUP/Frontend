@@ -59,16 +59,16 @@ const DashboardPage = () => {
         <div className="w-full space-y-4">
 
     {/* Vista previa de imágenes */}
-      <div className="border border-gray-400 rounded-lg p-4 bg-gray-400 min-h-[200px] shadow overflow-y-auto">
+      <div className=" border border-black p-4 bg-gray-400 min-h-[200px] shadow overflow-y-auto">
           {values.id_images && values.id_images.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               {values.id_images.map((file, index) => (
-                <div key={index} className="relative group">
+                <div key={index} className="relative group ">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={URL.createObjectURL(file)}
                     alt={`img-${index}`}
-                    className="w-full h-28 object-cover rounded-md border"
+                    className="w-full h-28 object-cover rounded-sm border"
                   />
                   <button
                     type="button"
@@ -130,10 +130,11 @@ const DashboardPage = () => {
                   type="text"
                   id="name"
                   name="name"
+                  placeholder='Departamento Céntrico de 2 Ambientes'
                   value={values.name}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`border ${errors.name && touched.name ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
+                  className={`border ${errors.name && touched.name ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow w-full`}
                 />
                 {errors.name && touched.name && <p className="text-red-600 text-sm mt-1">{errors.name}</p>}
               </div>
@@ -185,10 +186,11 @@ const DashboardPage = () => {
                   type="text"
                   id="city"
                   name="city"
+                  placeholder='Córdoba'
                   value={values.city}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`border ${errors.city && touched.city ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
+                  className={`border ${errors.city && touched.city ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow w-full`}
                 />
                 {errors.city && touched.city && <p className="text-red-600 text-sm mt-1">{errors.city}</p>}
               </div>
@@ -204,7 +206,7 @@ const DashboardPage = () => {
                   value={values.address}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`border ${errors.address && touched.address ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
+                  className={`border ${errors.address && touched.address ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow w-full`}
                 />
                 {errors.address && touched.address && <p className="text-red-600 text-sm mt-1">{errors.address}</p>}
               </div>
@@ -261,6 +263,7 @@ const DashboardPage = () => {
                     id="rooms"
                     name="rooms"
                     value={values.rooms}
+                  
                     onChange={handleChange}
                     onBlur={handleBlur}
                     className={`border ${errors.rooms && touched.rooms ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
@@ -275,10 +278,11 @@ const DashboardPage = () => {
                 <textarea
                   id="description"
                   name="description"
+                  placeholder='Una descripcion que detalle tu propiedad y que posteriormente verá el usuario'
                   value={values.description}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`border ${errors.description && touched.description ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full min-h-[120px]`}
+                  className={`border ${errors.description && touched.description ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow w-full min-h-[120px]`}
                 />
                 {errors.description && touched.description && <p className="text-red-600 text-sm mt-1">{errors.description}</p>}
               </div>
