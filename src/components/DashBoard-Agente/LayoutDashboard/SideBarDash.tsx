@@ -1,4 +1,5 @@
-'use client'
+"use client";
+
 import Link from "next/link";
 import React, { useState } from "react";
 import {
@@ -9,11 +10,16 @@ import {
   LogOut,
   Home,
   Menu,
-  ShieldCheck
-} from 'lucide-react';
+  ShieldCheck,
+} from "lucide-react";
 
 const SidebarDashboard: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Simulo que esta URL la recibís desde el backend o contexto global, puede ser null o string URL
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(
+    "https://res.cloudinary.com/dmvybzxnv/image/upload/v1750591603/nba83jcdphafyvexftsh.jpg"
+  );
 
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
@@ -37,20 +43,32 @@ const SidebarDashboard: React.FC = () => {
       )}
 
       <div className="flex min-h-screen bg-[rgb(240,241,244)]">
-
         {/* Sidebar */}
-        <div className={`
+        <div
+          className={`
           flex flex-col border border-gray-300 bg-white p-3 md:pl-5 pt-4 rounded-lg rounded-tl-none mt-4 shadow-[1.5px_0_5px_-1px_rgba(0,0,0,0.5)]
           w-[250px] md:w-[330px]
           fixed md:static z-40 top-0 left-0 h-full
           transform transition-transform duration-300
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0
-        `}>
+        `}
+        >
           {/* Header Usuario */}
           <div className="flex items-center justify-start border-b border-gray-400 pb-4 md:mr-6">
-            <div className="bg-gray-900 rounded-full p-2 flex items-center justify-center">
-              <User className="text-white" size={42} />
+            <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-blue-600">
+              {profileImageUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={profileImageUrl}
+                  alt="Foto perfil agente"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="bg-gray-900 rounded-full p-2 flex items-center justify-center">
+                  <User className="text-white" size={42} />
+                </div>
+              )}
             </div>
             <div className="flex flex-col items-start justify-start text-center ml-3">
               <h2 className="font-bold text-base md:text-xl">Nombre Agente</h2>
