@@ -44,7 +44,7 @@ const Navbar: React.FC = () => {
       </button>
     </Link>
   ) : (
-    <Link href="/DashboarAgente">
+    <Link href="/DashboardAgente">
       <button className="bg-[#A62F55] hover:bg-[#922749] text-white px-2 py-1 cursor-pointer rounded">
         Dashboard
       </button>
@@ -81,13 +81,13 @@ const Navbar: React.FC = () => {
         <Link href="/contacto">Contacto</Link>
         {logeado ? (
   user?.isAdmin  ? (
-    <Link href="/DashboardAdmin">
+    <Link href="/DashboardAgente">
       <button className="bg-[#A62F55] hover:bg-[#922749] text-white px-2 py-1 rounded">
         Dashboard
       </button>
     </Link>
   ) : (
-    <Link href="/DashboarAgente">
+    <Link href="/DashboardAgente">
       <button className="bg-[#A62F55] hover:bg-[#922749] text-white px-2 py-1 rounded">
         Dashboard
       </button>
