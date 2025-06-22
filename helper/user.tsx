@@ -8,7 +8,7 @@ export const adminUser: IUser = {
   email: "admin@kasapp.com",
   phone: "+54 911 1234 5678",
   password: "admin123",
-  rol: 0,
+  isAdmin: true,
 };
 
 
@@ -22,5 +22,5 @@ export const agenteUser: IUser = {
   email: "admin@kasapp.com",
   phone: "+54 911 1234 5678",
   password: "admin123",
-  rol: 1,
+  isAdmin: false,
 };

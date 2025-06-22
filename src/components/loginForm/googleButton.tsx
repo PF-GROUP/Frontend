@@ -5,8 +5,10 @@ import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import {jwtDecode} from 'jwt-decode';
 import { useAuthContext } from "../../../context/authContext";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function GoogleSignIn() {
+    const router = useRouter();
   const { SaveUserData } = useAuthContext();
   return (
     <GoogleOAuthProvider clientId="745314741297-e7g0kviikp9dfs9semi71h1nplcaud5h.apps.googleusercontent.com">
@@ -26,7 +28,7 @@ export default function GoogleSignIn() {
                           console.log('Login exitoso con Google');
                           toast.success('¡Usuario Logueado! Redirigiendo al Home...', { duration: 2000 });
                 setTimeout(() => {
-                    window.location.href = '/home';
+                    router.push('/home');
                 }, 2000);
                         } else {
                           console.error('Error al iniciar sesión con Google');
