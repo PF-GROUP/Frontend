@@ -82,7 +82,7 @@ const SidebarDashboard: React.FC = () => {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={profileImageUrl}
-                  alt="Foto perfil agente"
+                  alt="Foto perfil agente" 
                   className="w-full h-full object-cover"
                 />
               ) : (
