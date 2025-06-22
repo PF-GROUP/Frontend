@@ -12,7 +12,7 @@ export default function LayoutSidebar({children,}: Readonly<{ children: React.Re
 
         <div className="flex bg-[rgb(240,241,244)]">
         {/* Sidebar */}
-            <SidebarDashboard/>
+            <SidebarDashboard/> 
 
         {/* Main que se va reenderizando */}
       <main className="flex-1 flex flex-col  p-2 ml-11 md:p-5 bg-white border border-gray-300 rounded-lg mt-4  md:ml-6 shadow-[4px_5px_8px_4px_rgba(0,0,0,0.4)] w-full md:w-auto ">

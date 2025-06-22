@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Building,
   User,
@@ -12,14 +12,35 @@ import {
   Menu,
   ShieldCheck,
 } from "lucide-react";
+import { getAgente } from "@/services/agenteGet";
 
 const SidebarDashboard: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-
-  // Simulo que esta URL la recibís desde el backend o contexto global, puede ser null o string URL
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(
     "https://res.cloudinary.com/dmvybzxnv/image/upload/v1750591603/nba83jcdphafyvexftsh.jpg"
   );
+
+  // Estado para guardar el nombre del agente
+  const [agenteNombre, setAgenteNombre] = useState<string>("Cargando...");
+
+
+  // IMPORTANTE LEER REALIZAR EL CONSUMO DEL NOMBRE DEL USUARIO DESDE LAS COOCKIES "user"
+  useEffect(() => {
+    const fetchAgente = async () => {
+      try {
+        const response = await getAgente(1);
+        // Asumiendo que el nombre viene en response.data.name
+        setAgenteNombre(response.name || "Nombre no disponible");
+        // Si la URL de imagen viene también, podrías setear profileImageUrl aquí:
+        // setProfileImageUrl(response.data.profileImageUrl);
+      } catch (error) {
+        console.error("Error cargando agente:", error);
+        setAgenteNombre("Error al cargar");
+      }
+    };
+
+    fetchAgente();
+  }, []);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
@@ -46,13 +67,13 @@ const SidebarDashboard: React.FC = () => {
         {/* Sidebar */}
         <div
           className={`
-          flex flex-col border border-gray-300 bg-white p-3 md:pl-5 pt-4 rounded-lg rounded-tl-none mt-4 shadow-[1.5px_0_5px_-1px_rgba(0,0,0,0.5)]
-          w-[250px] md:w-[330px]
-          fixed md:static z-40 top-0 left-0 h-full
-          transform transition-transform duration-300
-          ${isOpen ? "translate-x-0" : "-translate-x-full"}
-          md:translate-x-0
-        `}
+            flex flex-col border border-gray-300 bg-white p-3 md:pl-5 pt-4 rounded-lg rounded-tl-none mt-4 shadow-[1.5px_0_5px_-1px_rgba(0,0,0,0.5)]
+            w-[250px] md:w-[330px]
+            fixed md:static z-40 top-0 left-0 h-full
+            transform transition-transform duration-300
+            ${isOpen ? "translate-x-0" : "-translate-x-full"}
+            md:translate-x-0
+          `}
         >
           {/* Header Usuario */}
           <div className="flex items-center justify-start border-b border-gray-400 pb-4 md:mr-6">
@@ -71,10 +92,11 @@ const SidebarDashboard: React.FC = () => {
               )}
             </div>
             <div className="flex flex-col items-start justify-start text-center ml-3">
-              <h2 className="font-bold text-base md:text-xl">Nombre Agente</h2>
+              <h2 className="font-bold text-base md:text-xl">{agenteNombre}</h2>
               <p className="font-sans text-sm">Agente inmobiliario</p>
             </div>
           </div>
+
 
           {/* --- ITEM - Inicio --- */}
           <div className="flex items-start gap-2 mt-6 hover:bg-gray-300 rounded-md p-2 cursor-pointer w-full">
