@@ -180,4 +180,3 @@ const SidebarDashboard: React.FC<SidebarDashboardProps> = ({ name = "", surname 
 };
 
 export default SidebarDashboard;
-
