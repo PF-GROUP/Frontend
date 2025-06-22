@@ -6,34 +6,34 @@ import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import registerValidations from "@/components/FormRegister/registerValidations";
 import { Formik } from "formik";
-import RegisterUserDtoFront from "@/interfaces/registerDto";
+import RegisterUserDtoFront from "../../../interfaces/registerDto";
 import Image from "next/image";
 
 const FormRegister: React.FC = () => {
     const router = useRouter();
-    const handleOnSubmit = async (values: RegisterUserDtoFront) => {
-        console.log(values);
-        try {
-            const response = await RegisterSubmit(values);
-            console.log("respuesta de entrada: ", response);
-            if (response?.success === true) {
-                toast.success('¡Usuario registrado! Redirigiendo al Login...', { duration: 2500 });
-                setTimeout(() => {
-                    router.push('/login');
-                }, 2000);
-                return;
-            } else {
-                console.log("mensaje de error else: ", response);
-                
-                toast.error('Dato repetido. Ingresa un valor distinto en Email.', { duration: 2000 });
-            }
-        } catch (error) {
-            console.log("mensaje de error catch: ",error);
 
-            toast.error('Hubo un problema al querer registrarse.', { duration: 2000 });
-            console.log('error en el register:', error);
-        }
-    };
+    const handleOnSubmit = async (values: RegisterUserDtoFront) => {
+  try {
+    const response = await RegisterSubmit(values);
+
+    console.log("🧠 response completo:", response);
+
+    // ✅ Asegurate de que RegisterSubmit devuelva el objeto con "success"
+    if (response && response.success === true) {
+      toast.success('¡Usuario registrado! Redirigiendo al Login...', { duration: 2500 });
+      setTimeout(() => {
+        router.push('/login');
+      }, 2000);
+    } else {
+      console.warn("⚠️ El registro no fue exitoso:", response);
+      toast.error('Dato repetido. Ingresa un valor distinto en Email.', { duration: 2000 });
+    }
+  } catch (error) {
+    console.error("❌ Error en el register:", error);
+    toast.error('Hubo un problema al querer registrarse.', { duration: 2000 });
+  }
+};
+
 
     return (
         <>
