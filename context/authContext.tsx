@@ -1,34 +1,23 @@
 "use client"
-
+import  { jwtDecode } from "jwt-decode"
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { IUser } from "../interface/User";
+import apiService from "@/services/apiService";
 
 
-export function getCookie(name: string) {
-    return document.cookie.split('; ').reduce((r, v) => {
-        const parts = v.split('=');
-        return parts[0] === name ? decodeURIComponent(parts[1]) : r
-    }, '');
-}
-
-function deleteCookie(name: string) {
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-}
 
 interface AuthContextType {
     user: IUser | null;
     isAuth: boolean;
-    token?: string | null;
-    SaveUserData: (data: { token: string }) => void;
+    loading: boolean;
+    SaveUserData: (data: { user: IUser }) => void;
     ResetUserData: () => void;
 }
 
 export const decodeUserCookie = (cookieValue: string) => {
   try {
-    const decoded = decodeURIComponent(cookieValue);
-    // Elimina el prefijo "j:" si existe
-    const jsonString = decoded.startsWith('j:') ? decoded.slice(2) : decoded;
-    return JSON.parse(jsonString);
+    const decoded = jwtDecode(cookieValue);
+    return decoded as IUser;
   } catch (e) {
     console.error("No se pudo decodificar la cookie:", e);
     return null;
@@ -39,38 +28,33 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<IUser | null>(null);
-    const [token, setToken] = useState<string | null>(null);
     const [isAuth, setIsAuth] = useState<boolean>(false);
-
+    const [loading, setLoading] = useState<boolean>(true);
     useEffect(() => {
-        const storedToken = getCookie('token');
-        const storedUser = getCookie('user');
-        if (storedToken && storedUser) {
+        const fetchUser = async () =>{
             try {
-                setToken(storedToken);
-                setUser(JSON.parse(storedUser));
-                setIsAuth(true);
+                const res = await apiService.get('/auth/me',true);
+                console.log(res)
+                setUser(res as IUser);
+                setIsAuth(!!res);
             } catch {
-                setUser(null);
-                setIsAuth(false);
+               setUser(null); 
+            } finally{
+                setLoading(false);
             }
-        } else {
-            setUser(null);
-            setIsAuth(false);
         }
+      fetchUser();
     }, []);
 
-    const SaveUserData = (data: { token: string }) => {
+    const SaveUserData = (data: { user: IUser }) => {
         setIsAuth(true);
-        setToken(data.token);
+        setUser(data.user );
     };
 
     const ResetUserData = () => {
         setUser(null);
         setIsAuth(false);
-        setToken(null);
-        deleteCookie('token');
-        deleteCookie('user');
+        console.log("borrando cookie aaaa");
     };
 
     return (
@@ -79,7 +63,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             isAuth,
             SaveUserData,
             ResetUserData,
-            token,
+            loading,
         }}>
             {children}
         </AuthContext.Provider>

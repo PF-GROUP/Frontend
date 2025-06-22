@@ -53,7 +53,7 @@ export default function LoginForm() {
       if (token) {
                 toast.success('¡Usuario Logueado! Redirigiendo al Home...', { duration: 2000 });
                 setTimeout(() => {
-                    router.push('/login');
+                    router.push('/home');
                 }, 2000);
                 return;
             } else {
@@ -109,14 +109,9 @@ export default function LoginForm() {
           
         </form>
 
-        <div className="flex justify-center mt-4">
-          <p className="text-sm text-gray-600">
-            O sino inicia sesion con{' '}
-
-             
-
-          </p>
- <GoogleSignIn/>
+        <div className="flex flex-col items-center justify-center mt-4 space-y-2">
+          
+          <GoogleSignIn />
         </div>
       </div>
     </div>

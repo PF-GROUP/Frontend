@@ -29,7 +29,26 @@ const registerValidations = Yup.object().shape({
     .matches(/[a-z]/, 'La contraseña debe tener al menos una letra minúscula')
     .matches(/[A-Z]/, 'La contraseña debe tener al menos una letra mayúscula')
     .matches(/\d/, 'La contraseña debe tener al menos un número')
-    .matches(/[@$!%*?&#]/, 'La contraseña debe tener al menos un carácter especial')
+    .matches(/[@$!%*?&#]/, 'La contraseña debe tener al menos un carácter especial'),
+
+    document: Yup.string()
+    .matches(/^[0-9]+$/, 'El documento debe contener solo números'),
+
+    agencyName: Yup.string()
+    .required('El nombre de la agencia es obligatorio')
+    .min(2, 'El nombre de la agencia debe tener al menos 2 caracteres')
+    .max(50, 'El nombre de la agencia no debe superar los 50 caracteres'),
+    
+    agencyDescription: Yup.string()
+    .required('La descripción de la agencia es obligatoria')
+    .min(2, 'La descripción de la agencia debe tener al menos 2 caracteres')
+    .max(100, 'La descripción de la agencia no debe superar los 100 caracteres'),
+
+    slug: Yup.string()
+    .required('La url de la agencia es obligatorio')
+    .min(2, 'La url de la agencia debe tener al menos 2 caracteres')
+    .max(50, 'La url de la agencia no debe superar los 50 caracteres'),
+
 });
 
 export default registerValidations

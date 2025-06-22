@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const axiosRes = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || "http://191.235.34.31:3000"
+    baseURL: process.env.NEXT_PUBLIC_API_URL || "/api",
 })
 
 
