@@ -1,6 +1,6 @@
 import { getCookie } from "../../context/authContext";
 import apiService from "./apiService";
-import RegisterUserDtoFront from "../interfaces/registerDto";
+import RegisterUserDtoFront from "@/interfaces/registerDto";
 ;
 
 type FormData = {
@@ -17,17 +17,39 @@ export const RegisterSubmit = async (data: RegisterUserDtoFront) => {
     throw error; // ✅ Re-lanzá el error para que lo capture el catch del componente
   }
 };
-
-
-export const loginService = async (data: FormData, SaveUserData: (data: {token: string }) => void) => {
-        try {
-             await apiService.post("/auth/login", data, true)
-             const token = getCookie('token');
-            SaveUserData({
-                    token
-                });
-            return token
-        } catch (e) {
-            console.warn("error al hacer login", e);
-        }
+    export const loginService = async (data: FormData, SaveUserData: (data: { token: string }) => void) => {
+  try {
+     await apiService.post("/auth/login", data, true);
+    const token = getCookie("token");
+    
+    if (token) {
+      console.log("Token obtenido:", token);
+      SaveUserData({ token });
+      return token;
+    } else {
+      console.warn("La cookie 'token' no se encontró después de 3 intentos");
+      return null;
+    }
+  } catch (e) {
+    console.error("Error al hacer login:", e);
+    return null;
+  }
+}
+export const tokenSigninService = async (tokenGoogle:string, SaveUserData: (data: { token: string }) => void) => {
+  try {
+     await apiService.post("/auth/login/tokenSignin", {token:tokenGoogle}, true);
+    const token = getCookie("token");
+    
+    if (token) {
+      console.log("Token obtenido:", token);
+      SaveUserData({ token });
+      return token;
+    } else {
+      console.warn("La cookie 'token' no se encontró después de 3 intentos");
+      return null;
+    }
+  } catch (e) {
+    console.error("Error al hacer login:", e);
+    return null;
+  }
 }
