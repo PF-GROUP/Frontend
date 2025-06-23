@@ -9,8 +9,8 @@ import Image from "next/image";
 import { UserIcon, IdCardIcon, HomeIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 
-import { useAuthContext } from "@/context/AuthContext"; // Importás el contexto
-import apiService from "@/services/apiService"; // Asegurate que esté importado
+import { useAuthContext } from "../../../../context/authContext";
+import apiService from "@/services/apiService"; 
 
 const GoogleRegisterButton = dynamic(
   () => import("../../../components/FormRegister/googleButton"),
