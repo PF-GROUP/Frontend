@@ -18,7 +18,7 @@ export default function LayoutSidebar({children,}: Readonly<{ children: React.Re
       <main className="flex-1 flex flex-col  p-2 ml-11 md:p-5 bg-white border border-gray-300 rounded-lg mt-4  md:ml-6 shadow-[4px_5px_8px_4px_rgba(0,0,0,0.4)] w-full md:w-auto ">
       
       {/* Botones principales */}
-      <div className="flex flex-col md:flex-row items-start  md:items-center justify-end border-b mr-11 border-gray-400 pb-4  gap-4 md:gap-5">
+      <div className="flex flex-col md:flex-row items-start  md:items-center justify-end border-b mr-11 border-gray-400 pb-5  gap-4 md:gap-5">
         
         
         <Link
