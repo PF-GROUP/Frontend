@@ -9,8 +9,8 @@ import Image from "next/image";
 import { UserIcon, IdCardIcon, HomeIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 
-import { useAuthContext } from "../../../../context/authContext"; 
-import apiService from "@/services/apiService"; 
+import { useAuthContext } from "../../../../context/authContext";
+import { RegisterSubmit, RegisterSubmitGoogle } from "@/services/authService";
 
 const GoogleRegisterButton = dynamic(
   () => import("../../../components/FormRegister/googleButton"),
@@ -22,8 +22,8 @@ interface RegisterUserDtoFront {
   surname: string;
   email: string;
   password: string;
-  phone: number | "";
-  document: number | "";
+  phone: string;
+  document: string;
   agencyName: string;
   agencyDescription: string;
   slug: string;
@@ -58,7 +58,7 @@ const StepProgressBar: React.FC<{ step: number }> = ({ step }) => (
           <React.Fragment key={item.label}>
             <div className="flex flex-col items-center">
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center border-2 
+                className={`w-10 h-10 rounded-full flex items-center justify-center border-2
                   ${isActive ? "bg-[#f1efef] border-[#b3232f] text-[#b3232f]" : ""}
                   ${isCompleted ? "bg-green-100 border-green-600 text-green-600" : ""}
                   ${!isActive && !isCompleted ? "bg-white border-gray-300 text-gray-400" : ""}`}
@@ -66,7 +66,7 @@ const StepProgressBar: React.FC<{ step: number }> = ({ step }) => (
                 <Icon className="w-5 h-5" />
               </div>
               <span
-                className={`mt-2 text-sm 
+                className={`mt-2 text-sm
                   ${isActive ? "text-[#b3232f] font-medium" : ""}
                   ${isCompleted ? "text-green-600" : ""}
                   ${!isActive && !isCompleted ? "text-gray-400" : ""}`}
@@ -111,11 +111,11 @@ const validationSchema = Yup.object().shape({
     then: (schema) => schema.required("Contraseña requerida"),
     otherwise: (schema) => schema,
   }),
-  phone: Yup.number()
-    .typeError("Teléfono debe ser numérico")
+  phone: Yup.string()
+    .matches(/^\d+$/, "Teléfono debe ser numérico")
     .required("Teléfono requerido"),
-  document: Yup.number()
-    .typeError("Documento debe ser numérico")
+  document: Yup.string()
+    .matches(/^\d+$/, "Documento debe ser numérico")
     .required("Documento requerido"),
   agencyName: Yup.string().required("Nombre requerido"),
   agencyDescription: Yup.string().required("Descripción requerida"),
@@ -133,11 +133,11 @@ const FormRegister: React.FC = () => {
       shouldValidate?: boolean
     ) => void;
   } | null>(null);
+
   const router = useRouter();
+  const { SaveUserData } = useAuthContext();
 
-  const { SaveUserData } = useAuthContext(); // Contexto para guardar usuario y estado
-
-  // Valida campos por paso
+  // Validar campos por paso
   const validateStepFields = (
     step: number,
     values: RegisterUserDtoFront,
@@ -155,7 +155,7 @@ const FormRegister: React.FC = () => {
     return true;
   };
 
-  // Carga datos desde Google en el formulario
+  // Cargar datos de Google y setear
   const handleFillUpForm = (data: Partial<GoogleUserData> & { sub?: string; id?: string }) => {
     const fullName = data.name || "";
     const [firstName, ...rest] = fullName.trim().split(" ");
@@ -173,34 +173,63 @@ const FormRegister: React.FC = () => {
     toast.success("Datos de Google cargados correctamente");
   };
 
-  // Maneja submit de formulario con post al backend
+  // Enviar formulario (mantengo llamadas originales)
   const handleSubmit = async (values: RegisterUserDtoFront) => {
     try {
-      // Enviar datos al backend, asegurando enviar JSON correcto
-      const res = await apiService.post("/auth/register", values);
+      const finalPassword = googleData ? null : values.password;
 
-      // Guardar usuario en contexto para login automático
-      SaveUserData({ user: res.user });
+      const submitData = googleData
+        ? { ...values, password: finalPassword, googleId: googleData.googleId, token: googleData.token }
+        : values;
 
-      toast.success("Formulario enviado correctamente");
-      router.push("/stripe");
-    } catch (error: any) {
-      toast.error(error?.message || "Error al registrar usuario");
-      console.error("Error en registro:", error);
+      if (googleData && submitData.token) {
+        const response = await RegisterSubmitGoogle(submitData, SaveUserData);
+        if (response) {
+          toast.success("¡Usuario registrado! Redirigiendo...", {
+            duration: 2500,
+          });
+          setTimeout(() => {
+            router.push("/stripe");
+          }, 2000);
+        } else {
+          toast.error("Dato repetido. Ingresa un valor distinto en Email.", {
+            duration: 2000,
+          });
+        }
+      } else {
+        const response = await RegisterSubmit(submitData, SaveUserData);
+        if (response?.success === true) {
+          toast.success("¡Usuario registrado! Redirigiendo...", {
+            duration: 2500,
+          });
+          setTimeout(() => {
+            router.push("/stripe");
+          }, 2000);
+        } else {
+          toast.error("Dato repetido. Ingresa un valor distinto en Email.", {
+            duration: 2000,
+          });
+        }
+      }
+    } catch (error) {
+      console.log("mensaje de error catch: ", error);
+      toast.error("Hubo un problema al querer registrarse.", {
+        duration: 2000,
+      });
     }
   };
 
-  // Actualiza el slug automáticamente cuando cambia el nombre de agencia en el paso 3
+  // Auto generar slug solo en paso 3 y sin números ni espacios ni caracteres especiales
   useEffect(() => {
     if (formikHelpers && formikHelpers.values.agencyName && step === 3) {
       const slug = formikHelpers.values.agencyName
         .toLowerCase()
         .trim()
-        .replace(/\d+/g, "")
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z\-]/g, "")
-        .replace(/\-+/g, "-")
-        .replace(/^-+|-+$/g, "");
+        .replace(/\d+/g, "") // elimina números
+        .replace(/\s+/g, "-") // espacios a guion
+        .replace(/[^a-z\-]/g, "") // elimina caracteres especiales
+        .replace(/\-+/g, "-") // guiones repetidos
+        .replace(/^-+|-+$/g, ""); // guiones al inicio o final
       formikHelpers.setFieldValue("slug", slug);
     }
   }, [formikHelpers, formikHelpers?.values.agencyName, step]);
@@ -212,8 +241,8 @@ const FormRegister: React.FC = () => {
         surname: "",
         email: "",
         password: "",
-        phone: "" as unknown as number,
-        document: "" as unknown as number,
+        phone: "",
+        document: "",
         agencyName: "",
         agencyDescription: "",
         slug: "",
@@ -252,11 +281,11 @@ const FormRegister: React.FC = () => {
             className="flex flex-col items-center bg-white text-black border border-gray-300 p-8 rounded-md w-[600px] min-h-[700px] max-w-2xl mx-auto relative"
           >
             <Image
-              src="/iconoKasapp.png"
+              src="/logoKasapp.png"
               alt="Logo"
-              width={100}
-              height={100}
-              className="w-[120px] h-[120px]"
+              width={120}
+              height={120}
+              className="mb-4"
             />
             <StepProgressBar step={step} />
             <AutoFillForm googleData={googleData} />
@@ -265,7 +294,7 @@ const FormRegister: React.FC = () => {
               <div className="w-full flex flex-col gap-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label>Nombre</label>
+                    <label className="block mb-1 font-semibold">Nombre</label>
                     <input
                       name="name"
                       value={values.name}
@@ -281,7 +310,7 @@ const FormRegister: React.FC = () => {
                     )}
                   </div>
                   <div>
-                    <label>Apellido</label>
+                    <label className="block mb-1 font-semibold">Apellido</label>
                     <input
                       name="surname"
                       value={values.surname}
@@ -298,7 +327,7 @@ const FormRegister: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <label>Email</label>
+                  <label className="block mb-1 font-semibold">Email</label>
                   <input
                     name="email"
                     type="email"
@@ -315,7 +344,9 @@ const FormRegister: React.FC = () => {
                   )}
                 </div>
                 <div>
-                  <label>Contraseña</label>
+                  <label className="block mb-1 font-semibold">
+                    Contraseña {googleData ? "" : <span className="text-red-500">*</span>}
+                  </label>
                   {googleData ? (
                     <p className="text-sm text-gray-500">No requerida al iniciar con Google</p>
                   ) : (
@@ -334,8 +365,8 @@ const FormRegister: React.FC = () => {
                     </>
                   )}
                 </div>
-                <div className="flex flex-col items-center">
-                  <p className="mt-2 text-center">O registrate con Google:</p>
+                <div className="flex flex-col items-center mt-4">
+                  <p className="mb-2">O registrate con Google:</p>
                   <GoogleRegisterButton fillUpForm={handleFillUpForm} />
                 </div>
               </div>
@@ -344,14 +375,12 @@ const FormRegister: React.FC = () => {
             {step === 2 && (
               <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label>Teléfono</label>
+                  <label className="block mb-1 font-semibold">Teléfono</label>
                   <input
                     type="text"
                     name="phone"
                     value={values.phone}
-                    onChange={(e) =>
-                      setFieldValue("phone", e.target.value === "" ? "" : Number(e.target.value))
-                    }
+                    onChange={handleChange}
                     onBlur={handleBlur}
                     className="w-full border rounded p-2"
                   />
@@ -360,14 +389,12 @@ const FormRegister: React.FC = () => {
                   )}
                 </div>
                 <div>
-                  <label>Documento</label>
+                  <label className="block mb-1 font-semibold">Documento</label>
                   <input
                     type="text"
                     name="document"
                     value={values.document}
-                    onChange={(e) =>
-                      setFieldValue("document", e.target.value === "" ? "" : Number(e.target.value))
-                    }
+                    onChange={handleChange}
                     onBlur={handleBlur}
                     className="w-full border rounded p-2"
                   />
@@ -381,7 +408,7 @@ const FormRegister: React.FC = () => {
             {step === 3 && (
               <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label>Nombre Agencia</label>
+                  <label className="block mb-1 font-semibold">Nombre Agencia</label>
                   <input
                     type="text"
                     name="agencyName"
@@ -395,7 +422,7 @@ const FormRegister: React.FC = () => {
                   )}
                 </div>
                 <div>
-                  <label>Descripción Agencia</label>
+                  <label className="block mb-1 font-semibold">Descripción Agencia</label>
                   <input
                     type="text"
                     name="agencyDescription"
@@ -409,7 +436,7 @@ const FormRegister: React.FC = () => {
                   )}
                 </div>
                 <div className="md:col-span-2">
-                  <label>URL (slug)</label>
+                  <label className="block mb-1 font-semibold">URL (slug)</label>
                   <input
                     type="text"
                     name="slug"
@@ -434,7 +461,14 @@ const FormRegister: React.FC = () => {
               {step < 3 && (
                 <button
                   type="button"
-                  onClick={handleNext}
+                  onClick={async () => {
+                    const formErrors = await validateForm();
+                    if (validateStepFields(step, values, formErrors)) {
+                      setStep((prev) => prev + 1);
+                    } else {
+                      toast.error("Por favor, completá correctamente los campos antes de continuar.");
+                    }
+                  }}
                   className="ml-auto px-4 py-2 bg-[#A62F55] text-white rounded hover:bg-[#922749] cursor-pointer"
                 >
                   Siguiente
