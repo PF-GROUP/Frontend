@@ -16,14 +16,15 @@ import ReportarError from '@/components/DashBoard-Agente/ComponentesDashboard/so
 import Seguridad from '@/components/DashBoard-Agente/ComponentesDashboard/seguridad/Seguridad';
 import { getAgente } from "@/services/agenteGet";
 import { useEffect, useState } from 'react';
+import { useAuthContext } from '../../../context/authContext';
 
-export default function DashboardPage() {
-
+export default function DashboardPage() { 
+  const {user} = useAuthContext();
   const [agenteNombre, setAgenteNombre] = useState<string>("Cargando...");
  useEffect(() => {
     const fetchAgente = async () => {
       try {
-        const response = await getAgente(1);
+        const response = await getAgente(user?.id || 1); 
         // Asumiendo que el nombre viene en response.data.name
         setAgenteNombre(response.name || "Nombre no disponible");
         // Si la URL de imagen viene también, podrías setear profileImageUrl aquí:

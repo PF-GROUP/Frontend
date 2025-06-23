@@ -54,7 +54,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const ResetUserData = () => {
         setUser(null);
         setIsAuth(false);
-        console.log("borrando cookie aaaa");
     };
 
     return (
