@@ -77,7 +77,7 @@ const FotoPerfil: React.FC = () => {
   };
 
   return (
-    <div className="w-full px-4 sm:px-6 lg:px-0 flex flex-col items-center justify-center gap-6">
+    <div className="w-full p-4  sm:px-6 lg:px-0 flex flex-col items-center justify-center gap-6 rounded-lg shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
       <h2 className="text-2xl sm:text-3xl font-bold text-[#230c89] mb-6 text-center">
         Seleccione foto de Perfil
       </h2>
