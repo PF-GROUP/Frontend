@@ -9,8 +9,15 @@ import { Formik } from "formik";
 import RegisterUserDtoFront from "@/interfaces/registerDto";
 import Image from "next/image";
 import { useAuthContext } from "../../../../context/authContext";
+import dynamic from "next/dynamic";
+
 
 const FormRegister: React.FC = () => {
+
+    const GoogleRegister = dynamic(
+      () => import('../../../components/FormRegister/googleButton'),
+      { ssr: false }
+    );
     const router = useRouter();
     const { SaveUserData} = useAuthContext()
     const handleOnSubmit = async (values: RegisterUserDtoFront) => {
@@ -205,6 +212,10 @@ const FormRegister: React.FC = () => {
                     </form>
                 )}
             </Formik>
+            <div className="flex flex-col items-center justify-center mt-4 space-y-2">
+                <p className="text-black text-base md:text-xl">O regístrate con:</p>
+                <GoogleRegister />
+            </div>
         </>
     )
 };
