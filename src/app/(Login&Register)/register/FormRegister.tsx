@@ -9,6 +9,9 @@ import Image from "next/image";
 import { UserIcon, IdCardIcon, HomeIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 
+import { useAuthContext } from "@/context/AuthContext"; // Importás el contexto
+import apiService from "@/services/apiService"; // Asegurate que esté importado
+
 const GoogleRegisterButton = dynamic(
   () => import("../../../components/FormRegister/googleButton"),
   { ssr: false }
@@ -124,6 +127,8 @@ const FormRegister: React.FC = () => {
   } | null>(null);
   const router = useRouter();
 
+  const { SaveUserData } = useAuthContext(); // Uso del contexto para guardar usuario
+
   const validateStepFields = (
     step: number,
     values: RegisterUserDtoFront,
@@ -159,9 +164,19 @@ const FormRegister: React.FC = () => {
   };
 
   const handleSubmit = async (values: RegisterUserDtoFront) => {
-    console.log("Datos enviados:", values);
-    toast.success("Formulario enviado correctamente");
-    router.push("/stripe");
+    try {
+      // Aquí mandás la info al backend para registrar usuario
+      const res = await apiService.post("/auth/register", values);
+
+      // Guardás el usuario en el contexto para loguearlo automáticamente
+      SaveUserData({ user: res.user });
+
+      toast.success("Formulario enviado correctamente");
+      router.push("/stripe");
+    } catch (error) {
+      toast.error("Error al registrar usuario");
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -241,8 +256,9 @@ const FormRegister: React.FC = () => {
                       readOnly={!!googleData}
                       className={`w-full border rounded p-2 ${googleData ? "bg-gray-100 cursor-not-allowed" : ""}`}
                     />
-                    {touched.name && errors.name && <p className="text-red-500 text-sm">{
-        errors.name}</p>}
+                    {touched.name && errors.name && (
+                      <p className="text-red-500 text-sm">{errors.name}</p>
+                    )}
                   </div>
                   <div>
                     <label>Apellido</label>
@@ -254,8 +270,9 @@ const FormRegister: React.FC = () => {
                       readOnly={!!googleData}
                       className={`w-full border rounded p-2 ${googleData ? "bg-gray-100 cursor-not-allowed" : ""}`}
                     />
-                    {touched.surname && errors.surname && <p className="text-red-500 text-sm">{
-        errors.surname}</p>}
+                    {touched.surname && errors.surname && (
+                      <p className="text-red-500 text-sm">{errors.surname}</p>
+                    )}
                   </div>
                 </div>
                 <div>
@@ -269,7 +286,9 @@ const FormRegister: React.FC = () => {
                     readOnly={!!googleData}
                     className={`w-full border rounded p-2 ${googleData ? "bg-gray-100 cursor-not-allowed" : ""}`}
                   />
-                  {touched.email && errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+                  {touched.email && errors.email && (
+                    <p className="text-red-500 text-sm">{errors.email}</p>
+                  )}
                 </div>
                 <div>
                   <label>Contraseña</label>
@@ -312,7 +331,9 @@ const FormRegister: React.FC = () => {
                     onBlur={handleBlur}
                     className="w-full border rounded p-2"
                   />
-                  {touched.phone && errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
+                  {touched.phone && errors.phone && (
+                    <p className="text-red-500 text-sm">{errors.phone}</p>
+                  )}
                 </div>
                 <div>
                   <label>Documento</label>
@@ -326,7 +347,9 @@ const FormRegister: React.FC = () => {
                     onBlur={handleBlur}
                     className="w-full border rounded p-2"
                   />
-                  {touched.document && errors.document && <p className="text-red-500 text-sm">{errors.document}</p>}
+                  {touched.document && errors.document && (
+                    <p className="text-red-500 text-sm">{errors.document}</p>
+                  )}
                 </div>
               </div>
             )}
@@ -343,7 +366,9 @@ const FormRegister: React.FC = () => {
                     onBlur={handleBlur}
                     className="w-full border rounded p-2"
                   />
-                  {touched.agencyName && errors.agencyName && <p className="text-red-500 text-sm">{errors.agencyName}</p>}
+                  {touched.agencyName && errors.agencyName && (
+                    <p className="text-red-500 text-sm">{errors.agencyName}</p>
+                  )}
                 </div>
                 <div>
                   <label>Descripción Agencia</label>
@@ -355,7 +380,9 @@ const FormRegister: React.FC = () => {
                     onBlur={handleBlur}
                     className="w-full border rounded p-2"
                   />
-                  {touched.agencyDescription && errors.agencyDescription && <p className="text-red-500 text-sm">{errors.agencyDescription}</p>}
+                  {touched.agencyDescription && errors.agencyDescription && (
+                    <p className="text-red-500 text-sm">{errors.agencyDescription}</p>
+                  )}
                 </div>
                 <div className="md:col-span-2">
                   <label>URL (slug)</label>
@@ -396,7 +423,6 @@ const FormRegister: React.FC = () => {
                   className="ml-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer"
                 >
                   Crear cuenta
-
                 </button>
               )}
             </div>
