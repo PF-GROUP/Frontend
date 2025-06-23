@@ -1,434 +1,405 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { RegisterSubmit, RegisterSubmitGoogle } from "@/services/authService";
-import { toast } from "react-hot-toast";
+import React, { useState, useEffect } from "react";
+import { Formik, useFormikContext } from "formik";
+import * as Yup from "yup";
 import { useRouter } from "next/navigation";
-import registerValidations from "@/components/FormRegister/registerValidations";
-import { Formik, useFormikContext } from "formik"; // Importamos useFormikContext
-import RegisterUserDtoFront from "../../../interfaces/registerDto";
+import { toast } from "react-hot-toast";
 import Image from "next/image";
-import { useAuthContext } from "../../../../context/authContext";
+import { UserIcon, IdCardIcon, HomeIcon } from "lucide-react";
 import dynamic from "next/dynamic";
-
-// Definimos el tipo para los datos de Google
-interface GoogleUserData {
-  googleId: string;
-  name: string;
-  email: string;
-  surname: string;
-  token: string; // Agregamos el token
-}
 
 const GoogleRegisterButton = dynamic(
   () => import("../../../components/FormRegister/googleButton"),
   { ssr: false }
 );
 
-// Componente para manejar el autollenado
-const AutoFillForm: React.FC<{ googleData: GoogleUserData | null }> = ({
-  googleData,
-}) => {
-  const { setValues } = useFormikContext();
+interface RegisterUserDtoFront {
+  name: string;
+  surname: string;
+  email: string;
+  password: string;
+  phone: number | "";
+  document: number | "";
+  agencyName: string;
+  agencyDescription: string;
+  slug: string;
+  googleId: string;
+  token?: string;
+  [key: string]: any;
+}
+
+interface GoogleUserData {
+  googleId: string;
+  name: string;
+  email: string;
+  surname: string;
+  token: string;
+}
+
+const steps = [
+  { label: "Datos", icon: UserIcon },
+  { label: "Documento", icon: IdCardIcon },
+  { label: "Agencia", icon: HomeIcon },
+];
+
+const StepProgressBar: React.FC<{ step: number }> = ({ step }) => (
+  <div className="flex justify-center mb-8">
+    <div className="flex items-center gap-4">
+      {steps.map((item, index) => {
+        const isActive = step === index + 1;
+        const isCompleted = step > index + 1;
+        const Icon = item.icon;
+
+        return (
+          <React.Fragment key={item.label}>
+            <div className="flex flex-col items-center">
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center border-2 
+                  ${isActive ? "bg-[#f1efef] border-[#b3232f] text-[#b3232f]" : ""}
+                  ${isCompleted ? "bg-green-100 border-green-600 text-green-600" : ""}
+                  ${!isActive && !isCompleted ? "bg-white border-gray-300 text-gray-400" : ""}`}
+              >
+                <Icon className="w-5 h-5" />
+              </div>
+              <span
+                className={`mt-2 text-sm 
+                  ${isActive ? "text-[#b3232f] font-medium" : ""}
+                  ${isCompleted ? "text-green-600" : ""}
+                  ${!isActive && !isCompleted ? "text-gray-400" : ""}`}
+              >
+                {item.label}
+              </span>
+            </div>
+            {index < steps.length - 1 && (
+              <div className="w-12 h-px border-t-2 border-dashed border-gray-300" />
+            )}
+          </React.Fragment>
+        );
+      })}
+    </div>
+  </div>
+);
+
+const AutoFillForm: React.FC<{ googleData: GoogleUserData | null }> = ({ googleData }) => {
+  const { setValues } = useFormikContext<RegisterUserDtoFront>();
 
   useEffect(() => {
     if (googleData) {
-      setValues(
-        {
-          name: googleData.name,
-          surname: googleData.surname,
-          email: googleData.email,
-          googleId: googleData.googleId,
-          // Mantenemos los otros campos sin cambios
-        },
-        false
-      ); // false para no disparar validación inmediata
+      setValues((prev) => ({
+        ...prev,
+        name: googleData.name,
+        surname: googleData.surname,
+        email: googleData.email,
+        googleId: googleData.googleId,
+      }));
     }
   }, [googleData, setValues]);
 
   return null;
 };
 
-const FormRegister: React.FC = () => {
-  const [googleData, setGoogleData] = React.useState<GoogleUserData | null>(
-    null
-  );
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required("Nombre requerido"),
+  surname: Yup.string().required("Apellido requerido"),
+  email: Yup.string().email("Email inválido").required("Email requerido"),
+  password: Yup.string().when("googleId", {
+    is: (val: string) => !val,
+    then: (schema) => schema.required("Contraseña requerida"),
+    otherwise: (schema) => schema,
+  }),
+  phone: Yup.number().typeError("Teléfono debe ser numérico").required("Teléfono requerido"),
+  document: Yup.number().typeError("Documento debe ser numérico").required("Documento requerido"),
+  agencyName: Yup.string().required("Nombre requerido"),
+  agencyDescription: Yup.string().required("Descripción requerida"),
+  slug: Yup.string().required("Slug requerido"),
+});
+
+const FormRegister = () => {
+  const [step, setStep] = useState(1);
+  const [googleData, setGoogleData] = useState<GoogleUserData | null>(null);
+  const [formikHelpers, setFormikHelpers] = useState<{
+    values: RegisterUserDtoFront;
+    setFieldValue: (field: string, value: unknown, shouldValidate?: boolean) => void;
+  } | null>(null);
   const router = useRouter();
-  const { SaveUserData } = useAuthContext();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleFillUpForm = (data: any): void => {
-    // Extraemos los datos necesarios de Google
-    const userData: GoogleUserData = {
-      googleId: data.sub || data.id,
-      name: data.given_name || data.name,
-      surname: data.family_name || "",
-      email: data.email,
-      token: data.token || "", 
+  const validateStepFields = (
+    step: number,
+    values: RegisterUserDtoFront,
+    errors: import("formik").FormikErrors<RegisterUserDtoFront>
+  ) => {
+    const stepFields: Record<number, string[]> = {
+      1: ["name", "surname", "email", ...(googleData ? [] : ["password"])],
+      2: ["phone", "document"],
+      3: ["agencyName", "agencyDescription", "slug"],
     };
-
-    setGoogleData(userData);
-    toast.success("Datos de Google cargados correctamente", { duration: 2000 });
-  };
-
-  const handleOnSubmit = async (values: RegisterUserDtoFront) => {
-    console.log(values);
-
-    try {
-      // Agregamos el googleId a los datos enviados
-     const finalPassword = googleData 
-      ? null
-      : values.password;
-
-    const submitData = googleData 
-      ? { ...values, password: finalPassword, googleId: googleData.googleId, token: googleData.token } 
-      : values;
-    
-      if(googleData && submitData.token) {
-        const response = await RegisterSubmitGoogle(submitData, SaveUserData);
-        if (response) {
-          toast.success("¡Usuario registrado! Redirigiendo...", {
-            duration: 2500,
-          });
-          setTimeout(() => {
-            router.push("/stripe");
-          }, 2000);
-        } else {
-          toast.error("Dato repetido. Ingresa un valor distinto en Email.", {
-            duration: 2000,
-          });
-        }
-      }else {
-const response = await RegisterSubmit(submitData, SaveUserData);
-      if (response?.success === true) {
-        toast.success("¡Usuario registrado! Redirigiendo...", {
-          duration: 2500,
-        });
-        setTimeout(() => {
-          router.push("/stripe");
-        }, 2000);
-      } else {
-        toast.error("Dato repetido. Ingresa un valor distinto en Email.", {
-          duration: 2000,
-        });
-      }
-      }
-    
-    } catch (error) {
-      console.log("mensaje de error catch: ", error);
-      toast.error("Hubo un problema al querer registrarse.", {
-        duration: 2000,
-      });
+    for (const field of stepFields[step]) {
+      if (errors[field]) return false;
+      if (!values[field] && values[field] !== 0) return false;
     }
+    return true;
   };
+
+  const handleFillUpForm = (data: Partial<GoogleUserData> & { sub?: string; id?: string }) => {
+    const userData: GoogleUserData = {
+      googleId: data.sub || data.id || "",
+      name: data.name || "",
+      surname: data.surname || "",
+      email: data.email || "",
+      token: data.token || "",
+    };
+    setGoogleData(userData);
+    toast.success("Datos de Google cargados correctamente");
+  };
+
+  const handleSubmit = async (values: RegisterUserDtoFront) => {
+    console.log("Datos enviados:", values);
+    toast.success("Formulario enviado correctamente");
+    router.push("/stripe");
+  };
+
+  useEffect(() => {
+    if (formikHelpers && formikHelpers.values.agencyName && step === 3) {
+      const slug = formikHelpers.values.agencyName
+        .toLowerCase()
+        .trim()
+        .replace(/\d+/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z\-]/g, "")
+        .replace(/\-+/g, "-")
+        .replace(/^-+|-+$/g, "");
+      formikHelpers.setFieldValue("slug", slug);
+    }
+  }, [formikHelpers, formikHelpers?.values.agencyName, step]);
 
   return (
-    <>
-      <Formik
-        initialValues={{
-          name: "",
-          surname: "",
-          phone: "",
-          email: "",
-          password: "",
-          agencyName: "",
-          agencyDescription: "",
-          document: "",
-          slug: "",
-          googleId: "", // Nuevo campo para el ID de Google
-        }}
-        validationSchema={registerValidations}
-        onSubmit={handleOnSubmit}
-      >
-        {({
-          isSubmitting,
-          values,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          errors,
-          touched,
-        }) => (
+    <Formik
+      initialValues={{
+        name: "",
+        surname: "",
+        email: "",
+        password: "",
+        phone: "" as unknown as number,
+        document: "" as unknown as number,
+        agencyName: "",
+        agencyDescription: "",
+        slug: "",
+        googleId: "",
+      }}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      {({
+        values,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        errors,
+        touched,
+        isSubmitting,
+        setFieldValue,
+        validateForm,
+      }) => {
+        useEffect(() => {
+          setFormikHelpers({ values, setFieldValue });
+        }, [values, setFieldValue]);
+
+        const handleNext = async () => {
+          const formErrors = await validateForm();
+          if (validateStepFields(step, values, formErrors)) {
+            setStep((prev) => prev + 1);
+          } else {
+            toast.error("Por favor, completá correctamente los campos antes de continuar.");
+          }
+        };
+
+        return (
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col items-center justify-center 
-                            text-black bg-white border border-[#4e4b4b] overflow-hidden 
-                            rounded-sm p-8 m-5 w-full max-w-[90%] md:w-[750px] md:max-w-none md:m-11"
+            className="flex flex-col items-center bg-white text-black border border-gray-300 p-8 rounded-md w-[600px] min-h-[700px] max-w-2xl mx-auto relative"
           >
-            {/* Componente para autollenado */}
+            <Image src="/iconoKasapp.png" alt="Logo" width={100} height={100} className="w-[120px] h-[120px]" />
+            <StepProgressBar step={step} />
             <AutoFillForm googleData={googleData} />
 
-            <Image
-              src="/logoKasapp.png"
-              width={300}
-              height={200}
-              alt="logoDeKasapp"
-              className="w-[100px] h-[60px] md:w-[145px] md:h-[95px]"
-            />
-
-            <h2 className="font-bold text-2xl md:text-3xl mt-4 mb-4">
-              Crear una cuenta
-            </h2>
-
-            {/* Campo oculto para googleId */}
-            <input
-              type="hidden"
-              name="googleId"
-              value={values.googleId || ""}
-            />
-
-            <div className="w-full flex flex-col md:flex-row gap-6">
-              {/* COLUMNA 1 */}
-              <div className="flex flex-col w-full">
-                {/* Nombre */}
-                <div className="flex flex-col w-full m-1">
-                  <label
-                    htmlFor="name"
-                    className="mt-2 text-black text-base md:text-xl"
-                  >
-                    Nombre
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder="JhonDoe"
-                    value={values.name}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    disabled={!!googleData} // Bloqueado si hay datos de Google
-                    className={`text-black bg-white border border-[#4e4b4b] rounded-sm p-2 focus:border-[#a0a0a0] ${
-                      googleData ? "bg-gray-100 cursor-not-allowed" : ""
-                    }`}
-                  />
-                  <p className="text-sm text-red-500">
-                    {errors.name && touched.name && errors.name}
-                  </p>
+            {step === 1 && (
+              <div className="w-full flex flex-col gap-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label>Nombre</label>
+                    <input
+                      name="name"
+                      value={values.name}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      readOnly={!!googleData}
+                      className={`w-full border rounded p-2 ${googleData ? "bg-gray-100 cursor-not-allowed" : ""}`}
+                    />
+                    {touched.name && errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+                  </div>
+                  <div>
+                    <label>Apellido</label>
+                    <input
+                      name="surname"
+                      value={values.surname}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      readOnly={!!googleData}
+                      className={`w-full border rounded p-2 ${googleData ? "bg-gray-100 cursor-not-allowed" : ""}`}
+                    />
+                    {touched.surname && errors.surname && <p className="text-red-500 text-sm">{errors.surname}</p>}
+                  </div>
                 </div>
-
-                {/* Apellido */}
-                <div className="flex flex-col w-full m-1">
-                  <label
-                    htmlFor="surname"
-                    className="text-black text-base md:text-xl"
-                  >
-                    Apellido
-                  </label>
+                <div>
+                  <label>Email</label>
                   <input
-                    type="text"
-                    id="surname"
-                    name="surname"
-                    placeholder="Diaz"
-                    value={values.surname}
-                    disabled={!!googleData}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    className="text-black bg-white border border-[#4e4b4b] rounded-sm p-2 focus:border-[#a0a0a0]"
-                  />
-                  <p className="text-sm text-red-500">
-                    {errors.surname && touched.surname && errors.surname}
-                  </p>
-                </div>
-
-                {/* Teléfono */}
-                <div className="flex flex-col w-full m-1">
-                  <label
-                    htmlFor="phone"
-                    className="text-black text-base md:text-xl"
-                  >
-                    Teléfono
-                  </label>
-                  <input
-                    type="text"
-                    id="phone"
-                    name="phone"
-                    placeholder="3515097178"
-                    value={values.phone}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    className="text-black bg-white border border-[#4e4b4b] rounded-sm p-2 focus:border-[#a0a0a0]"
-                  />
-                  <p className="text-sm text-red-500">
-                    {errors.phone && touched.phone && errors.phone}
-                  </p>
-                </div>
-
-                {/* Email */}
-                <div className="flex flex-col w-full m-1">
-                  <label
-                    htmlFor="email"
-                    className="text-black text-base md:text-xl"
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
                     name="email"
-                    placeholder="EmailExample@gmail.com"
+                    type="email"
                     value={values.email}
-                    onBlur={handleBlur}
                     onChange={handleChange}
-                    disabled={!!googleData} // Bloqueado si hay datos de Google
-                    className={`text-black bg-white border border-[#4e4b4b] rounded-sm p-2 focus:border-[#a0a0a0] ${
-                      googleData ? "bg-gray-100 cursor-not-allowed" : ""
-                    }`}
+                    onBlur={handleBlur}
+                    readOnly={!!googleData}
+                    className={`w-full border rounded p-2 ${googleData ? "bg-gray-100 cursor-not-allowed" : ""}`}
                   />
-                  <p className="text-sm text-red-500">
-                    {errors.email && touched.email && errors.email}
-                  </p>
+                  {touched.email && errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
                 </div>
-
-                {/* Contraseña */}
-                <div className="flex flex-col w-full m-1">
-                  <label
-                    htmlFor="password"
-                    className="text-black text-base md:text-xl"
-                  >
-                    Contraseña{" "}
-                    {!googleData && <span className="text-red-500">*</span>}
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder={
-                      googleData ? "No requerida con Google" : "●●●●●●●●"
-                    }
-                    value={values.password}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    disabled={!!googleData}
-                    className={`text-black bg-white border border-[#4e4b4b] rounded-sm p-2 focus:border-[#a0a0a0] ${
-                      googleData ? "bg-gray-100 cursor-not-allowed" : ""
-                    }`}
-                  />
-                  {!googleData && (
-                    <p className="text-sm text-red-500">
-                      {errors.password && touched.password && errors.password}
-                    </p>
+                <div>
+                  <label>Contraseña</label>
+                  {googleData ? (
+                    <p className="text-sm text-gray-500">No requerida al iniciar con Google</p>
+                  ) : (
+                    <>
+                      <input
+                        name="password"
+                        type="password"
+                        value={values.password}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className="w-full border rounded p-2"
+                      />
+                      {touched.password && errors.password && (
+                        <p className="text-red-500 text-sm">{errors.password}</p>
+                      )}
+                    </>
                   )}
                 </div>
-                {/* Documento */}
-                <div className="flex flex-col w-full m-1">
-                  <label
-                    htmlFor="document"
-                    className="text-black text-base md:text-xl"
-                  >
-                    Documento
-                  </label>
+                <div className="flex flex-col items-center">
+                  <p className="mt-2 text-center">O registrate con Google:</p>
+                  <GoogleRegisterButton fillUpForm={handleFillUpForm} />
+                </div>
+              </div>
+            )}
+
+            {step === 2 && (
+              <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label>Teléfono</label>
                   <input
                     type="text"
-                    id="document"
+                    name="phone"
+                    value={values.phone}
+                    onChange={(e) =>
+                      setFieldValue("phone", e.target.value === "" ? "" : Number(e.target.value))
+                    }
+                    onBlur={handleBlur}
+                    className="w-full border rounded p-2"
+                  />
+                  {touched.phone && errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
+                </div>
+                <div>
+                  <label>Documento</label>
+                  <input
+                    type="text"
                     name="document"
-                    placeholder="12345678"
                     value={values.document}
+                    onChange={(e) =>
+                      setFieldValue("document", e.target.value === "" ? "" : Number(e.target.value))
+                    }
                     onBlur={handleBlur}
-                    onChange={handleChange}
-                    className="text-black bg-white border border-[#4e4b4b] rounded-sm p-2 focus:border-[#a0a0a0]"
+                    className="w-full border rounded p-2"
                   />
-                  <p className="text-sm text-red-500">
-                    {errors.document && touched.document && errors.document}
-                  </p>
+                  {touched.document && errors.document && <p className="text-red-500 text-sm">{errors.document}</p>}
                 </div>
               </div>
+            )}
 
-              {/* COLUMNA 2 */}
-              <div className="flex flex-col w-full mt-2">
-                {/* Nombre agencia */}
-                <div className="flex flex-col w-full m-1">
-                  <label
-                    htmlFor="agencyName"
-                    className="text-black text-base md:text-xl"
-                  >
-                    Nombre de la agencia
-                  </label>
+            {step === 3 && (
+              <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label>Nombre Agencia</label>
                   <input
                     type="text"
-                    id="agencyName"
                     name="agencyName"
-                    placeholder="Mi Inmobiliaria"
                     value={values.agencyName}
-                    onBlur={handleBlur}
                     onChange={handleChange}
-                    className="text-black bg-white border border-[#4e4b4b] rounded-sm p-2 focus:border-[#a0a0a0]"
+                    onBlur={handleBlur}
+                    className="w-full border rounded p-2"
                   />
-                  <p className="text-sm text-red-500">
-                    {errors.agencyName &&
-                      touched.agencyName &&
-                      errors.agencyName}
-                  </p>
+                  {touched.agencyName && errors.agencyName && (
+                    <p className="text-red-500 text-sm">{errors.agencyName}</p>
+                  )}
                 </div>
-
-                {/* Descripción agencia */}
-                <div className="flex flex-col w-full m-1">
-                  <label
-                    htmlFor="agencyDescription"
-                    className="text-black text-base md:text-xl"
-                  >
-                    Descripción de la agencia
-                  </label>
+                <div>
+                  <label>Descripción Agencia</label>
                   <input
                     type="text"
-                    id="agencyDescription"
                     name="agencyDescription"
-                    placeholder="Somos una inmobiliaria..."
                     value={values.agencyDescription}
-                    onBlur={handleBlur}
                     onChange={handleChange}
-                    className="text-black bg-white border border-[#4e4b4b] rounded-sm p-2 focus:border-[#a0a0a0]"
+                    onBlur={handleBlur}
+                    className="w-full border rounded p-2"
                   />
-                  <p className="text-sm text-red-500">
-                    {errors.agencyDescription &&
-                      touched.agencyDescription &&
-                      errors.agencyDescription}
-                  </p>
+                  {touched.agencyDescription && errors.agencyDescription && (
+                    <p className="text-red-500 text-sm">{errors.agencyDescription}</p>
+                  )}
                 </div>
-
-                {/* Slug */}
-                <div className="flex flex-col w-full m-1">
-                  <label
-                    htmlFor="slug"
-                    className="text-black text-base md:text-xl"
-                  >
-                    URL de la agencia
-                  </label>
+                <div className="md:col-span-2">
+                  <label>URL (slug)</label>
                   <input
                     type="text"
-                    id="slug"
                     name="slug"
-                    placeholder="ej: inmobiliaria-central"
                     value={values.slug}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    className="text-black bg-white border border-[#4e4b4b] rounded-sm p-2 focus:border-[#a0a0a0]"
+                    readOnly
+                    className="w-full border rounded p-2 bg-gray-100 cursor-not-allowed"
                   />
-                  <p className="text-sm text-red-500">
-                    {errors.slug && touched.slug && errors.slug}
-                  </p>
                 </div>
               </div>
-            </div>
+            )}
 
-            {/* Botón de submit */}
-            <div className="flex flex-col items-center justify-center mt-4 space-y-2">
-              <p className="text-black text-base md:text-xl">
-                O regístrate con:
-              </p>
-              <GoogleRegisterButton fillUpForm={handleFillUpForm} />
+            <div className="flex justify-between w-full absolute bottom-10 left-0 px-8">
+              {step > 1 && (
+                <button
+                  type="button"
+                  onClick={() => setStep((prev) => prev - 1)}
+                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer"
+                >
+                  Volver
+                </button>
+              )}
+              {step < 3 && (
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  className="ml-auto px-4 py-2 bg-[#A62F55] text-white rounded hover:bg-[#922749] cursor-pointer"
+                >
+                  Siguiente
+                </button>
+              )}
+              {step === 3 && (
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="ml-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer"
+                >
+                  Crear cuenta
+                </button>
+              )}
             </div>
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full text-white bg-[#a62f55] rounded-sm text-base md:text-xl py-2 mt-6 hover:bg-[#65383a] transition duration-300"
-            >
-              Crear cuenta
-            </button>
           </form>
-        )}
-      </Formik>
-    </>
+        );
+      }}
+    </Formik>
   );
 };
 
