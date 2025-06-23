@@ -32,8 +32,8 @@ interface RegisterUserDtoFront {
 interface GoogleUserData {
   googleId: string;
   name: string;
-  email: string;
   surname: string;
+  email: string;
   token: string;
 }
 
@@ -115,7 +115,7 @@ const validationSchema = Yup.object().shape({
   slug: Yup.string().required("Slug requerido"),
 });
 
-const FormRegister = () => {
+const FormRegister: React.FC = () => {
   const [step, setStep] = useState(1);
   const [googleData, setGoogleData] = useState<GoogleUserData | null>(null);
   const [formikHelpers, setFormikHelpers] = useState<{
@@ -142,13 +142,18 @@ const FormRegister = () => {
   };
 
   const handleFillUpForm = (data: Partial<GoogleUserData> & { sub?: string; id?: string }) => {
+    const fullName = data.name || "";
+    const [firstName, ...rest] = fullName.trim().split(" ");
+    const lastName = rest.join(" ");
+
     const userData: GoogleUserData = {
       googleId: data.sub || data.id || "",
-      name: data.name || "",
-      surname: data.surname || "",
+      name: firstName || "",
+      surname: lastName || "",
       email: data.email || "",
       token: data.token || "",
     };
+
     setGoogleData(userData);
     toast.success("Datos de Google cargados correctamente");
   };
@@ -236,7 +241,8 @@ const FormRegister = () => {
                       readOnly={!!googleData}
                       className={`w-full border rounded p-2 ${googleData ? "bg-gray-100 cursor-not-allowed" : ""}`}
                     />
-                    {touched.name && errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+                    {touched.name && errors.name && <p className="text-red-500 text-sm">{
+        errors.name}</p>}
                   </div>
                   <div>
                     <label>Apellido</label>
@@ -248,7 +254,8 @@ const FormRegister = () => {
                       readOnly={!!googleData}
                       className={`w-full border rounded p-2 ${googleData ? "bg-gray-100 cursor-not-allowed" : ""}`}
                     />
-                    {touched.surname && errors.surname && <p className="text-red-500 text-sm">{errors.surname}</p>}
+                    {touched.surname && errors.surname && <p className="text-red-500 text-sm">{
+        errors.surname}</p>}
                   </div>
                 </div>
                 <div>
@@ -336,9 +343,7 @@ const FormRegister = () => {
                     onBlur={handleBlur}
                     className="w-full border rounded p-2"
                   />
-                  {touched.agencyName && errors.agencyName && (
-                    <p className="text-red-500 text-sm">{errors.agencyName}</p>
-                  )}
+                  {touched.agencyName && errors.agencyName && <p className="text-red-500 text-sm">{errors.agencyName}</p>}
                 </div>
                 <div>
                   <label>Descripción Agencia</label>
@@ -350,9 +355,7 @@ const FormRegister = () => {
                     onBlur={handleBlur}
                     className="w-full border rounded p-2"
                   />
-                  {touched.agencyDescription && errors.agencyDescription && (
-                    <p className="text-red-500 text-sm">{errors.agencyDescription}</p>
-                  )}
+                  {touched.agencyDescription && errors.agencyDescription && <p className="text-red-500 text-sm">{errors.agencyDescription}</p>}
                 </div>
                 <div className="md:col-span-2">
                   <label>URL (slug)</label>
@@ -393,6 +396,7 @@ const FormRegister = () => {
                   className="ml-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer"
                 >
                   Crear cuenta
+
                 </button>
               )}
             </div>
