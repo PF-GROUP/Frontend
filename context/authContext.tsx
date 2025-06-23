@@ -4,7 +4,6 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { IUser } from "../interface/User";
 import apiService from "@/services/apiService";
 
-
  
 interface AuthContextType {
     user: IUser | null;

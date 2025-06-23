@@ -69,8 +69,8 @@ const MiSitio: React.FC = () => {
       };
 
       // Llamada al servicio que guarda los colores y URLs en backend
-      if(!user) return;
-      const response = await editarColoresAgencia(payload, user?.agencyId:null);
+      if (!user || typeof user.agencyId !== "number") return;
+      const response = await editarColoresAgencia(payload, user.agencyId);
       console.log("🧠 response completo:", response);
 
       if (response && response.id) {

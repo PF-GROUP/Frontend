@@ -77,7 +77,8 @@ const SidebarDashboard: React.FC = () => {
         >
           {/* Header Usuario */}
           <div className="flex items-center justify-start border-b border-gray-400 pb-4 md:mr-6">
-            <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-blue-600">
+            
+            <Link href={"/DashboardAgente?view=cambiar-foto-perfil"} className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-blue-600">
               {profileImageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -90,7 +91,9 @@ const SidebarDashboard: React.FC = () => {
                   <User className="text-white" size={42} />
                 </div>
               )}
-            </div>
+            </Link>
+
+
             <div className="flex flex-col items-start justify-start text-center ml-3">
               <h2 className="font-bold text-base md:text-xl">{agenteNombre}</h2>
               <p className="font-sans text-sm">Agente inmobiliario</p>
