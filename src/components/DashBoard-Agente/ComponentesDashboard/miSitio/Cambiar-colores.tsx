@@ -7,9 +7,11 @@ import { colorValidationSchema } from "../../validacionesDashBoard/miSitio";
 import { editarColoresAgencia } from "@/services/editarColores";
 import { IColores } from "../../../../../interface/DashboardAgente/ColoresDTO";
 import { useRouter } from "next/navigation";
+import { useAuthContext } from "../../../../../context/authContext"; 
 
 const MiSitio: React.FC = () => {
   const router = useRouter();
+  const { user } = useAuthContext(); // 
 
   // Estados para preview de las imágenes en la UI
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -67,7 +69,8 @@ const MiSitio: React.FC = () => {
       };
 
       // Llamada al servicio que guarda los colores y URLs en backend
-      const response = await editarColoresAgencia(payload);
+      if(!user) return;
+      const response = await editarColoresAgencia(payload, user?.agencyId:null);
       console.log("🧠 response completo:", response);
 
       if (response && response.id) {
