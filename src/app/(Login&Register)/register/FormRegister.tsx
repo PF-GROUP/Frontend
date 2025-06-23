@@ -173,7 +173,6 @@ const FormRegister: React.FC = () => {
     toast.success("Datos de Google cargados correctamente");
   };
 
-  // Enviar formulario (mantengo llamadas originales)
   const handleSubmit = async (values: RegisterUserDtoFront) => {
     try {
       const finalPassword = googleData ? null : values.password;
@@ -219,17 +218,17 @@ const FormRegister: React.FC = () => {
     }
   };
 
-  // Auto generar slug solo en paso 3 y sin números ni espacios ni caracteres especiales
+
   useEffect(() => {
     if (formikHelpers && formikHelpers.values.agencyName && step === 3) {
       const slug = formikHelpers.values.agencyName
         .toLowerCase()
         .trim()
-        .replace(/\d+/g, "") // elimina números
-        .replace(/\s+/g, "-") // espacios a guion
-        .replace(/[^a-z\-]/g, "") // elimina caracteres especiales
-        .replace(/\-+/g, "-") // guiones repetidos
-        .replace(/^-+|-+$/g, ""); // guiones al inicio o final
+        .replace(/\d+/g, "") 
+        .replace(/\s+/g, "-") 
+        .replace(/[^a-z\-]/g, "") 
+        .replace(/\-+/g, "-") 
+        .replace(/^-+|-+$/g, ""); 
       formikHelpers.setFieldValue("slug", slug);
     }
   }, [formikHelpers, formikHelpers?.values.agencyName, step]);
@@ -266,14 +265,7 @@ const FormRegister: React.FC = () => {
           setFormikHelpers({ values, setFieldValue });
         }, [values, setFieldValue]);
 
-        const handleNext = async () => {
-          const formErrors = await validateForm();
-          if (validateStepFields(step, values, formErrors)) {
-            setStep((prev) => prev + 1);
-          } else {
-            toast.error("Por favor, completá correctamente los campos antes de continuar.");
-          }
-        };
+        
 
         return (
           <form
@@ -281,7 +273,7 @@ const FormRegister: React.FC = () => {
             className="flex flex-col items-center bg-white text-black border border-gray-300 p-8 rounded-md w-[600px] min-h-[700px] max-w-2xl mx-auto relative"
           >
             <Image
-              src="/logoKasapp.png"
+              src="/iconoKasapp.png"
               alt="Logo"
               width={120}
               height={120}
