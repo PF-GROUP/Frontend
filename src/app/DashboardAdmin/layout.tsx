@@ -1,7 +1,7 @@
 
 
 import CeluSidebar from "@/components/DashBoard-Agente/LayoutDashboard/CeluSidebarDash";
-import SidebarDashboard from "@/components/DashBoard-Agente/LayoutDashboard/SideBarDash";
+import SidebarDashboard from "../../components/Dashboard-Admin/LayoutDashboard/SideBarDash";
 import Navbar from "@/components/navbar/navbar";
 
 import { adminUser } from "../../../helper/user";

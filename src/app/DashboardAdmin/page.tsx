@@ -4,12 +4,12 @@
 
 import { useSearchParams } from 'next/navigation';
 
-import GestionInmobiliarias from '@/components/DashBoard-Agente/ComponentesDashboard/Gestion-de-inmobiliarias/GestionInmobiliarias';
-import AprobarInmobiliarias from '@/components/DashBoard-Agente/ComponentesDashboard/Gestion-de-inmobiliarias/AprobarInmobiliarias';
-import EditarInmobiliaria from '@/components/DashBoard-Agente/ComponentesDashboard/Gestion-de-inmobiliarias/EditarInmobiliarias';
-import PagosInmobiliarias from '@/components/DashBoard-Agente/ComponentesDashboard/Gestion-de-pagos/PagosInmobiliarias';
-import CamposObligatorios from '@/components/DashBoard-Agente/ComponentesDashboard/Gestion-de-formularios/CamposObligatorios';
-import NotificacionesGlobales from '@/components/DashBoard-Agente/ComponentesDashboard/Soporte-y-comunicacion/NotificacionesGlobales';
+import GestionInmobiliarias from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-inmobiliarias/GestionInmobiliarias';
+import AprobarInmobiliarias from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-inmobiliarias/AprobarInmobiliarias';
+import EditarInmobiliaria from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-inmobiliarias/EditarInmobiliarias';
+import PagosInmobiliarias from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-pagos/PagosInmobiliarias';
+import CamposObligatorios from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-formularios/CamposObligatorios';
+import NotificacionesGlobales from '@/components/Dashboard-Admin/ComponentesDashboard/Soporte-y-comunicacion/NotificacionesGlobales';
 import { adminUser } from "../../../helper/user";
 
 export default function DashboardPage( ) {
@@ -43,7 +43,6 @@ export default function DashboardPage( ) {
     }
   };
 
-  
   return (
     <div className="flex justify-center items-start min-h-screen p-6 bg-gray-50">
       <div className="w-full max-w-5xl">
