@@ -19,7 +19,7 @@ export default function CarruselFullWidth() {
     <div className="w-full">
       <Swiper
         modules={[Autoplay, Pagination, Navigation]}
-        autoplay={{ delay: 3000, disableOnInteraction: true }}
+        autoplay={{ delay: 3400, disableOnInteraction: true }}
         loop={true}
         pagination={{ clickable: true }}
         slidesPerView={1}
