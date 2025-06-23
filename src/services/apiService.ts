@@ -41,11 +41,20 @@ const del = async (url:string) => {
     }
 }
 
+const patch = async (url:string, data:unknown) => {
+    try {
+        const res = await axiosRes.patch(url, data)
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 const apiService = {
     get,
     post,
     put,
-    del
+    del,
+    patch
 }
 export default apiService

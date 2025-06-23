@@ -5,7 +5,7 @@ import { IUser } from "../interface/User";
 import apiService from "@/services/apiService";
 
 
-
+ 
 interface AuthContextType {
     user: IUser | null;
     isAuth: boolean;

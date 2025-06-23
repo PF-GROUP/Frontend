@@ -9,7 +9,7 @@ type FormData = {
 };
 
 export const RegisterSubmit = async (data:  RegisterUserDtoFront, SaveUserData: (data: { user: IUser }) => void) => {
-    
+
     try {
         const res =  await apiService.post("/auth/createBoth", data)
         console.log("res", res)
@@ -23,7 +23,7 @@ export const RegisterSubmit = async (data:  RegisterUserDtoFront, SaveUserData: 
     } catch (error) {
         console.error("Ocurrio un error al Realizar el Register",error);
     }
-};  
+};
     export const loginService = async (data: FormData, SaveUserData: (data: { user: IUser }) => void) => {
   try {
     const user =  await apiService.post("/auth/login", data, true);
@@ -32,7 +32,7 @@ export const RegisterSubmit = async (data:  RegisterUserDtoFront, SaveUserData: 
     }
     SaveUserData({ user });
     return user;
-    
+
   } catch (e) {
     console.error("Error al hacer login:", e);
     return null;

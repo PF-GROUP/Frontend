@@ -15,6 +15,7 @@ const registerValidations = Yup.object().shape({
     phone: Yup.number()
     .typeError('El teléfono debe ser un número')
     .required('El teléfono es obligatorio'),
+   
     
     email: Yup.string()
     .required('El correo es obligatorio')
