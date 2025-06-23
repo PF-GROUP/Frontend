@@ -13,8 +13,11 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { getAgente } from "@/services/agenteGet";
+import { useAuthContext } from "../../../../context/authContext";
 
 const SidebarDashboard: React.FC = () => {
+  const {user} = useAuthContext()
+
   const [isOpen, setIsOpen] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(
     "https://res.cloudinary.com/dmvybzxnv/image/upload/v1750591603/nba83jcdphafyvexftsh.jpg"
@@ -28,7 +31,8 @@ const SidebarDashboard: React.FC = () => {
   useEffect(() => {
     const fetchAgente = async () => {
       try {
-        const response = await getAgente(1);
+        if (!user || typeof user.id !== "number") return;
+        const response = await getAgente(user?.id);
         // Asumiendo que el nombre viene en response.data.name
         setAgenteNombre(response.name || "Nombre no disponible");
         // Si la URL de imagen viene también, podrías setear profileImageUrl aquí:
@@ -40,7 +44,7 @@ const SidebarDashboard: React.FC = () => {
     };
 
     fetchAgente();
-  }, []);
+  }, [user]);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
