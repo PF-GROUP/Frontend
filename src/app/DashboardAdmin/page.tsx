@@ -43,6 +43,7 @@ export default function DashboardPage( ) {
     }
   };
 
+  
   return (
     <div className="flex justify-center items-start min-h-screen p-6 bg-gray-50">
       <div className="w-full max-w-5xl">
