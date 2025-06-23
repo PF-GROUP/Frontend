@@ -9,7 +9,7 @@ import Image from "next/image";
 import { UserIcon, IdCardIcon, HomeIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 
-import { useAuthContext } from "../../../../context/authContext";
+import { useAuthContext } from "../../../../context/authContext"; 
 import apiService from "@/services/apiService"; 
 
 const GoogleRegisterButton = dynamic(
@@ -111,8 +111,12 @@ const validationSchema = Yup.object().shape({
     then: (schema) => schema.required("Contraseña requerida"),
     otherwise: (schema) => schema,
   }),
-  phone: Yup.number().typeError("Teléfono debe ser numérico").required("Teléfono requerido"),
-  document: Yup.number().typeError("Documento debe ser numérico").required("Documento requerido"),
+  phone: Yup.number()
+    .typeError("Teléfono debe ser numérico")
+    .required("Teléfono requerido"),
+  document: Yup.number()
+    .typeError("Documento debe ser numérico")
+    .required("Documento requerido"),
   agencyName: Yup.string().required("Nombre requerido"),
   agencyDescription: Yup.string().required("Descripción requerida"),
   slug: Yup.string().required("Slug requerido"),
@@ -123,16 +127,21 @@ const FormRegister: React.FC = () => {
   const [googleData, setGoogleData] = useState<GoogleUserData | null>(null);
   const [formikHelpers, setFormikHelpers] = useState<{
     values: RegisterUserDtoFront;
-    setFieldValue: (field: string, value: unknown, shouldValidate?: boolean) => void;
+    setFieldValue: (
+      field: string,
+      value: unknown,
+      shouldValidate?: boolean
+    ) => void;
   } | null>(null);
   const router = useRouter();
 
-  const { SaveUserData } = useAuthContext(); // Uso del contexto para guardar usuario
+  const { SaveUserData } = useAuthContext(); // Contexto para guardar usuario y estado
 
+  // Valida campos por paso
   const validateStepFields = (
     step: number,
     values: RegisterUserDtoFront,
-    errors: import("formik").FormikErrors<RegisterUserDtoFront>
+    errors: Record<string, any>
   ) => {
     const stepFields: Record<number, string[]> = {
       1: ["name", "surname", "email", ...(googleData ? [] : ["password"])],
@@ -141,11 +150,12 @@ const FormRegister: React.FC = () => {
     };
     for (const field of stepFields[step]) {
       if (errors[field]) return false;
-      if (!values[field] && values[field] !== 0) return false;
+      if (values[field] === undefined || values[field] === null || values[field] === "") return false;
     }
     return true;
   };
 
+  // Carga datos desde Google en el formulario
   const handleFillUpForm = (data: Partial<GoogleUserData> & { sub?: string; id?: string }) => {
     const fullName = data.name || "";
     const [firstName, ...rest] = fullName.trim().split(" ");
@@ -163,22 +173,24 @@ const FormRegister: React.FC = () => {
     toast.success("Datos de Google cargados correctamente");
   };
 
+  // Maneja submit de formulario con post al backend
   const handleSubmit = async (values: RegisterUserDtoFront) => {
     try {
-      // Aquí mandás la info al backend para registrar usuario
+      // Enviar datos al backend, asegurando enviar JSON correcto
       const res = await apiService.post("/auth/register", values);
 
-      // Guardás el usuario en el contexto para loguearlo automáticamente
+      // Guardar usuario en contexto para login automático
       SaveUserData({ user: res.user });
 
       toast.success("Formulario enviado correctamente");
       router.push("/stripe");
-    } catch (error) {
-      toast.error("Error al registrar usuario");
-      console.error(error);
+    } catch (error: any) {
+      toast.error(error?.message || "Error al registrar usuario");
+      console.error("Error en registro:", error);
     }
   };
 
+  // Actualiza el slug automáticamente cuando cambia el nombre de agencia en el paso 3
   useEffect(() => {
     if (formikHelpers && formikHelpers.values.agencyName && step === 3) {
       const slug = formikHelpers.values.agencyName
@@ -239,7 +251,13 @@ const FormRegister: React.FC = () => {
             onSubmit={handleSubmit}
             className="flex flex-col items-center bg-white text-black border border-gray-300 p-8 rounded-md w-[600px] min-h-[700px] max-w-2xl mx-auto relative"
           >
-            <Image src="/iconoKasapp.png" alt="Logo" width={100} height={100} className="w-[120px] h-[120px]" />
+            <Image
+              src="/iconoKasapp.png"
+              alt="Logo"
+              width={100}
+              height={100}
+              className="w-[120px] h-[120px]"
+            />
             <StepProgressBar step={step} />
             <AutoFillForm googleData={googleData} />
 
@@ -254,7 +272,9 @@ const FormRegister: React.FC = () => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       readOnly={!!googleData}
-                      className={`w-full border rounded p-2 ${googleData ? "bg-gray-100 cursor-not-allowed" : ""}`}
+                      className={`w-full border rounded p-2 ${
+                        googleData ? "bg-gray-100 cursor-not-allowed" : ""
+                      }`}
                     />
                     {touched.name && errors.name && (
                       <p className="text-red-500 text-sm">{errors.name}</p>
@@ -268,7 +288,9 @@ const FormRegister: React.FC = () => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       readOnly={!!googleData}
-                      className={`w-full border rounded p-2 ${googleData ? "bg-gray-100 cursor-not-allowed" : ""}`}
+                      className={`w-full border rounded p-2 ${
+                        googleData ? "bg-gray-100 cursor-not-allowed" : ""
+                      }`}
                     />
                     {touched.surname && errors.surname && (
                       <p className="text-red-500 text-sm">{errors.surname}</p>
@@ -284,7 +306,9 @@ const FormRegister: React.FC = () => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     readOnly={!!googleData}
-                    className={`w-full border rounded p-2 ${googleData ? "bg-gray-100 cursor-not-allowed" : ""}`}
+                    className={`w-full border rounded p-2 ${
+                      googleData ? "bg-gray-100 cursor-not-allowed" : ""
+                    }`}
                   />
                   {touched.email && errors.email && (
                     <p className="text-red-500 text-sm">{errors.email}</p>
