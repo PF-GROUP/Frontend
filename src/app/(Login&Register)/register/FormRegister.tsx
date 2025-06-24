@@ -170,7 +170,8 @@ const FormRegister: React.FC = () => {
     };
 
     setGoogleData(userData);
-    toast.success("Datos de Google cargados correctamente");
+    setStep(2)
+    toast.success("Sesion iniciada con Google. Por favor, completa los campos restantes." );
   };
 
   const handleSubmit = async (values: RegisterUserDtoFront) => {
