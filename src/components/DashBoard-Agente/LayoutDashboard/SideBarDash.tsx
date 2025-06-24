@@ -23,9 +23,9 @@ const SidebarDashboard: React.FC = () => {
     "https://res.cloudinary.com/dmvybzxnv/image/upload/v1750591603/nba83jcdphafyvexftsh.jpg"
   );
 
-  // Estado para guardar el nombre del agente
+  // Estado para guardar el nombre y apellido del agente
   const [agenteNombre, setAgenteNombre] = useState<string>("Cargando...");
-
+  const [agenteApellido, setAgenteApellido] = useState<string>("");
 
   // IMPORTANTE LEER REALIZAR EL CONSUMO DEL NOMBRE DEL USUARIO DESDE LAS COOCKIES "user"
   useEffect(() => {
@@ -33,8 +33,12 @@ const SidebarDashboard: React.FC = () => {
       try {
         if (!user || typeof user.id !== "number") return;
         const response = await getAgente(user?.id);
+        
+
         // Asumiendo que el nombre viene en response.data.name
         setAgenteNombre(response.name || "Nombre no disponible");
+        setAgenteApellido(response.surname || "Nombre no disponible");
+        
         // Si la URL de imagen viene también, podrías setear profileImageUrl aquí:
         // setProfileImageUrl(response.data.profileImageUrl);
       } catch (error) {
@@ -99,7 +103,7 @@ const SidebarDashboard: React.FC = () => {
 
 
             <div className="flex flex-col items-start justify-start text-center ml-3">
-              <h2 className="font-bold text-base md:text-xl">{agenteNombre}</h2>
+              <h2 className="font-bold text-base md:text-xl">{agenteNombre} {agenteApellido} </h2>
               <p className="font-sans text-sm">Agente inmobiliario</p>
             </div>
           </div>

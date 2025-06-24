@@ -37,12 +37,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 setUser(res as IUser);
                 setIsAuth(!!res);
             } catch {
-               setUser(null); 
+                setUser(null); 
             } finally{
                 setLoading(false);
             }
         }
-      fetchUser();
+    fetchUser();
     }, []);
 
     const SaveUserData = (data: { user: IUser }) => {

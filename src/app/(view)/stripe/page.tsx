@@ -63,7 +63,7 @@ useEffect(() => {
           className={`w-full py-3 rounded-xl font-semibold text-white transition duration-300 ${
             loading
               ? 'bg-indigo-300 cursor-not-allowed'
-              : 'bg-indigo-600 hover:bg-indigo-700'
+              : 'bg-red-600 hover:bg-indigo-700'
           }`}
         >
           {loading ? 'Redirigiendo...' : 'Suscribirme ahora'}
