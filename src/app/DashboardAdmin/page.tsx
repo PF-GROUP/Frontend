@@ -3,12 +3,9 @@
 
 
 import { useSearchParams } from 'next/navigation';
-
+import TodasInmobiliarias from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-inmobiliarias/TodasInmobiliarias';
 import GestionInmobiliarias from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-inmobiliarias/GestionInmobiliarias';
-import AprobarInmobiliarias from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-inmobiliarias/AprobarInmobiliarias';
-import EditarInmobiliaria from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-inmobiliarias/EditarInmobiliarias';
 import PagosInmobiliarias from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-pagos/PagosInmobiliarias';
-import CamposObligatorios from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-formularios/CamposObligatorios';
 import NotificacionesGlobales from '@/components/Dashboard-Admin/ComponentesDashboard/Soporte-y-comunicacion/NotificacionesGlobales';
 import { adminUser } from "../../../helper/user";
 
@@ -20,15 +17,10 @@ export default function DashboardPage( ) {
     switch (view) {
       case 'gestion-inmobiliarias':
         return <GestionInmobiliarias />;
-      case 'aprobar-inmobiliarias':
-        return <AprobarInmobiliarias />;
-      case 'editar-inmobiliaria':
-        return <EditarInmobiliaria />;
+      case 'todas-inmobiliarias':
+        return <TodasInmobiliarias />;
       case 'gestion-pagos':
         return <PagosInmobiliarias />;
-      case 'gestion-formularios':
-        return <CamposObligatorios />;
-
       case 'notificaciones':
         return <NotificacionesGlobales />;
       default:
