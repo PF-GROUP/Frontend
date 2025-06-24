@@ -1,6 +1,6 @@
 
 
-import CeluSidebar from "@/components/DashBoard-Agente/LayoutDashboard/CeluSidebarDash";
+import CeluSidebar from "@/components/Dashboard-Admin/LayoutDashboard/CeluSidebarDash";
 import SidebarDashboard from "../../components/Dashboard-Admin/LayoutDashboard/SideBarDash";
 import Navbar from "@/components/navbar/navbar";
 
@@ -8,7 +8,6 @@ import { adminUser } from "../../../helper/user";
 export default function LayoutSidebar({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <>
-      {/* Navbar dashboard */}
       <Navbar />
 
       <div className="flex flex-col md:flex-row bg-[rgb(240,241,244)]">
@@ -16,13 +15,13 @@ export default function LayoutSidebar({ children }: Readonly<{ children: React.R
         <div className="block md:hidden">
           <CeluSidebar
             name={adminUser.name}
-            surname={adminUser.surname}
+            surname={adminUser.surname || ""}
           />
         </div>
         <div className="hidden md:block">
           <SidebarDashboard
             name={adminUser.name}
-            surname={adminUser.surname}
+            surname={adminUser.surname || ""}
           />
         </div>
 
