@@ -1,5 +1,6 @@
-import { agencias } from "../../../../helper/DatosAgencia";
+// import { agencias } from "../../../../helper/DatosAgencia";
 // import { notFound } from "next/navigation";
+import { getAgencies } from "@/services/agenciasServise";
 
 import BannerAgencia from "../../../components/AgenciaComponents/BannerAgencia";
 import FooterAgencia from "@/components/AgenciaComponents/FooterAgencia";
@@ -15,6 +16,11 @@ function toSlug(name: string) {
 }
 
 export default function AgenciaLanding({ params, SecondaryColor }: Props) {
+  
+  getAgencies();
+  console.log("Agencias:", agencias);
+
+  
   const { slug } = params;
   const agencia = agencias.find((a) => toSlug(a.name) === slug);
   console.log(SecondaryColor)

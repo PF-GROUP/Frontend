@@ -1,11 +1,12 @@
 
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { agencias } from "../../../../helper/DatosAgencia";
 // import { notFound } from "next/navigation";
 import NavbarAgente from "../../../components/AgenciaComponents/NavbarAgente";
 import { Metadata } from "next";
 import FooterAgencia from "@/components/AgenciaComponents/FooterAgencia";
 import { notFound } from "next/navigation";
+import { getAgencies } from "@/services/agenciasServise";
 
 interface LayoutProps {
   children: ReactNode;
@@ -13,6 +14,11 @@ interface LayoutProps {
     slug: string;
   };
 }
+
+
+  const agencias = getAgencies();
+  console.log("Agencias:", agencias);
+
 
 function toSlug(name: string) {
   return name.toLowerCase().replace(/\s+/g, "-");
