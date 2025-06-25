@@ -4,7 +4,10 @@ const ChatbotPrueba = () => {
         
         
         
-        {/* aca podes poner el script del chatbot */}
+        
+    <script src="https://cdn.botpress.cloud/webchat/v3.0/inject.js" defer></script>
+    <script src="https://files.bpcontent.cloud/2025/06/25/16/20250625160754-7I93EFEO.js" defer></script>
+    
 
 
 
@@ -13,7 +16,4 @@ const ChatbotPrueba = () => {
 };
 
 
-// inicia el proyecto con npm run dev
-// para ver esta pagina pone localhost:{puerto}/chatbotPrueba 
-// suerte amigazo jaja
 export default ChatbotPrueba

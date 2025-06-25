@@ -3,6 +3,7 @@ import "../../app/globals.css";
 import type { Metadata } from "next";
 import Navbar from "@/components/navbar/navbar";
 import Footer from "@/components/Footer/Footer";
+import ChatbotPrueba from "@/components/ChatBot/chatbot";
 
 export const metadata: Metadata = {
   title: "KassApp",
@@ -28,6 +29,7 @@ export default function RootLayout({
         <Navbar />
         </div>
         {children}
+        <ChatbotPrueba />
         <Footer />
       </>
       
