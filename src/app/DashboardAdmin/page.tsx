@@ -1,19 +1,28 @@
 'use client';
 
-
-
+import Loader from '@/components/Loader/Loader';
+import { useAuthContext } from '../../../context/authContext';
 import { useSearchParams } from 'next/navigation';
 import TodasInmobiliarias from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-inmobiliarias/TodasInmobiliarias';
 import GestionInmobiliarias from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-inmobiliarias/GestionInmobiliarias';
 import PagosInmobiliarias from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-pagos/PagosInmobiliarias';
 import NotificacionesGlobales from '@/components/Dashboard-Admin/ComponentesDashboard/Soporte-y-comunicacion/NotificacionesGlobales';
-import { adminUser } from "../../../helper/user";
+
 
 export default function DashboardPage( ) {
   const searchParams = useSearchParams(); 
   const view = searchParams.get('view');
-
+  const { user } = useAuthContext();
   const renderContent = () => {
+    
+     if (!user) {
+      return (
+        <div className="flex items-center justify-center h-screen">
+          <Loader />
+        </div>
+      ); 
+    }
+    
     switch (view) {
       case 'gestion-inmobiliarias':
         return <GestionInmobiliarias />;
@@ -26,7 +35,7 @@ export default function DashboardPage( ) {
       default:
         return (
           <div className="bg-gray-200 border-l-8 border-[#4A0E1B] shadow-lg rounded-lg p-6 max-w-3xl mx-auto">
-            <h1 className="text-2xl font-bold text-[#4A0E1B] mb-2">¡Bienvenido {adminUser.name} {adminUser.surname}!</h1>
+            <h1 className="text-2xl font-bold text-[#4A0E1B] mb-2">¡Bienvenido {user.name} {user.surname}!</h1>
             <p className="text-gray-700">
               Aquí podrás gestionar todo lo relacionado con KasApp, Inmobiliarias, Gestión de Pagos y mucho más. 🚀
             </p>

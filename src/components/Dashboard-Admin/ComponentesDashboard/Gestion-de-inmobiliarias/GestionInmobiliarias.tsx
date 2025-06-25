@@ -1,32 +1,28 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getAllAgencies, } from "../../../../services/agenciaService";
+import { deleteAgency, softDeleteAgency } from "../../../../services/adminService";
 
-type Inmobiliaria = {
-  id: number;
-  nombre: string;
-  email: string;
-};
-
-const mockInmobiliarias: Inmobiliaria[] = [
-  { id: 1, nombre: "Urbanos SRL", email: "info@urbanos.com" },
-  { id: 2, nombre: "Propiedades Delta", email: "delta@propiedades.com" },
-];
+import { IAgency } from "../../../../../interface/Agency";
 
 export default function GestionInmobiliarias() {
-  const [inmobiliarias, setInmobiliarias] = useState(mockInmobiliarias);
-
-
+  const [inmobiliarias, setInmobiliarias] = useState<IAgency[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalAction, setModalAction] = useState<"eliminar" | "suspender" | null>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-
+  useEffect(() => {
+    getAllAgencies()
+    .then(setInmobiliarias)
+    .catch(() => setInmobiliarias([]));
+  }, []);
+  console.log(inmobiliarias);
+  
   const abrirModal = (action: "eliminar" | "suspender", id: number) => {
     setModalAction(action);
     setSelectedId(id);
     setModalOpen(true);
   };
-
 
   const cerrarModal = () => {
     setModalOpen(false);
@@ -34,20 +30,31 @@ export default function GestionInmobiliarias() {
     setSelectedId(null);
   };
 
+  const confirmarEliminar = async () => {
+    if (selectedId === null) return;
 
-  const confirmarEliminar = () => {
-    if (selectedId !== null) {
-      setInmobiliarias((prev) => prev.filter((i) => i.id !== selectedId));
-      console.log("Eliminada inmobiliaria ID:", selectedId);
+    try {
+      await deleteAgency(selectedId);
+
+      setInmobiliarias((prevInmobiliarias) =>
+        prevInmobiliarias.filter((inmo) => inmo.id !== selectedId)
+      );
+
+    } catch (error) {
+      console.error("❌ Error al eliminar inmobiliaria:", error);
+    } finally {
       cerrarModal();
     }
   };
 
-
   const confirmarSuspender = () => {
-    if (selectedId !== null) {
+    if (selectedId === null) return;
 
-      console.log("Suspendida inmobiliaria ID:", selectedId);
+    try {
+      softDeleteAgency(selectedId);
+    } catch (error) {
+      console.log("❌ Error al suspender inmobiliaria:", error);
+    } finally {
       cerrarModal();
     }
   };
@@ -68,8 +75,10 @@ export default function GestionInmobiliarias() {
               className="flex flex-col md:flex-row md:items-center justify-between border border-gray-200 p-4 rounded-lg hover:bg-gray-50 transition"
             >
               <div className="mb-4 md:mb-0 md:w-2/3">
-                <p className="font-semibold text-lg">{inmo.nombre}</p>
-                <p className="text-sm text-gray-600">{inmo.email}</p>
+                <p className="font-semibold text-lg">{inmo.name}</p>
+                <p className="text-sm text-gray-600">
+                  {inmo.user.name} {inmo.user.surname}
+                </p>
               </div>
               <div className="flex flex-col gap-2 md:flex-row md:gap-4">
                 <button
@@ -90,41 +99,41 @@ export default function GestionInmobiliarias() {
         </ul>
       )}
 
-      {/* Modal ASHEEEEEEEEEEEEEEEEEEE*/}
+      {/* Modal */}
       {modalOpen && (
-  <div className="fixed inset-0  bg-black/70 flex items-center justify-center z-50 modal-overlay">
-    <div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg">
-      <h3 className="text-lg font-semibold mb-4 text-center">
-        {modalAction === "eliminar"
-          ? "¿Estás seguro que querés eliminar esta inmobiliaria?"
-          : "¿Estás seguro que querés suspender esta inmobiliaria?"}
-      </h3>
-      <div className="flex justify-center gap-4">
-        <button
-          onClick={cerrarModal}
-          className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
-        >
-          Volver
-        </button>
-        {modalAction === "eliminar" ? (
-          <button
-            onClick={confirmarEliminar}
-            className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
-          >
-            Eliminar
-          </button>
-        ) : (
-          <button
-            onClick={confirmarSuspender}
-            className="px-4 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600"
-          >
-            Suspender
-          </button>
-        )}
-      </div>
-    </div>
-  </div>
-)}
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg">
+            <h3 className="text-lg font-semibold mb-4 text-center">
+              {modalAction === "eliminar"
+                ? "¿Estás seguro que querés eliminar esta inmobiliaria?"
+                : "¿Estás seguro que querés suspender esta inmobiliaria?"}
+            </h3>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={cerrarModal}
+                className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+              >
+                Volver
+              </button>
+              {modalAction === "eliminar" ? (
+                <button
+                  onClick={confirmarEliminar}
+                  className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+                >
+                  Eliminar
+                </button>
+              ) : (
+                <button
+                  onClick={confirmarSuspender}
+                  className="px-4 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600"
+                >
+                  Suspender
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

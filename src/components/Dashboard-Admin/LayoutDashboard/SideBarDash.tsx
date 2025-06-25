@@ -23,7 +23,7 @@ const SidebarDashboard: React.FC<SidebarDashboardProps> = ({
   name = "",
   surname = "",
 }) => {
-  const { ResetUserData } = useAuthContext();
+  const { ResetUserData, } = useAuthContext();
   const router = useRouter();
   const handleLogout = () => {
     apiService.post("/auth/logout", {}, true);

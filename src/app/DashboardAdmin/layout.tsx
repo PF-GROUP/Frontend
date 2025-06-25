@@ -1,11 +1,23 @@
-
+"use client";
 
 import CeluSidebar from "@/components/Dashboard-Admin/LayoutDashboard/CeluSidebarDash";
 import SidebarDashboard from "../../components/Dashboard-Admin/LayoutDashboard/SideBarDash";
 import Navbar from "@/components/navbar/navbar";
+import { useAuthContext } from "../../../context/authContext";
+import Loader from "../../components/Loader/Loader"
 
-import { adminUser } from "../../../helper/user";
 export default function LayoutSidebar({ children }: Readonly<{ children: React.ReactNode }>) {
+  const { user } = useAuthContext()
+  
+     if (!user) {
+      return (
+        <div className="flex items-center justify-center h-screen">
+          <Loader />
+        </div>
+      ); 
+    }
+  const User = user
+
   return (
     <>
       <Navbar />
@@ -14,14 +26,14 @@ export default function LayoutSidebar({ children }: Readonly<{ children: React.R
         {/* Sidebar */}
         <div className="block md:hidden">
           <CeluSidebar
-            name={adminUser.name}
-            surname={adminUser.surname || ""}
+            name={User.name ?? ""}
+            surname={User.surname ?? ""}
           />
         </div>
         <div className="hidden md:block">
           <SidebarDashboard
-            name={adminUser.name}
-            surname={adminUser.surname || ""}
+            name={User.name ?? ""}
+            surname={User.surname ?? ""}
           />
         </div>
 

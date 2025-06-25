@@ -7,8 +7,9 @@ export interface IAgency {
   description: string;
   customization: ICustomization;
   properties: IProperty[]; // Foreign Key a 'Property', asumido como un array de propiedades de la agencia. ID property (FK)
-  agentUser: IUser; // Foreign Key a 'User', ID usuario (agente)'.
+  user: IUser; // Foreign Key a 'User', ID usuario (agente)'.
   cuit_dni_m: string; // CUIT/DNI/Matrícula de la agencia.
+  slug: string
 }
 
 

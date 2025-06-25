@@ -2,30 +2,27 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {getAllAgencies} from "../../../../services/agenciaService";
-type Inmobiliaria = {
-  id: number;
-  nombre: string;
-  email: string;
-  slug: string;
-};
+import { IAgency } from "../../../../../interface/Agency";
 
 
 export default  function TodasInmobiliarias() {
-  const [inmobiliarias, setInmobiliarias] = useState<Inmobiliaria[]>([]);
+  const [inmobiliarias, setInmobiliarias] = useState<IAgency[]>([]);
   
   useEffect(() => {
   getAllAgencies()
     .then((data) => {
-      setInmobiliarias(data || []); 
+      setInmobiliarias(data); 
     })
     .catch(() => {
       setInmobiliarias([]);
     });
 }, []);
+
+  
   return (
     <div className="bg-white p-4 md:p-6 rounded-xl shadow-md w-full max-w-4xl mx-auto">
       <h2 className="text-2xl font-semibold mb-6 text-[rgb(66,20,36)]">
-        Gestionar Inmobiliarias
+        Inmobiliarias registradas
       </h2>
 
       {inmobiliarias.length === 0 ? (
@@ -41,8 +38,8 @@ export default  function TodasInmobiliarias() {
               <div className="flex flex-col md:flex-row justify-between items-start w-full gap-2">
 
                 <div>
-                  <p className="font-semibold text-lg">{inmo.nombre}</p>
-                  <p className="text-sm text-gray-600">{inmo.email}</p>
+                  <p className="font-semibold text-lg">{inmo.name}</p>
+                  <p className="text-sm text-gray-600">{inmo.user.name} {inmo.user.surname}</p>
                 </div>
 
 

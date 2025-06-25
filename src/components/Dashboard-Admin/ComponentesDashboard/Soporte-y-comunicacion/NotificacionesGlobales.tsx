@@ -1,19 +1,23 @@
 "use client";
 import { useState } from "react";
-
+import toast from "react-hot-toast";
+import { postMaillerAll } from "@/services/adminService";
 export default function NotificacionesGlobales() {
   const [mensaje, setMensaje] = useState("");
-  const [enviado, setEnviado] = useState(false);
+  const [subject, setSubject] = useState("");
+
 
   const handleEnviar = () => {
     if (mensaje.trim() === "") return;
 
-    // Simulación de envío
-    console.log("Notificación enviada a todas las inmobiliarias:", mensaje);
 
-    setEnviado(true);
+    postMaillerAll(subject, mensaje);
+
+    toast.success("Notificación enviada con éxito", {
+      duration: 1000,
+    })
     setMensaje("");
-    setTimeout(() => setEnviado(false), 4000);
+    setSubject("");
   };
 
   return (
@@ -23,11 +27,14 @@ export default function NotificacionesGlobales() {
           Enviar notificación global
         </h2>
 
-        {enviado && (
-          <div className="mb-4 p-4 bg-green-100 text-green-800 rounded-lg text-center font-medium shadow-sm transition-all">
-            ✅ Notificación enviada con éxito
-          </div>
-        )}
+        
+
+          <input type="text" 
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+          placeholder="Titulo"
+          className="w-full p-4 border border-gray-300 rounded-xl resize-none mb-6 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[rgb(166,47,85)] transition-all">
+          </input>
 
         <textarea
           value={mensaje}
@@ -39,8 +46,9 @@ export default function NotificacionesGlobales() {
 
         <button
           onClick={handleEnviar}
-          disabled={mensaje.trim() === ""}
-          className="w-full md:w-auto bg-[rgb(166,47,85)] hover:bg-[rgb(144,38,72)] text-white font-semibold px-6 py-3 rounded-xl transition disabled:opacity-50"
+          disabled={mensaje.trim() === "" || subject.trim() === ""}
+          className="w-full md:w-auto bg-[rgb(166,47,85)] hover:bg-[rgb(144,38,72)] text-white font-semibold px-6 py-3 rounded-xl transition disabled:opacity-50
+          cursor-pointer disabled:cursor-not-allowed"
         >
           Enviar notificación
         </button>

@@ -1,16 +1,14 @@
-import axios from "axios";
+import apiService from "./apiService";
 
-const axiosRes = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "/api",
-});
 
 export const getAllAgencies = async () => {
   try {
-    const response = await axiosRes.get("/agency");
-    return response.data;
+    const response = await apiService.get("/agency", true );
+    return response;
   } catch (error) {
     console.error("Error al obtener agencias:", error);
     return null;
   }
 };
+
 
