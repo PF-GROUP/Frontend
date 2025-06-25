@@ -3,41 +3,15 @@
 import React, { useState } from "react";
 import { Upload, X } from "lucide-react";
 import toast from "react-hot-toast";
+import { useAuthContext } from "../../../../../context/authContext";
 
-
-// LEER SUPER IMPORTANTE:
-// ACTUALMENTE TENES LA IMAGEN EN CLOUDINARY PERO NO LA ESTAS GUARDANDO EN NINGUN LADO POR LO QUE NO SE MANTIENE
-// DEBES CREAR UN ENDPOINT EN EL BACK PARA QUE ESA IMAGEN DE PERFIL SE MANTENGA
+const API_URL = process.env.NEXT_PUBLIC_API_URL; // Asegurate de tener esto en tu .env
 
 const FotoPerfil: React.FC = () => {
+  const { user } = useAuthContext();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-
-  const uploadImageToCloudinary = async (file: File): Promise<string> => {
-    const cloudName = "dmvybzxnv"; // Cambia por tu cloud name
-    const uploadPreset = "LogoYBanner"; // Tu upload preset unsigned
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", uploadPreset);
-
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Error al subir imagen a Cloudinary");
-    }
-
-    const data = await response.json();
-    return data.secure_url;
-  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -45,7 +19,6 @@ const FotoPerfil: React.FC = () => {
 
     setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
-    setUploadedUrl(null);
   };
 
   const handleUpload = async () => {
@@ -54,12 +27,35 @@ const FotoPerfil: React.FC = () => {
       return;
     }
 
+    if (!user || !user.id) {
+      toast.error("No se encontró el usuario");
+      return;
+    }
+
     setIsUploading(true);
 
     try {
-      const url = await uploadImageToCloudinary(selectedFile);
-      setUploadedUrl(url);
+      const formData = new FormData();
+      formData.append("file", selectedFile); // CLAVE: campo debe llamarse 'file'
+
+      const response = await fetch(
+        `${API_URL}/users/${user.id}/profile-picture`,
+        {
+          method: "POST",
+          body: formData,
+          credentials: "include", // para mandar las cookies del login
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al subir imagen al backend");
+      }
+
+      const data = await response.json();
       toast.success("Imagen subida con éxito");
+
+      console.log("URL guardada en BD:", data.profilePictureUrl);
+
       setSelectedFile(null);
       setPreviewUrl(null);
     } catch (error) {
@@ -73,7 +69,6 @@ const FotoPerfil: React.FC = () => {
   const handleRemove = () => {
     setSelectedFile(null);
     setPreviewUrl(null);
-    setUploadedUrl(null);
   };
 
   return (
@@ -82,26 +77,14 @@ const FotoPerfil: React.FC = () => {
         Seleccione foto de Perfil
       </h2>
 
-      {/* Preview o imagen subida */}
       <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-blue-600 shadow-md bg-gray-100 flex items-center justify-center">
-        {uploadedUrl ? (
-          // Imagen subida
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={uploadedUrl}
-            alt="Foto de perfil subida"
-            className="w-full h-full object-cover"
-          />
-        ) : previewUrl ? (
+        {previewUrl ? (
           <>
-            {/* Preview imagen local */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={previewUrl}
               alt="Preview de foto seleccionada"
               className="w-full h-full object-cover"
             />
-            {/* Botón X para eliminar imagen */}
             <button
               type="button"
               onClick={handleRemove}
@@ -118,29 +101,25 @@ const FotoPerfil: React.FC = () => {
         )}
       </div>
 
-      {/* Input para seleccionar archivo */}
-      {!uploadedUrl && (
-        <label
-          htmlFor="file-upload"
-          className={`flex items-center gap-2 bg-blue-700 text-white font-semibold text-base sm:text-lg py-2 px-4 rounded-lg cursor-pointer ${
-            isUploading ? "opacity-70 pointer-events-none" : ""
-          }`}
-        >
-          <Upload size={22} />
-          Seleccionar Imagen
-          <input
-            id="file-upload"
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="hidden"
-            disabled={isUploading}
-          />
-        </label>
-      )}
+      <label
+        htmlFor="file-upload"
+        className={`flex items-center gap-2 bg-blue-700 text-white font-semibold text-base sm:text-lg py-2 px-4 rounded-lg cursor-pointer ${
+          isUploading ? "opacity-70 pointer-events-none" : ""
+        }`}
+      >
+        <Upload size={22} />
+        Seleccionar Imagen
+        <input
+          id="file-upload"
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+          disabled={isUploading}
+        />
+      </label>
 
-      {/* Botón subir, solo si hay preview (imagen seleccionada) */}
-      {previewUrl && !uploadedUrl && (
+      {previewUrl && (
         <button
           onClick={handleUpload}
           disabled={isUploading}
