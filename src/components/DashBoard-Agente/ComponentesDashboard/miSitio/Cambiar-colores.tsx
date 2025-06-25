@@ -7,70 +7,23 @@ import { colorValidationSchema } from "../../validacionesDashBoard/miSitio";
 import { editarColoresAgencia } from "@/services/editarColores";
 import { IColores } from "../../../../../interface/DashboardAgente/ColoresDTO";
 import { useRouter } from "next/navigation";
-import { useAuthContext } from "../../../../../context/authContext"; 
+import { useAuthContext } from "../../../../../context/authContext";
 
 const MiSitio: React.FC = () => {
   const router = useRouter();
-  const { user } = useAuthContext(); // 
 
-  // Estados para preview de las imágenes en la UI
+  // Sacamos los datos del usuario que se logueo
+  const { user } = useAuthContext();
+
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
 
-  // Función para subir imagen a Cloudinary y devolver la URL pública
-  const uploadImageToCloudinary = async (file: File): Promise<string> => {
-    const cloudName = "dmvybzxnv";
-    const uploadPreset = "LogoYBanner"; // EXACTAMENTE el preset unsigned
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", uploadPreset);
-
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Error al subir imagen a Cloudinary");
-    }
-
-    const data = await response.json();
-    return data.secure_url; // URL pública de la imagen subida
-  };
-
-  // Manejo del submit del formulario
   const handleOnSubmit = async (values: IColores) => {
     try {
-      // Subir logo y banner solo si son archivos (no URLs)
-      let logoUrl = "";
-      let bannerUrl = "";
-
-      if (values.logoImage instanceof File) {
-        logoUrl = await uploadImageToCloudinary(values.logoImage);
-      } else if (typeof values.logoImage === "string") {
-        logoUrl = values.logoImage; // Ya es URL, se usa directo
-      }
-
-      if (values.banner instanceof File) {
-        bannerUrl = await uploadImageToCloudinary(values.banner);
-      } else if (typeof values.banner === "string") {
-        bannerUrl = values.banner;
-      }
-
-      // Crear el objeto final para enviar al backend con URLs
-      const payload = {
-        ...values,
-        logoImage: logoUrl,
-        banner: bannerUrl,
-      };
-
-      // Llamada al servicio que guarda los colores y URLs en backend
+    // verificamos si el user Existe 
       if (!user || typeof user.agencyId !== "number") return;
-      const response = await editarColoresAgencia(payload, user.agencyId);
+    // le pasamos a la funcion editarColoresAgencia los valores del formulario y el id del user para enviar el PATCH
+      const response = await editarColoresAgencia(values, user.agencyId);
       console.log("🧠 response completo:", response);
 
       if (response && response.id) {
@@ -93,11 +46,11 @@ const MiSitio: React.FC = () => {
       initialValues={{
         logoImage: "",
         information: "",
-        mainColors: "#FFFFF",      // gris muy claro
+        mainColors: "#FFFFF",
         banner: "",
-        navbarColor: "#a0aec0",     // gris azulado medio claro
-        buttonColor: "#4c6ef5",     // azul claro
-        backgroundColor: "#1c3faa", // azul medio oscuro
+        navbarColor: "#a0aec0",
+        buttonColor: "#4c6ef5",
+        backgroundColor: "#1c3faa",
         secondaryColor: "#0a2540",
       }}
       validationSchema={colorValidationSchema}
@@ -179,10 +132,10 @@ const MiSitio: React.FC = () => {
                 >
                   Mi Web Inmobiliaria
                 </h3>
-              <p className="text-white text-sm md:text-base drop-shadow-md"
-              style={{ color: values.mainColors }}>
-                {values.information}
-              </p>
+                <p className="text-white text-sm md:text-base drop-shadow-md"
+                   style={{ color: values.mainColors }}>
+                  {values.information}
+                </p>
               </div>
             </div>
 
@@ -246,7 +199,7 @@ const MiSitio: React.FC = () => {
               </div>
             ))}
 
-            {/* Input para Logo */}
+            {/* Logo Input */}
             <div id="Logo" className="flex flex-col col-span-3 border-t pt-4 border-gray-500">
               <label htmlFor="logoImage" className="text-sm font-semibold mb-1">
                 Logo (imagen)
@@ -268,7 +221,7 @@ const MiSitio: React.FC = () => {
               />
             </div>
 
-            {/* Input para Banner */}
+            {/* Banner Input */}
             <div className="flex flex-col col-span-3 border-t pt-4 border-gray-500">
               <label htmlFor="banner" className="text-sm font-semibold mb-1">
                 Banner (imagen)

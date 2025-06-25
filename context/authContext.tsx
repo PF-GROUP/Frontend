@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { IUser } from "../interface/User";
 import apiService from "@/services/apiService";
 
- 
+
 interface AuthContextType {
     user: IUser | null;
     isAuth: boolean;
@@ -14,13 +14,13 @@ interface AuthContextType {
 }
 
 export const decodeUserCookie = (cookieValue: string) => {
-  try {
+    try {
     const decoded = jwtDecode(cookieValue);
     return decoded as IUser;
-  } catch (e) {
+    } catch (e) {
     console.error("No se pudo decodificar la cookie:", e);
     return null;
-  }
+    }
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -55,6 +55,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsAuth(false);
         console.log("borrando cookie aaaa");
     };
+
+    // const id_Agency = user?.agencyId
 
     return (
         <AuthContext.Provider value={{
