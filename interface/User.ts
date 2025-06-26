@@ -11,6 +11,7 @@ export interface IUser {
   password?: string;
   isAdmin: boolean;
   agencyId?: number | null;
+  profilePictureUrl: string
 }
 
 export interface ICreateUser {

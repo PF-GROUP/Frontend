@@ -5,10 +5,10 @@ import { Upload, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuthContext } from "../../../../../context/authContext";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL; // Asegurate de tener esto en tu .env
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const FotoPerfil: React.FC = () => {
-  const { user } = useAuthContext();
+  const { user, SaveUserData } = useAuthContext(); // ⬅️ Importante: traer SaveUserData
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -16,7 +16,6 @@ const FotoPerfil: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
   };
@@ -35,31 +34,45 @@ const FotoPerfil: React.FC = () => {
     setIsUploading(true);
 
     try {
+      // ✅ Paso 1: Subir imagen a Cloudinary
       const formData = new FormData();
-      formData.append("file", selectedFile); // CLAVE: campo debe llamarse 'file'
+      formData.append("file", selectedFile);
 
-      const response = await fetch(
-        `${API_URL}/users/${user.id}/profile-picture`,
+      const uploadResponse = await fetch(
+        `${API_URL}/upload/image?folder=user-profiles`,
         {
           method: "POST",
           body: formData,
-          credentials: "include", // para mandar las cookies del login
+          credentials: "include",
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Error al subir imagen al backend");
-      }
+      if (!uploadResponse.ok) throw new Error("Error al subir imagen");
 
-      const data = await response.json();
-      toast.success("Imagen subida con éxito");
+      const { url } = await uploadResponse.json();
 
-      console.log("URL guardada en BD:", data.profilePictureUrl);
+      // ✅ Paso 2: PATCH al usuario para guardar esa URL
+      const patchResponse = await fetch(`${API_URL}/users/${user.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ profilePictureUrl: url }),
+      });
+
+      if (!patchResponse.ok) throw new Error("Error al actualizar perfil");
+
+      // ✅ Paso 3: Actualizar el contexto global del usuario
+      const updatedUser = { ...user, profilePictureUrl: url };
+      SaveUserData({ user: updatedUser }); // ⬅️ ACTUALIZAMOS EL CONTEXTO
+
+      toast.success("Imagen subida y perfil actualizado");
 
       setSelectedFile(null);
       setPreviewUrl(null);
     } catch (error) {
-      toast.error("Error al subir la imagen");
+      toast.error("Error en el proceso");
       console.error(error);
     } finally {
       setIsUploading(false);
@@ -72,7 +85,7 @@ const FotoPerfil: React.FC = () => {
   };
 
   return (
-    <div className="w-full p-4  sm:px-6 lg:px-0 flex flex-col items-center justify-center gap-6 rounded-lg shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
+    <div className="w-full p-4 sm:px-6 lg:px-0 flex flex-col items-center justify-center gap-6 rounded-lg shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
       <h2 className="text-2xl sm:text-3xl font-bold text-[#230c89] mb-6 text-center">
         Seleccione foto de Perfil
       </h2>

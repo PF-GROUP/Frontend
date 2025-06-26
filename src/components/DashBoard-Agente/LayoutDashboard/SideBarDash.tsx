@@ -19,9 +19,17 @@ const SidebarDashboard: React.FC = () => {
   const {user} = useAuthContext()
 
   const [isOpen, setIsOpen] = useState(false);
-  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(
-    "https://res.cloudinary.com/dmvybzxnv/image/upload/v1750591603/nba83jcdphafyvexftsh.jpg"
-  );
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  // ✅ Cargar imagen de perfil desde el user
+  useEffect(() => {
+    if (user?.profilePictureUrl) {
+      setProfileImage(user.profilePictureUrl);
+    }
+  }, [user]);
+
+
+
 
   // Estado para guardar el nombre y apellido del agente
   const [agenteNombre, setAgenteNombre] = useState<string>("Cargando...");
@@ -87,10 +95,10 @@ const SidebarDashboard: React.FC = () => {
           <div className="flex items-center justify-start border-b border-gray-400 pb-4 md:mr-6">
             
             <Link href={"/DashboardAgente?view=cambiar-foto-perfil"} className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-blue-600">
-              {profileImageUrl ? (
+              {profileImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={profileImageUrl}
+                  src={profileImage}
                   alt="Foto perfil agente" 
                   className="w-full h-full object-cover"
                 />
@@ -140,6 +148,7 @@ const SidebarDashboard: React.FC = () => {
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
                 <li><Link href="/DashboardAgente?view=subir-propiedad" className="block text-gray-800 hover:text-[#870505] transition-colors">Subir y gestionar propiedades</Link></li>
                 <li><Link href="/DashboardAgente?view=borrar-propiedad" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Borrar propiedades</Link></li>
+                <li><Link href="/DashboardAgente?view=borrar-propiedad" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">ver y editar imagenes</Link></li>
               </ul>
             </details>
           </div>
@@ -186,7 +195,6 @@ const SidebarDashboard: React.FC = () => {
           </div>
         </div>
 
-       
       </div>
     </>
   );
