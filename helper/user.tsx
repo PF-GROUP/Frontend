@@ -8,7 +8,7 @@
 //   email: "admin@kasapp.com",
 //   phone: "+54 911 1234 5678",
 //   password: "admin123",
-//   rol: 0,
+//   isAdmin: true,
 // };
 
 

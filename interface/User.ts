@@ -5,20 +5,22 @@
 export interface UserDTO {
   id: number;
   name: string;
-  surname: string;
+  surname?: string;
   email: string;
-  phone: string;
+  phone?: string;
   password?: string;
-  rol: "admin" | "User";
+  isAdmin: boolean;
+  agencyId?: number | null;
 }
 
 export interface CreateUserDTO {
   name: string;
-  surname: string;
+  surname?: string;
   email: string;
-  phone: string;
-  password: string;
-  rol: "admin" | "User";
+  phone?: string;
+  password?: string;
+  isAdmin: boolean;
+  agencyId?: number | null;
 }
 
 export interface LoginUserDTO {
