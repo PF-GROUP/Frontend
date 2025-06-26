@@ -5,6 +5,7 @@ import { getAgencies } from "@/services/agenciasServise";
 import BannerAgencia from "../../../components/AgenciaComponents/BannerAgencia";
 import FooterAgencia from "@/components/AgenciaComponents/FooterAgencia";
 import { notFound } from "next/navigation";
+import { useEffect } from "react";
 
 interface Props {
   params: { slug: string };
@@ -16,9 +17,13 @@ function toSlug(name: string) {
 }
 
 export default function AgenciaLanding({ params, SecondaryColor }: Props) {
-  
-  getAgencies();
-  console.log("Agencias:", agencias);
+  const [agenciaBySlug , setAgenciaBySlug] = useState<Agencia | null>(null);
+
+  useEffect(() => {
+    
+    getAgencies();
+    console.log("Agencias:", agencias);
+  })
 
   
   const { slug } = params;

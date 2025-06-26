@@ -12,3 +12,12 @@ export const getAllAgencies = async () => {
 };
 
 
+export const getAgencyBySlug = async (slug: string) => {
+  try {
+    const response = await apiService.get(`/agency/by-slug/${slug}`, true);
+    return response;
+  } catch (error) {
+    console.error("Error al obtener la agencia por slug:", error);
+    return null;
+  }
+};
