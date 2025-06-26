@@ -1,39 +1,24 @@
-// import { agencias } from "../../../../helper/DatosAgencia";
-// import { notFound } from "next/navigation";
-import { getAgencies } from "@/services/agenciasServise";
+"use client";
 
-import BannerAgencia from "../../../components/AgenciaComponents/BannerAgencia";
+import {useAgency} from "../../../../context/agencyContext";
+import BannerAgencia from "@/components/AgenciaComponents/BannerAgencia";
 import FooterAgencia from "@/components/AgenciaComponents/FooterAgencia";
+import Loader from "@/components/Loader/Loader";
 import { notFound } from "next/navigation";
-import { useEffect } from "react";
 
-interface Props {
-  params: { slug: string };
-  SecondaryColor: string;
-}
 
-function toSlug(name: string) {
-  return name.toLowerCase().replace(/\s+/g, "-");
-}
 
-export default function AgenciaLanding({ params, SecondaryColor }: Props) {
-  const [agenciaBySlug , setAgenciaBySlug] = useState<Agencia | null>(null);
-
-  useEffect(() => {
-    
-    getAgencies();
-    console.log("Agencias:", agencias);
-  })
-
-  
-  const { slug } = params;
-  const agencia = agencias.find((a) => toSlug(a.name) === slug);
-  console.log(SecondaryColor)
+export default function AgenciaLanding() {
+  const { agencia, loading } = useAgency();
+   if (loading) return (
+    <div className="flex items-center justify-center h-screen">
+      <Loader />
+    </div>
+   );
   if (!agencia) return notFound();
-
   return (
     <div className="min-h-screen flex flex-col">
-
+      
       <BannerAgencia
         bannerImageUrl={agencia.customization.banner}
         logoImage={agencia.customization.logoImage}
@@ -47,7 +32,6 @@ export default function AgenciaLanding({ params, SecondaryColor }: Props) {
           color: agencia.customization.mainColors,
         }}
       >
-        
         <div
           className="w-full max-w-3xl bg-gray-200 rounded-lg p-6 shadow-md"
           style={{
@@ -66,6 +50,7 @@ export default function AgenciaLanding({ params, SecondaryColor }: Props) {
         </div>
       </main>
 
+      <FooterAgencia  />
     </div>
   );
 }

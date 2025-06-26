@@ -1,71 +1,69 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { useAgency } from "../../../context/agencyContext";
 
-interface NavbarAgenteProps {
-  slug: string;
-  navbarColor: string;
-  buttonColor: string;
-  logoImage: string;
-  agenciaName: string;
-}
-
-export default function NavbarAgente({
-  slug,
-  navbarColor,
-  buttonColor,
-  logoImage,
-  agenciaName,
-}: NavbarAgenteProps) {
+export default function NavbarAgente() {
   const [isOpen, setIsOpen] = useState(false);
+  const { agencia, loading } = useAgency();
+
+  if (loading || !agencia) return null;
+
+  const { name, customization } = agencia;
+  const slug = agencia.slug;
 
   return (
-    <nav className="w-full" style={{ backgroundColor: navbarColor }}>
-      <div className="max-w-7xl mx-auto flex flex-wrap items-center px-4 py-3">
-        
-        <div className="flex items-center gap-3 md:justify-start">
-          <img src={logoImage} alt={`${slug} logo`} className="h-12 w-auto" />
-          <Link href={`/agencia/${slug}/home`} className="text-white font-bold text-xl">
-            {agenciaName}
-          </Link>
-        </div>
+    <nav
+      className="relative flex justify-between items-center px-6 py-4"
+      style={{ backgroundColor: customization.navbarColor }}
+    >
+      {/* Logo + nombre */}
+      <Link href={`/agencia/${slug}/home`} className="flex items-center space-x-3 h-full">
+        <img
+          src={customization.logoImage}
+          alt={`${slug} logo`}
+          className="object-contain h-12 w-auto"
+        />
+        <span className="text-xl font-bold text-white">{name}</span>
+      </Link>
 
-        
-        <div className="ml-auto md:hidden">
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="text-white focus:outline-none"
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-
-        
-        <div className="hidden md:flex items-center gap-6 ml-auto">
-          <Link href={`/agencia/${slug}/home`} className="text-white">
-            Home
-          </Link>
-          <Link
-            href={`/agencia/${slug}/contacto`}
-            className="text-white px-4 py-2 rounded"
-            style={{ backgroundColor: buttonColor }}
-          >
-            Contacto
-          </Link>
-        </div>
+      {/* Menú escritorio */}
+      <div className="hidden md:flex items-center space-x-6">
+        <Link href={`/agencia/${slug}/home`} className="text-white hover:underline">
+          Home
+        </Link>
+        <Link
+          href={`/agencia/${slug}/contacto`}
+          className="text-white px-4 py-2 rounded"
+          style={{ backgroundColor: customization.buttonColor }}
+        >
+          Contacto
+        </Link>
       </div>
 
+      {/* Botón menú móvil */}
+      <button
+        className="md:hidden flex items-center space-x-2 text-white focus:outline-none"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Toggle menu"
+      >
+        {isOpen ? <X size={24} /> : <Menu size={24} />}
+        <span>Menú</span>
+      </button>
+
+      {/* Menú móvil desplegable */}
       {isOpen && (
-        <div className="md:hidden px-4 pb-4 flex flex-col gap-3">
-          <Link href={`/agencia/${slug}/home`} className="text-white">
+        <div className="absolute right-6 top-full mt-2 md:hidden flex flex-col space-y-2 bg-white rounded shadow-lg p-4 z-50" style={{ minWidth: 160 }}>
+          <Link href={`/agencia/${slug}/home`} className="text-[#4A0E1B] font-semibold hover:underline">
             Home
           </Link>
           <Link
             href={`/agencia/${slug}/contacto`}
             className="text-white px-4 py-2 rounded text-center"
-            style={{ backgroundColor: buttonColor }}
+            style={{ backgroundColor: customization.buttonColor }}
           >
             Contacto
           </Link>

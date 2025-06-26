@@ -21,3 +21,13 @@ export const getAgencyBySlug = async (slug: string) => {
     return null;
   }
 };
+
+export const getPropertyById = async (id: string) => {
+  try {
+    const response = await apiService.get(`/property/${id}`, true);
+    return response;
+  } catch (error) {
+    console.error("Error al obtener la agencia por ID:", error);
+    return null;
+  }
+};
