@@ -6,8 +6,8 @@ import toast from 'react-hot-toast';
 import { CreateProperty } from '@/services/subirPropiedad';
 import { validationSchema } from '../../validacionesDashBoard/propiedades';
 import { IPropertyForm } from '../../../../../interface/DashboardAgente/subirPropiedadDTO';
-import { useAuthContext } from '../../../../../context/authContext';
 import { useState } from 'react';
+import { useAuthContext } from '../../../../../context/authContext';
 
 
 const DashboardPage = () => {
@@ -55,7 +55,7 @@ const DashboardPage = () => {
         {propertyId ? (
           <UploadImageForm propertyId={propertyId as string} />
         ) : (
-          <div className="border-2 border-dashed border-gray-400 rounded-lg p-6 text-center text-gray-600">
+          <div className="border-2 border-dashed bg-gray-200 border-gray-400 rounded-lg p-6 text-center text-gray-600">
             Primero completá y enviá los datos del inmueble para poder subir las imágenes.
           </div>
         )}

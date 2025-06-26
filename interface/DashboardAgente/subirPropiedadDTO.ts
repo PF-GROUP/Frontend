@@ -27,4 +27,5 @@ export interface IPropertyForm {
     rooms: number;
     description: string;
     id_images?: string[]; // Opcional si todavía no se subieron imágenes
+    agency: string | number
 }
