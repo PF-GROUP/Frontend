@@ -2,7 +2,7 @@
 
 import {useAgency} from "../../../../context/agencyContext";
 import BannerAgencia from "@/components/AgenciaComponents/BannerAgencia";
-import FooterAgencia from "@/components/AgenciaComponents/FooterAgencia";
+
 import Loader from "@/components/Loader/Loader";
 import { notFound } from "next/navigation";
 
@@ -50,7 +50,6 @@ export default function AgenciaLanding() {
         </div>
       </main>
 
-      <FooterAgencia  />
     </div>
   );
 }
