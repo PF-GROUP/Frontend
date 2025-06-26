@@ -1,77 +1,48 @@
-
-import React, { ReactNode, useEffect } from "react";
-import { agencias } from "../../../../helper/DatosAgencia";
-// import { notFound } from "next/navigation";
-import NavbarAgente from "../../../components/AgenciaComponents/NavbarAgente";
-import { Metadata } from "next";
+// app/agencia/[slug]/layout.tsx
+import { AgencyProvider } from "../../../../context/agencyContext";
+import { ReactNode } from "react";
+import NavbarAgente from "@/components/AgenciaComponents/NavbarAgente";
 import FooterAgencia from "@/components/AgenciaComponents/FooterAgencia";
-import { notFound } from "next/navigation";
-import { getAgencies } from "@/services/agenciasServise";
 
-interface LayoutProps {
-  children: ReactNode;
-  params: {
-    slug: string;
-  };
+
+export  function generateMetadata({ params }: { params: { slug: string } }) {
+
+   try {
+        function slugToTitle(slug: string): string {
+  return slug
+    .split("-")              
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1)) 
+    .join(" ");               
 }
-
-
-  const agencias = getAgencies();
-  console.log("Agencias:", agencias);
-
-
-function toSlug(name: string) {
-  return name.toLowerCase().replace(/\s+/g, "-");
-}
-
-
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const agencia = agencias.find((a) => toSlug(a.name) === params.slug);
-
-  if (!agencia) {
+    const agency = slugToTitle(params.slug);
     return {
-      title: "Agencia no encontrada",
-      description: "La agencia solicitada no existe",
-      icons: "iconoKasapp.png",
+      title: `${agency} - KassApp`,
+      description: "Página oficial de la agencia inmobiliaria",
+      icons: `/iconoKasapp.png`,
+    };
+  } catch (error) {
+    console.error("Error en generateMetadata:", error);
+    return {
+      title: "KassApp",
+      description: "Página oficial de la agencia inmobiliaria",
     };
   }
-
-  return {
-    title: `${agencia.name}`,
-    description: agencia.description || "Página oficial de la agencia inmobiliaria",
-    icons: `${agencia.customization.logoImage}`,
-  };
 }
 
-export default function LayoutAgencia({ children, params }: LayoutProps) {
-  const { slug } = params;
-
-  const agencia = agencias.find((a) => toSlug(a.name) === slug);
-
-   if (!agencia) {
-      return notFound()
-    }
-
+export default function AgenciaLayout({
+  children,
+  params,
+}: {
+  children: ReactNode;
+  params: { slug: string };
+}) {
   return (
-    <>
-      <NavbarAgente
-        slug={slug}
-        navbarColor={agencia.customization.navbarColor}
-        buttonColor={agencia.customization.buttonColor}
-        logoImage={agencia.customization.logoImage}
-        agenciaName={agencia.name}
-      />
-
-      <div
-        style={{
-          backgroundColor: agencia.customization.backgroundColor,
-          minHeight: "100vh",
-          color: agencia.customization.mainColors,
-        }}
-      >
-        {children}
+    <AgencyProvider slug={params.slug}>
+      <div className="min-h-screen flex flex-col">
+        <NavbarAgente />
+        <main className="flex-grow">{children}</main>
+        <FooterAgencia />
       </div>
-      <FooterAgencia agenciaName={agencia.name} />
-    </>
+    </AgencyProvider>
   );
 }

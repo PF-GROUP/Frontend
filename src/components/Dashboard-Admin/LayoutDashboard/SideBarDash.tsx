@@ -80,35 +80,38 @@ const SidebarDashboard: React.FC<SidebarDashboardProps> = ({
     setPreviewUrl(URL.createObjectURL(file));
   };
 
-  const handleUpload = async () => {
-    if (!selectedFile || !user?.id) {
-      toast.error("No hay imagen seleccionada o el usuario no está identificado.");
-      return;
+const handleUpload = async () => {
+  if (!selectedFile || !user?.id) {
+    toast.error("No hay imagen seleccionada o el usuario no está identificado.");
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    toast.loading("Subiendo imagen...", { id: "upload" });
+
+    const response = await postFotoDePerfil(user.id, formData);
+
+    if (response?.profilePictureUrl) {
+      toast.success("Foto de perfil actualizada con éxito", { id: "upload" });
+
+      // Actualizás el admin en el estado local
+      setAdmin((prevAdmin: Admin | null) => ({
+        ...prevAdmin!,
+        profilePictureUrl: response.profilePictureUrl,
+      }));
+
+      closeModal();
+    } else {
+      toast.error("No se pudo actualizar la foto de perfil", { id: "upload" });
     }
-
-    try {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-      toast.success("Actualizando foto de perfil...");
-
-      const response = await postFotoDePerfil(user.id, formData);
-      if (response) {
-        toast.success("Foto de perfil actualizada con éxito");
-
-
-        setAdmin((prevAdmin: Admin | null) => ({
-          ...prevAdmin!,
-          profilePictureUrl: response.profilePictureUrl,
-        }));
-
-        closeModal();
-      }
-    } catch (error) {
-      console.error("Error al subir la imagen:", error);
-      toast.error("Error al subir la imagen");
-    }
-  };
-
+  } catch (error) {
+    console.error("Error al subir la imagen:", error);
+    toast.error("Error al subir la imagen", { id: "upload" });
+  }
+};
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-[rgb(240,241,244)] pt-0 mt-0">
       <div className="flex flex-col border border-gray-300 bg-white w-full md:w-[330px] pl-5 pt-4 rounded-lg rounded-tl-none mt-4 shadow-[1.5px_0_5px_-1px_rgba(0,0,0,0.5)] h-[90vh]">

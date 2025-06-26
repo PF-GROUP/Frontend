@@ -1,50 +1,94 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useState } from "react";
-import { agencias } from "../../../../../../helper/DatosAgencia";
-import { notFound } from "next/navigation";
+import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Share, ChevronUp, ChevronDown } from "react-feather";
-
-function toSlug(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/[^\w\-]+/g, "")
-    .replace(/\-\-+/g, "-")
-    .replace(/^-+/, "")
-    .replace(/-+$/, "");
+import { getPropertyById } from "../../../../../services/agenciaService";
+import Loader from "@/components/Loader/Loader";
+import { useAgency } from "../../../../../../context/agencyContext";
+import Link from "next/link";
+import { AlertTriangle } from "lucide-react";
+import {use} from "react";interface Params {
+  params: Promise<{ slug: string; id: string }>;
 }
 
-export default function PropiedadDetalle({ params }: { params: { slug: string; id: string } }) {
+export default function PropiedadDetalle({ params }: Params) {
+  const { id} = use(params);
+  const [propiedad, setPropiedad] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
   const [actualImage, setActualImage] = useState(0);
   const [copied, setCopied] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [dateError, setDateError] = useState("");
+  const { agencia } = useAgency();
 
-  const agencia = agencias.find((a) => toSlug(a.name) === params.slug);
-  if (!agencia) return notFound();
+  useEffect(() => {
+    const fetchPropiedad = async () => {
+      setLoading(true);
+      const response = await getPropertyById(id);
+      if (response) setPropiedad(response);
+      setLoading(false);
+    };
 
-  const propiedad = agencia.properties.find((p) => p.id === parseInt(params.id));
-  if (!propiedad) {
+    fetchPropiedad();
+  }, [id]);
+
+  if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-center p-6"
-        style={{ backgroundColor: agencia.customization.backgroundColor, color: agencia.customization.mainColors }}
-      >
-        <img src={agencia.customization.logoImage} alt="Logo" className="w-32 mb-6" />
-        <h1 className="text-2xl font-bold">Propiedad no encontrada</h1>
-        <p>Revisá que el enlace sea correcto o volvé a la página de inicio de {agencia.name}.</p>
-        <a
-          href={`/agencia/${params.slug}`}
-          className="mt-4 px-4 py-2 rounded-lg text-white"
-          style={{ backgroundColor: agencia.customization.buttonColor }}
+      <div className="flex items-center justify-center h-screen">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (!agencia) {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[rgb(240,241,244)] text-gray-800 p-6">
+      <div className="bg-white shadow-lg rounded-2xl p-8 flex flex-col items-center text-center max-w-md w-full">
+        <AlertTriangle className="text-[#9b0624] mb-4" size={64} />
+        <h1 className="text-4xl font-extrabold mb-2">404</h1>
+        <p className="text-lg font-semibold mb-4">Página no encontrada</p>
+        <p className="text-gray-600 mb-6">
+          Lo sentimos, la página que estás buscando no existe o fue movida.
+        </p>
+        <Link
+          href="/home"
+          className="bg-[#9b0624] hover:bg-[#870505] text-white font-semibold py-2 px-6 rounded-full transition-colors"
         >
           Volver al inicio
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+  if (!propiedad || !propiedad.agency) {
+    return (
+      <div className="flex flex-col items-center justify-center max-w-md mx-auto min-h-screen px-4 text-center">
+        <img
+          src={agencia.customization.logoImage}
+          alt="Logo Agencia"
+          className="h-20 w-20 mb-6 rounded-full shadow-md object-contain"
+        />
+        <h1 className="text-4xl font-bold text-gray-800 mb-4">
+          Propiedad no encontrada
+        </h1>
+        <p className="text-gray-600 text-base mb-6">
+          No pudimos encontrar la propiedad que estás buscando. Puede que haya sido eliminada o que el enlace esté roto.
+        </p>
+        <a
+          href={`/agencia/${agencia.slug}/home`}
+          className="inline-block px-6 py-3 text-white font-semibold rounded-lg shadow-md hover:opacity-90 transition"
+          style={{ backgroundColor: agencia.customization.buttonColor }}
+        >
+          Volver al inicio de {agencia.name}
         </a>
       </div>
     );
   }
+
+  const { agency } = propiedad;
 
   const handleShare = () => {
     const url = window.location.href;
@@ -54,11 +98,8 @@ export default function PropiedadDetalle({ params }: { params: { slug: string; i
     });
   };
 
-  
-
-
   const handleWhatsapp = () => {
-    const phone = agencia.agentUser.phone;
+    const phone = agency.agentUser.phone;
     const text = `Hola! Me interesa agendar una visita para la propiedad "${propiedad.name}" (ID: ${propiedad.id}) que cuesta $${propiedad.price.toLocaleString()} el día ${selectedDate}`;
     const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(text)}`;
     window.open(url, "_blank");
@@ -67,6 +108,7 @@ export default function PropiedadDetalle({ params }: { params: { slug: string; i
   };
 
   return (
+    <div>
     <div className="min-h-screen bg-gray-100 py-10 px-4 md:px-6 flex flex-col justify-center items-center">
       <div className="max-w-6xl w-full bg-white rounded-2xl shadow-2xl p-6 flex flex-col md:flex-row gap-6">
         <div className="flex flex-col md:flex-row gap-4 md:gap-6">
@@ -112,7 +154,7 @@ export default function PropiedadDetalle({ params }: { params: { slug: string; i
                 </button>
               </>
             )}
-            {propiedad.images.map((img, index) => (
+            {propiedad.images.map((img: any, index: number) => (
               <img
                 key={img.id}
                 src={img.file}
@@ -170,7 +212,7 @@ export default function PropiedadDetalle({ params }: { params: { slug: string; i
 
             <button
               onClick={handleShare}
-              className="flex items-center gap-2 text-sm px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg"
+              className="flex items-center gap-2 text-sm px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg cursor-pointer"
             >
               <Share size={16} />
               {copied ? "¡Copiado!" : "Compartir"}
@@ -180,7 +222,7 @@ export default function PropiedadDetalle({ params }: { params: { slug: string; i
           <div className="flex flex-col gap-2 mt-6">
             <button
               onClick={() => setShowModal(true)}
-              className="w-full bg-green-500 text-white py-2 rounded-lg text-center hover:bg-green-600"
+              className="w-full bg-green-500 text-white py-2 rounded-lg text-center hover:bg-green-600 cursor-pointer"
             >
               WhatsApp
             </button>
@@ -215,7 +257,7 @@ export default function PropiedadDetalle({ params }: { params: { slug: string; i
           }
         }}
         className={`w-full mb-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-          dateError ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-green-500"
+          dateError ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-green-500 cursor-pointer"
         }`}
       />
       {dateError && (
@@ -224,14 +266,14 @@ export default function PropiedadDetalle({ params }: { params: { slug: string; i
       <div className="flex justify-end gap-2 mt-4">
         <button
           onClick={() => setShowModal(false)}
-          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-sm font-medium"
+          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-sm font-medium cursor-pointer"
         >
           Cancelar
         </button>
         <button
           onClick={handleWhatsapp}
           disabled={!selectedDate || !!dateError}
-          className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 text-sm font-medium"
+          className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 text-sm font-medium cursor-pointer"
         >
           Enviar
         </button>
@@ -240,6 +282,7 @@ export default function PropiedadDetalle({ params }: { params: { slug: string; i
   </div>
 )}
 
+    </div>
     </div>
   );
 }

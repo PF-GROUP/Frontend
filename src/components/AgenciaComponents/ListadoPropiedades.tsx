@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState, useEffect } from "react";
 
@@ -8,7 +9,7 @@ interface Image {
 }
 
 interface Propiedad {
-  id: number;
+  id: string;
   name: string;
   description: string;
   price: number;
@@ -18,7 +19,7 @@ interface Propiedad {
   address: string;
   city: string;
   m2: number;
-  bathroom: number;
+  bathrooms: number;
   rooms: number;
   date: string;
   images: Image[];
@@ -57,7 +58,7 @@ export default function ListadoPropiedades({
   const tiposPropiedad = Array.from(
     new Set(propiedades.map((p) => p.type_of_property))
   );
-  const banos = Array.from(new Set(propiedades.map((p) => p.bathroom))).sort((a, b) => a - b);
+  const banos = Array.from(new Set(propiedades.map((p) => p.bathrooms))).sort((a, b) => a - b);
   const piezas = Array.from(new Set(propiedades.map((p) => p.rooms))).sort((a, b) => a - b);
 
 
@@ -67,7 +68,7 @@ export default function ListadoPropiedades({
       (filtroCiudad === "" || p.city === filtroCiudad) &&
       (filtroTipo === "" || p.type === filtroTipo) &&
       (filtroTipoPropiedad === "" || p.type_of_property === filtroTipoPropiedad) &&
-      (filtroBanos === "" || p.bathroom === Number(filtroBanos)) &&
+      (filtroBanos === "" || p.bathrooms === Number(filtroBanos)) &&
       (filtroPiezas === "" || p.rooms === Number(filtroPiezas)) &&
       (filtroPrecioMin === "" || p.price >= Number(filtroPrecioMin)) &&
       (filtroPrecioMax === "" || p.price <= Number(filtroPrecioMax)) &&
@@ -240,7 +241,7 @@ export default function ListadoPropiedades({
               </p>
               <div className="flex text-xs text-gray-500 gap-3 mt-2">
                 <span>🛏 {prop.rooms} hab</span>
-                <span>🛁 {prop.bathroom} baños</span>
+                <span>🛁 {prop.bathrooms} baños</span>
                 <span>📐 {prop.m2} m²</span>
               </div>
             </div>

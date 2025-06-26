@@ -3,7 +3,7 @@ import { PropertyType, PropertyStatus, TransactionType } from './enum';
 import { IImage, ICreateImage } from './Image'; 
 
 export interface IProperty {
-  id: number;
+  id: string;
   name: string;
   type_of_property: PropertyType;
   status: PropertyStatus;
