@@ -1,55 +1,99 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { jwtDecode } from "jwt-decode"
+import { userPayload } from "@/interfaces/userPayload.dto"
 
 // 1. Definir rutas protegidas y públicas
-const protectedRoutes = ["/DashboardAdmin", "/DashboardAgente", "/stripe"]
-const publicRoutes = ["/login", "/register", "/"]
+const protectedRoutes = ["/DashboardAgente"]
+const onBoardingRoutes = ["/stripe"]
+const adminRoutes = ["/DashboardAdmin"]
+const publicRoutes = ["/login", "/register"]
 
 export default function middleware(request: NextRequest) {
   console.log("🚀 Middleware ejecutándose en:", request.nextUrl.pathname)
   const path = request.nextUrl.pathname
   const isProtectedRoute = protectedRoutes.includes(path)
+  const isOnBoardingRoute = onBoardingRoutes.includes(path)
+  const isAdminRoute = adminRoutes.includes(path)
   const isPublicRoute = publicRoutes.includes(path)
 
   // 2. Obtener la cookie del request
   const sessionToken = request.cookies.get("token")?.value
-  const isAuthenticated = verifySession(sessionToken)
+  const session = verifySession(sessionToken)
+  const { isAuthenticated, isAdmin, isOnBoarding, isPay } = session
+
+  if (isAuthenticated && isAdmin) {
+      return NextResponse.next()
+  }
 
   // 3. Redirección si no está autenticado
   if (isProtectedRoute && !isAuthenticated) {
     return NextResponse.redirect(new URL("/login", request.nextUrl))
   }
+  if (isProtectedRoute && !isPay && isAuthenticated) {
+    return NextResponse.redirect(new URL("/stripe", request.nextUrl))
+  }
+  if (isProtectedRoute && isOnBoarding && isAuthenticated) {
+    return NextResponse.redirect(new URL("/stripe", request.nextUrl))
+  }
+  if (isOnBoardingRoute && !isOnBoarding) {
+    return NextResponse.redirect(new URL("/", request.nextUrl))
+  }
+
+  if (isAdminRoute && !isAdmin) {
+    return NextResponse.redirect(new URL("/", request.nextUrl))
+  }
+  if (isAdminRoute && !isAuthenticated) {
+    return NextResponse.redirect(new URL("/login", request.nextUrl))
+  }
 
   // 4. Redirección si ya está logueado e intenta ir a login/register
   if (isPublicRoute && isAuthenticated) {
-    const decoded = decryptSession(sessionToken!)
-    const role = decoded?.role
-    const targetPath = role === "admin" ? "/DashboardAdmin" : "/DashboardAgente"
+    const targetPath = isOnBoarding || isPay ? "/stripe" : "/DashboardAgente"
     return NextResponse.redirect(new URL(targetPath, request.nextUrl))
   }
 
   return NextResponse.next()
 }
 
-function verifySession(token: string | undefined): boolean {
-  if (!token) return false
+function verifySession(token: string | undefined): {
+  isAuthenticated: boolean
+  isAdmin: boolean
+  isOnBoarding: boolean 
+  isPay: string | undefined | boolean} {
+  if (!token) return {
+    isAuthenticated: false,
+    isAdmin: false,
+    isOnBoarding: false,
+    isPay: false
+  }
   try {
-    const decoded = jwtDecode(token)
-    console.log(decoded)
-    return !!decoded?.id
+    const user:userPayload = jwtDecode(token)
+    const isAdmin = user.isAdmin
+    const isPay = user.status
+    console.log(isAdmin)
+    console.log(isPay)
+    const isOnBoarding = user.onBoarding ? true : false
+    const isAuthenticated = true
+
+
+
+    return {
+      isAuthenticated,
+      isAdmin,
+      isOnBoarding,
+      isPay
+    }
   } catch {
-    return false
+    return {
+      isAuthenticated: false,
+      isAdmin: false,
+      isOnBoarding: false,
+      isPay: false
+    }
   }
 }
 
-function decryptSession(token: string) {
-  try {
-    return jwtDecode(token)
-  } catch {
-    return null
-  }
-}
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
