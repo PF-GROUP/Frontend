@@ -1,12 +1,12 @@
 
-export interface IImage {
+export interface ImageDTO {
   id: number; 
   file: string; 
   title?: string; 
   description?: string; 
 }
 
-export interface ICreateImage{
+export interface CreateImageDTO {
   id: number;
   file: string; 
   title?: string; 

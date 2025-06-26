@@ -37,7 +37,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 setUser(res as IUser);
                 setIsAuth(!!res);
             } catch {
-               setUser(null); 
+                console.log("Error al obtener el usuario");
+                setUser(null); 
             } finally{
                 setLoading(false);
             }

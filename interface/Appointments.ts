@@ -1,5 +1,5 @@
 
-export interface IAppointment {
+export interface AppointmentDTO {
   id: number;
   day: string; 
   time: string; 
@@ -9,7 +9,7 @@ export interface IAppointment {
   phone: string; 
 }
 
-export interface ICreateAppointment {
+export interface CreateAppointmentDTO {
   day: string;
   time: string;
   name: string;
