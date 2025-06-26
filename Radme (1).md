@@ -74,7 +74,8 @@ Este módulo proporciona los endpoints para subir y eliminar archivos de imagen 
     ```
 * **Acción Siguiente (Frontend)**: Una vez obtenida la URL (`response.url`), almacénala temporalmente. Si necesitas subir varios archivos (ej. logo y banner), repite la llamada para cada uno y guarda todas las URLs para el siguiente paso.
 
-### `DELETE /upload/image/:publicId`
+<!-- ESTA NO VA -->
+<!-- ### `DELETE /upload/image/:publicId`
 
 * **Descripción**: Elimina una imagen de Cloudinary utilizando su `publicId`.
 * **Método HTTP**: `DELETE`
@@ -98,7 +99,7 @@ Este módulo proporciona los endpoints para subir y eliminar archivos de imagen 
     }
     ```
 
----
+--- -->
 
 ## 🎨 Endpoints de Personalización (`CustomizationModule`)
 
