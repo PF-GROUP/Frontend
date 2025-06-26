@@ -47,3 +47,33 @@ export const getPagos = async () => {
 };
 
 
+export const getAgencySoftDeleted = async () => {
+  try {
+    const response = await apiService.get(`/agency/soft-removed`, true);
+    return response;
+  } catch (error) {
+    console.error("Error al obtener agencias suspendidas:", error);
+    return null;
+  }
+};
+
+
+export const postFotoDePerfil = async (id: string, formData: FormData) => {
+  try {
+    const response = await apiService.post(`/user/${id}/profile-picture`, formData, true);
+    return response;
+  } catch (error) {
+    console.error("Error al subir la foto de perfil:", error);
+    return null;
+  }
+};
+
+export const getAdmin = async (id: string) => {
+  try {
+    const response = await apiService.get(`/user/${id}`, true);
+    return response;
+  } catch (error) {
+    console.error("Error al obtener el admin:", error);
+    return null;
+  }
+};
