@@ -1,22 +1,22 @@
 
 import { CustomizationDTO, CreateCustomizationDTO } from './Customization';
-import { PropertyDTO } from './Property';
-import { UserDTO } from './User'; 
+import { IProperty } from './Property';
+import { IUser } from './User'; 
 
 
-export interface AgencyDTO {
+export interface IAgency {
   id: number;
   name: string;
   description: string;
-  customization: ICustomization;
-  properties: IProperty[]; // Foreign Key a 'Property', asumido como un array de propiedades de la agencia. ID property (FK)
-  user: IUser; // Foreign Key a 'User', ID usuario (agente)'.
+  customization: CustomizationDTO;
+  properties: IProperty; // Foreign Key a 'Property', asumido como un array de propiedades de la agencia. ID property (FK)
+  user: IUser ; // Foreign Key a 'User', ID usuario (agente)'.
   cuit_dni_m: string; // CUIT/DNI/Matrícula de la agencia.
   slug: string
 }
 
 
-export interface CreateAgencyDTO {
+export interface ICreateAgency {
   name: string;
   description: string;
   customization?: CreateCustomizationDTO;

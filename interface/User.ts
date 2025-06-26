@@ -2,8 +2,6 @@
 
 
 
-export interface UserDTO {
-  id: number;
 export interface IUser {
   id: string;
   name: string;
@@ -15,7 +13,7 @@ export interface IUser {
   agencyId?: number | null;
 }
 
-export interface CreateUserDTO {
+export interface ICreateUser {
   name: string;
   surname?: string;
   email: string;
@@ -25,7 +23,7 @@ export interface CreateUserDTO {
   agencyId?: number | null;
 }
 
-export interface LoginUserDTO {
+export interface ILoginUser {
   email: string;
   password: string;
 }

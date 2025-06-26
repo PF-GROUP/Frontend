@@ -1,8 +1,8 @@
 
 import { PropertyType, PropertyStatus, TransactionType } from './enum';
-import { ImageDTO, CreateImageDTO } from './Image'; 
+import { IImage, ICreateImage } from './Image'; 
 
-export interface PropertyDTO {
+export interface IProperty {
   id: number;
   name: string;
   type_of_property: PropertyType;
@@ -12,7 +12,7 @@ export interface PropertyDTO {
   city: string;
   price: number;
   m2: number;
-  images: ImageDTO[];
+  images: IImage[];
   bathroom: number;
   description: string;
   rooms: number;
@@ -20,7 +20,7 @@ export interface PropertyDTO {
   date: string;
 }
 
-export interface CreatePropertyDTO {
+export interface ICreateAgency {
   name: string;
   type_of_property: PropertyType;
   status: PropertyStatus;
@@ -29,7 +29,7 @@ export interface CreatePropertyDTO {
   city: string;
   price: number;
   m2: number;
-  images: CreateImageDTO[];
+  images: ICreateImage[];
   bathroom: number;
   description: string;
   rooms: number;
@@ -46,7 +46,7 @@ export interface UpdatePropertyDTO {
   city?: string;
   price?: number;
   m2?: number;
-  images?: (ImageDTO | CreateImageDTO)[];
+  images?: (IImage | ICreateImage)[];
   bathroom?: number;
   description?: string;
   rooms?: number;
