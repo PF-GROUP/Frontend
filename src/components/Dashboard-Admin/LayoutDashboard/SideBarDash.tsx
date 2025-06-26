@@ -232,8 +232,8 @@ const SidebarDashboard: React.FC<SidebarDashboardProps> = ({
 
       {/* Modal para subir imagen */}
       {isModalOpen && (
-        <div className="fixed inset-0  flex items-center justify-center bg-black/70 bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 w-96 shadow-lg relative">
+        <div className="fixed z-50 inset-0  flex items-center justify-center bg-black/70 bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 w-96 shadow-lg relative z-50">
             <h3 className="text-lg font-bold mb-4">Subir nueva foto de perfil</h3>
             <label htmlFor="file-upload" className="flex items-center justify-center gap-2 mb-4 border text-black align-middle font-semibold text-lg py-2 px-4 rounded-lg cursor-pointer">
               <Upload size={22} /> Subir imagen
