@@ -141,7 +141,7 @@ const FormRegister: React.FC = () => {
   const validateStepFields = (
     step: number,
     values: RegisterUserDtoFront,
-    errors: Record<string, any>
+    errors: Record<string, string>
   ) => {
     const stepFields: Record<number, string[]> = {
       1: ["name", "surname", "email", ...(googleData ? [] : ["password"])],

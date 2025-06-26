@@ -1,6 +1,6 @@
 "use client";
-import React from "react";
-
+import React, { useEffect } from "react";
+import { getPagos } from "@/services/adminService";
 type Pago = {
   id: number;
   inmobiliaria: string;
@@ -9,11 +9,6 @@ type Pago = {
   estado: "Pagado" | "Pendiente" | "Rechazado";
 };
 
-const pagosMock: Pago[] = [
-  { id: 1, inmobiliaria: "Inmo Sur", fecha: "2025-06-01", monto: 12000, estado: "Pagado" },
-  { id: 2, inmobiliaria: "Propiedades Norte", fecha: "2025-06-05", monto: 15000, estado: "Pendiente" },
-  { id: 3, inmobiliaria: "Delta Hogar", fecha: "2025-05-28", monto: 8000, estado: "Rechazado" },
-];
 
 const estadoEstilo = {
   Pagado: "bg-green-100 text-green-700",
@@ -22,6 +17,16 @@ const estadoEstilo = {
 };
 
 export default function PagosInmobiliarias() {
+  const [pagos, setPagos] = React.useState<Pago[]>([]);
+  
+  useEffect(() => {
+    const fetchPagos = async () => {
+      const pagos = await getPagos();
+      setPagos(pagos);
+    };
+    fetchPagos();
+  }, [])
+  
   return (
     <div className="w-full px-4 py-8">
       <div className="bg-white p-6 md:p-8 rounded-2xl shadow-md w-full max-w-5xl mx-auto">
@@ -29,11 +34,11 @@ export default function PagosInmobiliarias() {
           Pagos de Inmobiliarias
         </h2>
 
-        {pagosMock.length === 0 ? (
+        {pagos.length === 0 ? (
           <p className="text-center text-gray-500">No hay pagos registrados.</p>
         ) : (
           <div className="space-y-4">
-            {pagosMock.map((pago) => (
+            {pagos.map((pago) => (
               <div
                 key={pago.id}
                 className="flex flex-col md:flex-row md:justify-between md:items-center border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all"

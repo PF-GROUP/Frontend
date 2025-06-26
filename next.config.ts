@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
       {
         source: '/api/:path*',
         destination: 'http://localhost:3000/:path*',
-        // destination: 'http://191.235.34.31:3000/:path*',
+        // destination: 'http://kasapp.serveminecraft.net:3000/:path*',
       },
     ];
   },

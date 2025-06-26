@@ -4,6 +4,8 @@
 
 export interface UserDTO {
   id: number;
+export interface IUser {
+  id: string;
   name: string;
   surname?: string;
   email: string;
