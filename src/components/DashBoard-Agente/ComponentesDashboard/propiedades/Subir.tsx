@@ -52,6 +52,8 @@ const DashboardPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
 
         {/* Formulario de Imágenes */}
+
+        {/* AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA */}
         {/* cambiar luego a: propertyId */}
         {true ? (
           <UploadImageForm propertyId={propertyId as string} />

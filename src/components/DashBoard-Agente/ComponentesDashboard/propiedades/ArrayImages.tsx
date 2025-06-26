@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Upload, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { SendArrayImages } from "@/services/subirPropiedad";
+import { uploadImageToServer } from "@/services/subirPropiedad";
 
 interface UploadImageFormProps {
   propertyId: string;
@@ -11,68 +12,70 @@ interface UploadImageFormProps {
 
 interface ImageData {
   file: File;
-  base64: string;
   title: string;
   description: string;
 }
 
 const UploadImageForm = ({ propertyId }: UploadImageFormProps) => {
   const [image, setImage] = useState<ImageData | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const toBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-    });
+  const handleFile = async (file: File) => {
+    setImage({ file, title: "", description: "" });
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const base64 = await toBase64(file);
-      setImage({
-        file,
-        base64,
-        title: "",
-        description: "",
-      });
+    if (file) await handleFile(file);
+  };
+
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      await handleFile(file);
+    } else {
+      toast.error("Solo se permiten imágenes.");
     }
   };
 
-  const handleChange = (field: keyof ImageData, value: string) => {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleChange = (field: keyof Omit<ImageData, "file">, value: string) => {
     if (!image) return;
-    setImage({
-      ...image,
-      [field]: value,
-    });
+    setImage({ ...image, [field]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!image) {
-      toast.error("Debes subir una imagen.");
-      return;
-    }
+    if (!image) return toast.error("Debes subir una imagen.");
+    if (!image.title.trim() || !image.description.trim())
+      return toast.error("Todos los campos son obligatorios.");
 
-    if (!image.title.trim() || !image.description.trim()) {
-      toast.error("Todos los campos son obligatorios.");
-      return;
-    }
+    try {
+      setLoading(true);
 
-    const body = [
-      {
-        file: image.base64,
+      const responseUpload = await uploadImageToServer(image.file);
+      if (!responseUpload?.secure_url) throw new Error("URL no recibida desde el backend");
+
+      const body = {
+        file: responseUpload.secure_url,
         title: image.title,
         description: image.description,
         propertyId,
-      },
-    ];
+      };
 
-    try {
       const response = await SendArrayImages(body);
-      if (response?.success) {
+      if (response?.data?.id) {
         toast.success("¡Imagen subida con éxito!");
         setImage(null);
       } else {
@@ -81,8 +84,17 @@ const UploadImageForm = ({ propertyId }: UploadImageFormProps) => {
     } catch (err) {
       console.error(err);
       toast.error("Ocurrió un error inesperado.");
+    } finally {
+      setLoading(false);
     }
   };
+
+  // CLASES dinámicas para el borde según estado
+  const containerBorderClass = isDragging
+    ? "border-2 border-dashed border-blue-500 bg-blue-100"
+    : image
+    ? "border-2 border-solid border-gray-300 bg-gray-50"
+    : "border-2 border-dashed border-gray-600 bg-gray-300";
 
   return (
     <div className="w-full p-4 md:p-6 md:pl-0 lg:pt-0">
@@ -93,26 +105,31 @@ const UploadImageForm = ({ propertyId }: UploadImageFormProps) => {
           </h2>
 
           <div className="w-full space-y-4 mt-7">
-            <div className="border border-black p-4 bg-gray-400 min-h-[300px] shadow overflow-y-auto">
+            <div
+              className={`${containerBorderClass} p-4 min-h-[300px] shadow overflow-y-auto`}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+            >
               {image ? (
-                <div className="bg-gray-200 p-3 rounded-md relative">
+                <div className="bg-gray-50 p-3 relative">
                   <img
                     src={URL.createObjectURL(image.file)}
                     alt="preview"
-                    className="w-full h-40 object-cover rounded-sm border mb-3"
+                    className="w-full h-80 bg-black object-contain border mb-3"
                   />
                   <input
                     type="text"
                     placeholder="Título"
                     value={image.title}
                     onChange={(e) => handleChange("title", e.target.value)}
-                    className="w-full mb-2 bg-white border p-1 rounded text-sm"
+                    className="w-full mb-2 bg-white border border-gray-400 p-1 rounded text-sm"
                   />
                   <textarea
                     placeholder="Descripción"
                     value={image.description}
                     onChange={(e) => handleChange("description", e.target.value)}
-                    className="w-full border p-1 bg-white rounded text-sm min-h-[60px]"
+                    className="w-full border p-1 bg-white rounded border-gray-400 text-sm min-h-[60px]"
                   />
                   <button
                     type="button"
@@ -124,7 +141,7 @@ const UploadImageForm = ({ propertyId }: UploadImageFormProps) => {
                 </div>
               ) : (
                 <p className="text-white text-lg font-semibold text-center mt-11">
-                  Sube una imagen para esta propiedad
+                  Arrastra una imagen aquí o selecciónala abajo
                 </p>
               )}
             </div>
@@ -149,13 +166,17 @@ const UploadImageForm = ({ propertyId }: UploadImageFormProps) => {
           <div className="flex flex-col md:flex-row justify-between items-center w-full gap-4 pt-2">
             <button
               type="submit"
-              className="text-white bg-blue-700 py-3 px-4 rounded-lg w-full md:w-[250px] text-lg"
+              disabled={loading}
+              className={`text-white py-3 px-4 rounded-lg w-full md:w-[250px] text-lg ${
+                loading ? "bg-gray-500 cursor-not-allowed" : "bg-blue-700"
+              }`}
             >
-              Subir imagen
+              {loading ? "Subiendo..." : "Subir imagen"}
             </button>
             <button
               type="button"
               onClick={() => setImage(null)}
+              disabled={loading}
               className="text-white bg-red-600 py-3 px-4 text-lg rounded-lg w-full md:w-[200px]"
             >
               Cancelar
