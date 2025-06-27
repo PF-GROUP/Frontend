@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const axiosRes = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || "/api",
+    baseURL: process.env.NEXT_PUBLIC_API_URL || "/api" ,
 })
 
 const get = async (url:string,credentials:boolean = false) =>{

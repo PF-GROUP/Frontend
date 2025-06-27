@@ -1,127 +1,111 @@
 'use client';
 
-import { Upload } from 'lucide-react';
+import UploadImageForm from './ArrayImages';
 import { Formik } from 'formik';
-import { validationSchema } from '../../validacionesDashBoard/propiedades';
-import { CreateProperty } from '@/services/subirPropiedad';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
+import { CreateProperty } from '@/services/subirPropiedad';
+import { validationSchema } from '../../validacionesDashBoard/propiedades';
 import { IPropertyForm } from '../../../../../interface/DashboardAgente/subirPropiedadDTO';
+import { useState, useEffect } from 'react';
+import { useAuthContext } from '../../../../../context/authContext';
+
+
+interface ITypeOfProperty {
+  id: string;
+  type: string;
+}
 
 const DashboardPage = () => {
-  const router = useRouter();
+  const [propertyId, setPropertyId] = useState<string | null>(null);
+  const [typeOptions, setTypeOptions] = useState<ITypeOfProperty[]>([]);
+  const { user } = useAuthContext();
+
+  const fetchTypeOfProperties = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/typeofproperty`);
+      
+      if (!response.ok) throw new Error('Error al obtener tipos de propiedad');
+      const data = await response.json();
+      setTypeOptions(data);
+    } catch (error) {
+      console.error('Error fetching property types:', error);
+      toast.error('No se pudieron cargar los tipos de propiedad');
+    }
+  };
+
+  useEffect(() => {
+    fetchTypeOfProperties();
+  }, []);
+
+  const initialValues: IPropertyForm = {
+    name: '',
+    status: 'Disponible', // Sólo disponible al crear
+    type: '',   // Alquiler o Venta
+    type_of_property_id: '',
+    address: '',
+    city: '',
+    price: 0,
+    m2: 0,
+    bathrooms: 0,
+    rooms: 0,
+    description: '',
+    id_images: [],
+    agency: '',
+  };
 
   const handleOnSubmit = async (values: IPropertyForm) => {
     try {
-      const response = await CreateProperty(values);
+      if (!user?.agencyId) {
+        toast.error('No se encontró la agencia del usuario.', { duration: 2500 });
+        return;
+      }
 
-      console.log("🧠 response completo:", response);
+      const postProperty = {
+        ...values,
+        agency: String(user.agencyId),
+      };
+
+      const response = await CreateProperty(postProperty);
 
       if (response && response.success === true) {
+        setPropertyId(response.data.id);
         toast.success('¡Propiedad Creada con Éxito!...', { duration: 2500 });
-        setTimeout(() => {
-          router.push('/home');
-        }, 2000);
       } else {
-        console.warn("⚠️ Hubo un Error al crear la Propiedad:", response);
         toast.error('Hubo un error al crear la propiedad.', { duration: 2000 });
       }
     } catch (error) {
-      console.error("❌ Error en los datos:", error);
+      console.warn('error', error);
       toast.error('Hubo un problema al querer crear la propiedad.', { duration: 2000 });
     }
   };
 
   return (
     <div className="w-full p-4 md:p-6 lg:pt-0">
-      <Formik
-        initialValues={{
-          name: '',
-          status: "",
-          type: '',
-          address: '',
-          city: '',
-          price: 0,
-          m2: 0,
-          bathrooms: 0,
-          rooms: 0,
-          description: '',
-          id_images: []
-        }}
-        onSubmit={handleOnSubmit}
-        validationSchema={validationSchema}
-      >
-        {({ handleChange, handleBlur, handleSubmit, values, errors, touched, setFieldValue }) => (
-        
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
-        <div className="flex flex-col items-start justify-start rounded-lg p-6 md:p-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
-        <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] mb-5">Seleccionar Imágenes</h2>
-        <div className="w-full space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
 
-    {/* Vista previa de imágenes */}
-      <div className=" border border-black p-4 bg-gray-400 min-h-[200px] shadow overflow-y-auto">
-          {values.id_images && values.id_images.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {values.id_images.map((file, index) => (
-                <div key={index} className="relative group ">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt={`img-${index}`}
-                    className="w-full h-28 object-cover rounded-sm border"
-                  />
-                  <button
-                    type="button"
-                    className="absolute top-1 right-1 bg-red-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition"
-                    onClick={() => {
-                      const newImages = values.id_images.filter((_, i) => i !== index);
-                      setFieldValue('id_images', newImages);
-                    }}
-                  >
-                    X
-                  </button>
-                </div>
-              ))}
-            </div>
-              ) : (
-            <p className="text-white text-lg font-semibold text-center mt-11">Sube imagenes de tus Propiedades</p>
-            )}
+        {/* Componente para subir imágenes */}
+        {/* cambiar el valor luego de "true" a "propertyId"  */}
+        {propertyId ? (
+          <UploadImageForm propertyId={propertyId} />
+        ) : (
+          <div className="border-2 border-dashed bg-gray-200 border-gray-400 rounded-lg p-6 text-center text-gray-600">
+            Primero completá y enviá los datos del inmueble para poder subir las imágenes.
           </div>
-        
-          {/* Input para subir imágenes */}
-        <div className="flex justify-center mt-7">
-          <label htmlFor="file-upload" className="flex items-center gap-2 bg-blue-700 text-white font-semibold text-lg py-2 px-4 rounded-lg cursor-pointer">
-            <Upload size={22} /> Subir imagen
-            <input
-              id="file-upload"
-              type="file"
-              multiple
-              accept="image/*"
-              className="hidden"
-              onChange={(event) => {
-                const files = event.currentTarget.files;
-                if (files) {
-                  const fileArray = Array.from(files);
-                  setFieldValue('id_images', [...values.id_images, ...fileArray]);
-                }
-              }}
-              onBlur={handleBlur}
-            />
-          </label>
-        </div>
-            
-          {/* Validación de errores */}
-          {errors.id_images && touched.id_images && (
-            <p className="text-red-600 text-sm mt-1">{errors.id_images}</p>
-          )}
-        </div>
-      </div>
+        )}
 
-
-
-            {/* SECCIÓN: Datos del Inmueble */}
-            <div className="flex flex-col items-start justify-start rounded-lg p-6 md:p-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
-              <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] w-full mb-6">Datos del Inmueble</h2>
+        <Formik
+          initialValues={initialValues}
+          onSubmit={handleOnSubmit}
+          validationSchema={validationSchema}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched, resetForm }) => (
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col items-start justify-start rounded-lg p-6 md:p-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]"
+            >
+              <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] w-full mb-6">
+                Datos del Inmueble
+              </h2>
 
               {/* Nombre */}
               <div className="flex flex-col w-full mb-4">
@@ -130,7 +114,7 @@ const DashboardPage = () => {
                   type="text"
                   id="name"
                   name="name"
-                  placeholder='Departamento Céntrico de 2 Ambientes'
+                  placeholder="Departamento Céntrico de 2 Ambientes"
                   value={values.name}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -139,27 +123,26 @@ const DashboardPage = () => {
                 {errors.name && touched.name && <p className="text-red-600 text-sm mt-1">{errors.name}</p>}
               </div>
 
-              {/* Tipo de operación */}
+              {/* Status (Solo Disponible) */}
               <div className="flex flex-col w-full mb-4">
-                <label htmlFor="status" className="text-lg md:text-xl font-bold mb-1">Alquiler / Venta</label>
+                <label htmlFor="status" className="text-lg md:text-xl font-bold mb-1">Estado (Disponible)</label>
                 <select
                   id="status"
                   name="status"
                   value={values.status}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`border ${errors.status && touched.status ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
+                  disabled // no dejar cambiar, fijo "Disponible"
+                  className={`border border-gray-400 text-gray-600 rounded-lg p-2 shadow w-full`}
                 >
-                  <option value="">Seleccionar</option>
-                  <option value="AVAILABLE">Alquiler</option>
-                  <option value="SOLD">Venta</option>
+                  <option value="Disponible">Disponible</option>
                 </select>
                 {errors.status && touched.status && <p className="text-red-600 text-sm mt-1">{errors.status}</p>}
               </div>
 
-              {/* Tipo de propiedad */}
+              {/* Tipo (Alquiler / Venta) */}
               <div className="flex flex-col w-full mb-4">
-                <label htmlFor="type" className="text-lg md:text-xl font-bold mb-1">Tipo de propiedad</label>
+                <label htmlFor="type" className="text-lg md:text-xl font-bold mb-1">Tipo (Alquiler / Venta)</label>
                 <select
                   id="type"
                   name="type"
@@ -169,14 +152,33 @@ const DashboardPage = () => {
                   className={`border ${errors.type && touched.type ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
                 >
                   <option value="">Seleccionar</option>
-                  <option value="HOUSE">CASA</option>
-                  <option value="APARTMENT">DEPARTAMENTO</option>
-                  <option value="COMMERCIAL">LOCAL COMERCIAL</option>
-                  <option value="LAND">TERRENO</option>
-                  <option value="OFFICE">OFICINA</option>
-                  <option value="WAREHOUSE">GALPÓN</option>
+                  <option value="Alquiler">Alquiler</option>
+                  <option value="Venta">Venta</option>
                 </select>
                 {errors.type && touched.type && <p className="text-red-600 text-sm mt-1">{errors.type}</p>}
+              </div>
+
+              {/* Tipo de propiedad */}
+              <div className="flex flex-col w-full mb-4">
+                <label htmlFor="type_of_property_id" className="text-lg md:text-xl font-bold mb-1">Tipo de propiedad</label>
+                <select
+                  id="type_of_property_id"
+                  name="type_of_property_id"
+                  value={values.type_of_property_id}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`border ${errors.type_of_property_id && touched.type_of_property_id ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
+                >
+                  <option value="">Seleccionar</option>
+                  {typeOptions.map((type) => (
+                    <option key={type.id} value={type.id}>
+                      {type.type}
+                    </option>
+                  ))}
+                </select>
+                {errors.type_of_property_id && touched.type_of_property_id && (
+                  <p className="text-red-600 text-sm mt-1">{errors.type_of_property_id}</p>
+                )}
               </div>
 
               {/* Ciudad */}
@@ -186,7 +188,7 @@ const DashboardPage = () => {
                   type="text"
                   id="city"
                   name="city"
-                  placeholder='Córdoba'
+                  placeholder="Córdoba"
                   value={values.city}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -263,7 +265,6 @@ const DashboardPage = () => {
                     id="rooms"
                     name="rooms"
                     value={values.rooms}
-                  
                     onChange={handleChange}
                     onBlur={handleBlur}
                     className={`border ${errors.rooms && touched.rooms ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
@@ -278,7 +279,7 @@ const DashboardPage = () => {
                 <textarea
                   id="description"
                   name="description"
-                  placeholder='Una descripcion que detalle tu propiedad y que posteriormente verá el usuario'
+                  placeholder="Una descripcion que detalle tu propiedad y que posteriormente verá el usuario"
                   value={values.description}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -289,289 +290,26 @@ const DashboardPage = () => {
 
               {/* Botones */}
               <div className="flex flex-col md:flex-row justify-between items-center w-full gap-4">
-                <button type="submit" className="text-white bg-blue-700 py-3 px-4 rounded-lg w-full md:w-[250px] text-lg">
+                <button
+                  type="submit"
+                  className="text-white bg-blue-700 py-3 px-4 rounded-lg w-full md:w-[250px] text-lg"
+                >
                   Subir Propiedad
                 </button>
-                <button type="button" className="text-white bg-red-600 py-3 px-4 text-lg rounded-lg w-full md:w-[200px]">
+                <button
+                  type="button"
+                  onClick={() => resetForm()}
+                  className="text-white bg-red-600 py-3 px-4 text-lg rounded-lg w-full md:w-[200px]"
+                >
                   Cancelar
                 </button>
               </div>
-            </div>
-
-          </form>
-        )}
-      </Formik>
+            </form>
+          )}
+        </Formik>
+      </div>
     </div>
   );
 };
 
 export default DashboardPage;
-
-
-// Codigo de antes donde si fuuncionan las vlidaciones
-// 'use client'
-
-// import { Upload } from 'lucide-react'
-// import { Formik } from 'formik'
-// import { validationSchema } from '../../validacionesDashBoard/propiedades'
-// import { CreateProperty } from '@/services/subirPropiedad'
-// import toast from 'react-hot-toast'
-// import { useRouter } from 'next/navigation'
-// import { IPropertyForm } from '../../../../../interface/DashboardAgente/subirPropiedadDTO'
-
-
-// const DashboardPage = () => {
-  
-//   const router = useRouter();
-
-//     const handleOnSubmit = async (values: IPropertyForm) => {
-//         try {
-//       const response = await CreateProperty(values);
-  
-//       console.log("🧠 response completo:", response);
-  
-//       // ✅ Asegurate de que RegisterSubmit devuelva el objeto con "success"
-//       if (response && response.success === true) {
-//         toast.success('¡Propiedad Creada con Exíto!...', { duration: 2500 });
-//         setTimeout(() => {
-//           router.push('/home');
-//         }, 2000);
-//       } else {
-//         console.warn("⚠️ El registro no fue exitoso:", response);
-//         toast.error('Hubo un error al crear la propiedad.', { duration: 2000 });
-//       }
-//     } catch (error) {
-//       console.error("❌ Error en el register:", error);
-//       toast.error('Hubo un problema al querer registrarse.', { duration: 2000 });
-//     }
-//   };
-
-
-
-
-//   return (
-//     <div className=" w-full p-4 md:p-6 lg:pt-0 flex flex-col gap-8 lg:flex-row">
-//       {/* Subir imágenes */}
-//       <div className="flex flex-col items-start justify-start md:h-[50vh] lg:w-1/2 rounded-lg p-6 md:p-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
-//         <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] mb-5">Seleccionar Imágenes</h2>
-//         <div className="w-full space-y-4">
-//           <div className="border border-gray-400 rounded-lg p-4 bg-gray-200 h-[200px] shadow"></div>
-//           <div className="flex justify-center mt-7">
-//             <label htmlFor="file-upload" className="flex items-center gap-2 bg-blue-700 text-white font-semibold text-lg py-2 px-4 rounded-lg cursor-pointer">
-//               <Upload size={22} /> Subir imagen
-//               <input id="file-upload" type="file" multiple accept="image/*" className="hidden" />
-//             </label>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Formulario */}
-//       <div className="flex flex-col items-start justify-start w-full lg:w-1/2 rounded-lg p-6 md:p-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
-//         <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] w-full mb-6">Datos del Inmueble</h2>
-
-//         <Formik
-//             initialValues={{
-//             name: '',
-//             status: '',      // va a ser el enum como string
-//             type: '',        // enum Type como string
-//             address: '',
-//             city: '',
-//             price: 0,
-//             m2: 0,
-//             bathrooms: 0,
-//             rooms: 0,
-//             description: '',
-//             id_images: []
-//           }}
-//           onSubmit={handleOnSubmit}
-//           validationSchema={validationSchema}
-  
-//         >
-//           {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-//             <form onSubmit={handleSubmit} className="flex flex-col w-full space-y-4">
-//               {/* Nombre */}
-//               <div className="flex flex-col w-full">
-//                 <label htmlFor='nombre' className="text-lg md:text-xl font-bold mb-1">Nombre</label>
-//                 <input
-//                   type="text"
-//                   id='nombre'
-//                   name="nombre"
-//                   value={values.nombre}
-//                   onChange={handleChange}
-//                   onBlur={handleBlur}
-//                   className={`border ${errors.nombre && touched.nombre ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
-//                 />
-//                 {errors.nombre && touched.nombre && <p className="text-red-600 text-sm mt-1">{errors.nombre}</p>}
-//               </div>
-
-//               {/* Tipo de Operación */}
-//               <div className="flex flex-col">
-//                 <label htmlFor='tipoOperacion' className="text-lg md:text-xl font-bold mb-1">Alquiler / Venta</label>
-//                 <select
-//                   id='tipoOperacion'
-//                   name="tipoOperacion"
-//                   value={values.tipoOperacion}
-//                   onChange={handleChange}
-//                   onBlur={handleBlur}
-//                   className={`border ${errors.tipoOperacion && touched.tipoOperacion ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
-//                 >
-//                   <option value="">Seleccionar</option>
-//                   <option value="Alquiler">Alquiler</option>
-//                   <option value="Venta">Venta</option>
-//                 </select>
-//                 {errors.tipoOperacion && touched.tipoOperacion && (
-//                   <p className="text-red-600 text-sm mt-1">{errors.tipoOperacion}</p>
-//                 )}
-//               </div>
-
-//               {/* Tipo de Propiedad */}
-//               <div className="flex flex-col">
-//                 <label htmlFor='tipoPropiedad' className="text-lg md:text-xl font-bold mb-1">Tipo de propiedad</label>
-//                 <select
-//                   id='tipoPropiedad'
-//                   name="tipoPropiedad"
-//                   value={values.tipoPropiedad}
-//                   onChange={handleChange}
-//                   onBlur={handleBlur}
-//                   className={`border ${errors.tipoPropiedad && touched.tipoPropiedad ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
-//                 >
-//                   <option value="">Seleccionar</option>
-//                   <option value="CASA">CASA</option>
-//                   <option value="CHALET">CHALET</option>
-//                   <option value="LOCAL_COMERCIAL">LOCAL COMERCIAL</option>
-//                   <option value="TERRENO">TERRENO</option>
-//                   <option value="OFICINA">OFICINA</option>
-//                   <option value="GALPON">GALPÓN</option>
-//                 </select>
-//                 {errors.tipoPropiedad && touched.tipoPropiedad && (
-//                   <p className="text-red-600 text-sm mt-1">{errors.tipoPropiedad}</p>
-//                 )}
-//               </div>
-
-//               {/* Estatus */}
-//               <div className="flex flex-col">
-//                 <label htmlFor='estatus' className="text-lg md:text-xl font-bold mb-1">Estado</label>
-//                 <select
-//                   name="estatus"
-//                   id='estatus'
-//                   value={values.estatus}
-//                   onChange={handleChange}
-//                   onBlur={handleBlur}
-//                   className={`border ${errors.estatus && touched.estatus ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
-//                 >
-//                   <option value="">Seleccionar</option>
-//                   <option value="Disponible">Disponible</option>
-//                   <option value="Vendido">Vendido</option>
-//                 </select>
-//                 {errors.estatus && touched.estatus && <p className="text-red-600 text-sm mt-1">{errors.estatus}</p>}
-//               </div>
-
-//               {/* Precio y Metros */}
-//               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//                 <div className="flex flex-col">
-//                   <label className="text-lg md:text-xl font-bold mb-1">Precio</label>
-//                   <input
-//                     type="text"
-//                     name="precio"
-//                     placeholder="$"
-//                     value={values.precio}
-//                     onChange={handleChange}
-//                     onBlur={handleBlur}
-//                     className={`border ${errors.precio && touched.precio ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
-//                   />
-//                   {errors.precio && touched.precio && <p className="text-red-600 text-sm mt-1">{errors.precio}</p>}
-//                 </div>
-
-//                 <div className="flex flex-col">
-//                   <label className="text-lg md:text-xl font-bold mb-1">m2</label>
-//                   <input
-//                     type="text"
-//                     name="metros"
-//                     placeholder="m²"
-//                     value={values.metros}
-//                     onChange={handleChange}
-//                     onBlur={handleBlur}
-//                     className={`border ${errors.metros && touched.metros ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
-//                   />
-//                   {errors.metros && touched.metros && <p className="text-red-600 text-sm mt-1">{errors.metros}</p>}
-//                 </div>
-//               </div>
-
-//               {/* Dirección */}
-//               <div className="flex flex-col">
-//                 <label className="text-lg md:text-xl font-bold mb-1">Dirección</label>
-//                 <input
-//                   type="text"
-//                   name="direccion"
-//                   placeholder="Av. Colón"
-//                   value={values.direccion}
-//                   onChange={handleChange}
-//                   onBlur={handleBlur}
-//                   className={`border ${errors.direccion && touched.direccion ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
-//                 />
-//                 {errors.direccion && touched.direccion && <p className="text-red-600 text-sm mt-1">{errors.direccion}</p>}
-//               </div>
-
-//               {/* Baños y Habitaciones */}
-//               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//                 <div className="flex flex-col">
-//                   <label htmlFor="banos" className="text-lg md:text-xl font-bold mb-1">Baños</label>
-//                   <input
-//                     type="text"
-//                     id='banos'
-//                     name="banos"
-//                     value={values.banos}
-//                     onChange={handleChange}
-//                     onBlur={handleBlur}
-//                     className={`border ${errors.banos && touched.banos ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
-//                   />
-//                   {errors.banos && touched.banos && <p className="text-red-600 text-sm mt-1">{errors.banos}</p>}
-//                 </div>
-
-//                 <div className="flex flex-col">
-//                   <label htmlFor='habitaciones' className="text-lg md:text-xl font-bold mb-1">Habitaciones</label>
-//                   <input
-//                     type="text"
-//                     id='habitaciones'
-//                     name="habitaciones"
-//                     value={values.habitaciones}
-//                     onChange={handleChange}
-//                     onBlur={handleBlur}
-//                     className={`border ${errors.habitaciones && touched.habitaciones ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full`}
-//                   />
-//                   {errors.habitaciones && touched.habitaciones && <p className="text-red-600 text-sm mt-1">{errors.habitaciones}</p>}
-//                 </div>
-//               </div>
-
-//               {/* Descripción */}
-//               <div className="flex flex-col">
-//                 <label className="text-lg md:text-xl font-bold mb-1">Descripción</label>
-//                 <textarea
-//                   name="descripcion"
-//                   value={values.descripcion}
-//                   onChange={handleChange}
-//                   onBlur={handleBlur}
-//                   placeholder="Descripción"
-//                   className={`border ${errors.descripcion && touched.descripcion ? 'border-red-500' : 'border-gray-400'} text-gray-600 rounded-lg p-2 shadow w-full min-h-[120px]`}
-//                 />
-//                 {errors.descripcion && touched.descripcion && <p className="text-red-600 text-sm mt-1">{errors.descripcion}</p>}
-//               </div>
-
-//               {/* Botones */}
-//               <div className="flex flex-col md:flex-row justify-center items-center mt-6 gap-4">
-//                 <button type="submit" className="text-white bg-blue-800 py-3 px-4 rounded-lg w-full md:w-[250px] text-lg">
-//                   Subir Propiedad
-//                 </button>
-//                 <button type="button" className="text-white bg-red-700 py-3 px-4 text-lg rounded-lg w-full md:w-[200px]">
-//                   Cancelar
-//                 </button>
-//               </div>
-//             </form>
-//           )}
-//         </Formik>
-//       </div>
-//     </div>
-//   )
-// }
-
-// export default DashboardPage

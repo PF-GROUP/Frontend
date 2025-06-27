@@ -18,13 +18,17 @@ import { getAgente } from "@/services/agenteGet";
 import { useEffect, useState } from 'react';
 import { useAuthContext } from '../../../context/authContext';
 
-export default function DashboardPage() { 
-  const {user} = useAuthContext();
-  const [agenteNombre, setAgenteNombre] = useState<string>("Cargando...");
- useEffect(() => {
+
+export default function DashboardPage() {
+  const { user } = useAuthContext(); 
+
+  const [agenteNombre, setAgenteNombre] = useState<string>(`sientete como en tu "KasApp"...`);
+ 
+  useEffect(() => {
     const fetchAgente = async () => {
       try {
-        const response = await getAgente(user?.id || 1); 
+       if (!user || typeof user.id !== "number") return;
+        const response = await getAgente(user?.id);
         // Asumiendo que el nombre viene en response.data.name
         setAgenteNombre(response.name || "Nombre no disponible");
         // Si la URL de imagen viene también, podrías setear profileImageUrl aquí:
@@ -36,7 +40,7 @@ export default function DashboardPage() {
     };
 
     fetchAgente();
-  }, []);
+  }, [user]);
 
   const searchParams = useSearchParams(); 
   const view = searchParams.get('view');
@@ -67,8 +71,8 @@ export default function DashboardPage() {
         return(
           <div className="bg-gray-200 border-l-8 border-[#4A0E1B] shadow-lg rounded-lg p-6">
             {/* AQUI TAMBIEN IMPLEMENTAR EL USER DE LAS COOCKIES */}
-            <h1 className="text-2xl font-bold text-[#4A0E1B] mb-2">¡Bienvenido {agenteNombre}!</h1>
-            <p className="text-gray-700"> Aquí podrás gestionar todo lo relacionado con tu sitio, propiedades, clientes y mucho más. 🚀
+            <h1 className="text-2xl font-bold text-[#4A0E1B] mb-2">¡Bienvenido {agenteNombre} !</h1>
+            <p className="text-gray-700">Aquí podrás gestionar todo lo relacionado con tu sitio, propiedades, clientes y mucho más. 🚀
             </p>
           </div>
           )

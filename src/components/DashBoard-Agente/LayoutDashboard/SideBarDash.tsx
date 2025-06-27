@@ -13,24 +13,37 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { getAgente } from "@/services/agenteGet";
+import { useAuthContext } from "../../../../context/authContext";
 
 const SidebarDashboard: React.FC = () => {
+  const {user} = useAuthContext()
+
   const [isOpen, setIsOpen] = useState(false);
-  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(
-    "https://res.cloudinary.com/dmvybzxnv/image/upload/v1750591603/nba83jcdphafyvexftsh.jpg"
-  );
+  const [profileImage, setProfileImage] = useState<string | null>(null);
 
-  // Estado para guardar el nombre del agente
+  // ✅ Cargar imagen de perfil desde el user
+  useEffect(() => {
+    if (user?.profilePictureUrl) {
+      setProfileImage(user.profilePictureUrl);
+    }
+  }, [user]);
+
+  // Estado para guardar el nombre y apellido del agente
   const [agenteNombre, setAgenteNombre] = useState<string>("Cargando...");
-
+  const [agenteApellido, setAgenteApellido] = useState<string>("");
 
   // IMPORTANTE LEER REALIZAR EL CONSUMO DEL NOMBRE DEL USUARIO DESDE LAS COOCKIES "user"
   useEffect(() => {
     const fetchAgente = async () => {
       try {
-        const response = await getAgente(1);
+        if (!user || typeof user.id !== "number") return;
+        const response = await getAgente(user?.id);
+        
+
         // Asumiendo que el nombre viene en response.data.name
         setAgenteNombre(response.name || "Nombre no disponible");
+        setAgenteApellido(response.surname || "Nombre no disponible");
+        
         // Si la URL de imagen viene también, podrías setear profileImageUrl aquí:
         // setProfileImageUrl(response.data.profileImageUrl);
       } catch (error) {
@@ -40,7 +53,7 @@ const SidebarDashboard: React.FC = () => {
     };
 
     fetchAgente();
-  }, []);
+  }, [user]);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
@@ -77,22 +90,28 @@ const SidebarDashboard: React.FC = () => {
         >
           {/* Header Usuario */}
           <div className="flex items-center justify-start border-b border-gray-400 pb-4 md:mr-6">
-            <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-blue-600">
-              {profileImageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={profileImageUrl}
-                  alt="Foto perfil agente" 
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="bg-gray-900 rounded-full p-2 flex items-center justify-center">
-                  <User className="text-white" size={42} />
-                </div>
-              )}
-            </div>
+            
+              <Link
+                href={"/DashboardAgente?view=cambiar-foto-perfil"}
+                className="relative w-13 h-13 rounded-full overflow-hidden border-2 border-blue-600"
+              >
+                {profileImage ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={profileImage}
+                    alt="Foto perfil agente"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="bg-gray-900 rounded-full flex items-center justify-center w-full h-full">
+                    <User className="text-white" size={38} />
+                  </div>
+                )}
+              </Link>
+
+
             <div className="flex flex-col items-start justify-start text-center ml-3">
-              <h2 className="font-bold text-base md:text-xl">{agenteNombre}</h2>
+              <h2 className="font-bold text-base md:text-xl">{agenteNombre} {agenteApellido} </h2>
               <p className="font-sans text-sm">Agente inmobiliario</p>
             </div>
           </div>
@@ -129,6 +148,7 @@ const SidebarDashboard: React.FC = () => {
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
                 <li><Link href="/DashboardAgente?view=subir-propiedad" className="block text-gray-800 hover:text-[#870505] transition-colors">Subir y gestionar propiedades</Link></li>
                 <li><Link href="/DashboardAgente?view=borrar-propiedad" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Borrar propiedades</Link></li>
+                <li><Link href="/DashboardAgente?view=borrar-propiedad" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">ver y editar imagenes</Link></li>
               </ul>
             </details>
           </div>
@@ -175,7 +195,6 @@ const SidebarDashboard: React.FC = () => {
           </div>
         </div>
 
-       
       </div>
     </>
   );

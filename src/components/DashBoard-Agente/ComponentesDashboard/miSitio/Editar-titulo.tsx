@@ -7,11 +7,11 @@ import { tituloValidations } from "../../validacionesDashBoard/miSitio";
 import { editarAgencia } from "@/services/editarNombreYdescripcion";
 import { IEditarNombreYdescAgency } from "../../../../../interface/DashboardAgente/EditarNombreYDescp";
 import { useRouter } from "next/navigation";
-// import { useAuthContext } from "../../../../../context/authContext"; 
+import { useAuthContext } from "../../../../../context/authContext"; 
 
 const EditarTitulo: React.FC = () => {
   // ✅ Incluir en El payload: user.id para enviar los cambios del formulario.
-  // const { user } = useAuthContext(); // 
+  const { user } = useAuthContext(); // 
   const router = useRouter();
 
   const handleOnSubmit = async (values: IEditarNombreYdescAgency) => {
@@ -23,11 +23,11 @@ const EditarTitulo: React.FC = () => {
 
       const payload = {
         ...values, 
-        "agentUser": 1
+        "agentUser": user?.agencyId
         // agentUser: user.id, // ✅ mandamos el user.id
       };
 
-      const response = await editarAgencia(payload);
+      const response = await editarAgencia(payload, user?.agencyId);
       console.log("🧠 response completo:", response);
 
       if (response && response.id) {
