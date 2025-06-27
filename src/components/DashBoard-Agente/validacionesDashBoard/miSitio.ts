@@ -6,8 +6,6 @@ import * as Yup from "yup";
 export const colorValidation = /^(#(?:[0-9a-fA-F]{3,8})|rgb\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*\)|rgba\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*(0|0?\.\d+|1(\.0)?)\s*\))$/;
 
 export const colorValidationSchema = Yup.object().shape({
-  logoImage: Yup.mixed().required("El logo es obligatorio"),
-
   information: Yup.string()
     .required("La información es obligatoria")
     .min(5, "Mínimo 5 caracteres"),
@@ -15,8 +13,6 @@ export const colorValidationSchema = Yup.object().shape({
   mainColors: Yup.string()
     .required("El color principal es obligatorio")
     .matches(colorValidation, "Color inválido"),
-
-  banner: Yup.mixed().required("El banner es obligatorio"),
 
   navbarColor: Yup.string()
     .required("El color de navbar es obligatorio")
@@ -34,6 +30,8 @@ export const colorValidationSchema = Yup.object().shape({
     .required("El color secundario es obligatorio")
     .matches(colorValidation, "Color inválido"),
 });
+
+
 
 // Validacion Editar titulo y descipción:
 export const tituloValidations = Yup.object().shape({
