@@ -10,7 +10,8 @@ export interface IUser {
   phone?: string;
   password?: string;
   isAdmin: boolean;
-  agencyId?: number | null;
+  agencyId?: number |  null;
+  profilePictureUrl: string
 }
 
 export interface ICreateUser {

@@ -16,7 +16,7 @@ const Navbar: React.FC = () => {
 
   return (
   <nav className="relative flex justify-between items-center px-6 py-4 bg-white shadow-md h-16   mx-auto">
-     <Link href="/home" className="flex items-center space-x-2 h-full"> 
+    <Link href="/home" className="flex items-center space-x-2 h-full"> 
     <div className="flex items-center space-x-2 h-full">
       <Image
         src="/image.png"
