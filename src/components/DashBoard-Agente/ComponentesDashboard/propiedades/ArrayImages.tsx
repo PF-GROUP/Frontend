@@ -106,13 +106,13 @@ const UploadImageForm = ({ propertyId }: UploadImageFormProps) => {
 
           <div className="w-full space-y-4 mt-7">
             <div
-              className={`${containerBorderClass} p-4 min-h-[300px] shadow overflow-y-auto`}
+              className={`${containerBorderClass} p-4 min-h-[300px]  shadow overflow-y-auto`}
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
             >
               {image ? (
-                <div className="bg-gray-50 p-3 relative">
+                <div className="bg-gray-50 p-3 relative ">
                   <img
                     src={URL.createObjectURL(image.file)}
                     alt="preview"
