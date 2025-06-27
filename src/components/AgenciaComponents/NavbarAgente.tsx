@@ -32,8 +32,11 @@ export default function NavbarAgente() {
 
       {/* Menú escritorio */}
       <div className="hidden md:flex items-center space-x-6">
-        <Link href={`/agencia/${slug}/home`} className="text-white hover:underline">
+        <Link href={`/agencia/${slug}/`} className="text-white hover:underline">
           Home
+        </Link>
+        <Link href={`/agencia/${slug}/propiedades`} className="text-white hover:underline">
+          Propiedades
         </Link>
         <Link
           href={`/agencia/${slug}/contacto`}

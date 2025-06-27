@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../../context/authContext";
 import { Toaster } from 'react-hot-toast';
-import ChatbotPrueba from "@/components/ChatBot/chatbot";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -23,7 +23,6 @@ export const metadata: Metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  // Puedes agregar más opciones si quieres
 };
 
 export default function RootLayout({
@@ -44,7 +43,6 @@ export default function RootLayout({
         {children}
         </AuthProvider>
       </body>
-        <ChatbotPrueba />
 
     </html>
   );

@@ -1,6 +1,7 @@
+"use client";
 import { FaCheck } from "react-icons/fa";
 import Image from "next/image";
-
+import { useRouter } from "next/navigation";
 const features = [
   "Diseño Semi-Personalizado",
   "Sitio responsive (PC, tablet y móvil)",
@@ -10,7 +11,14 @@ const features = [
   "Soporte técnico incluido",
 ];
 
+
 export default function PlanPago() {
+  const router = useRouter();
+  
+  const handleToRegister = () => {
+    router.push("/register");
+};
+
   return (
     <section id="pagos" className="py-16 px-6 md:px-16 rounded-xl flex flex-row items-center justify-center ">
         <div className="hidden md:flex flex-col">
@@ -29,7 +37,9 @@ export default function PlanPago() {
               </li>
             ))}
           </ul>
-          <button className="bg-[#A62F55] hover:bg-[#8d2748] text-white font-semibold  px-6 py-3 rounded-md transition mx-auto block cursor-pointer">
+          <button 
+          onClick={handleToRegister}
+          className="bg-[#A62F55] hover:bg-[#8d2748] text-white font-semibold  px-6 py-3 rounded-md transition mx-auto block cursor-pointer">
             Comenzar ahora
           </button>
         </div>
@@ -54,7 +64,9 @@ export default function PlanPago() {
               </li>
             ))}
           </ul>
-          <button className="bg-[#A62F55] hover:bg-[#8d2748] text-white font-semibold  px-6 py-3 rounded-md transition mx-auto block cursor-pointer">
+          <button
+          onClick={handleToRegister}
+          className="bg-[#A62F55] hover:bg-[#8d2748] text-white font-semibold  px-6 py-3 rounded-md transition mx-auto block cursor-pointer">
             Comenzar ahora
           </button>
         </div>

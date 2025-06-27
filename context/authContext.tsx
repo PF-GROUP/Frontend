@@ -16,6 +16,7 @@ interface AuthContextType {
 export const decodeUserCookie = (cookieValue: string) => {
     try {
     const decoded = jwtDecode(cookieValue);
+
     return decoded as IUser;
     } catch (e) {
     console.error("No se pudo decodificar la cookie:", e);
@@ -33,8 +34,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const fetchUser = async () =>{
             try {
                 const res = await apiService.get('/auth/me',true);
-                setUser(res as IUser);
+                setUser(res.content as IUser);
                 setIsAuth(!!res);
+                
             } catch {
                 console.log("Error al obtener el usuario");
                 setUser(null); 

@@ -38,13 +38,15 @@ export default function ContactoPage() {
 }
 
   return (
-    <div>
-      <ContactoAgente
-        name={agencia.user.name}
-        surname={agencia.user.surname ?? ""}
-        email={agencia.user.email}
-        phone={agencia.user.phone ?? ""}
-      />
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="rounded-2xl p-8 max-w-md w-full">
+        <ContactoAgente
+          name={agencia.user.name}
+          surname={agencia.user.surname ?? ""}
+          email={agencia.user.email}
+          phone={agencia.user.phone ?? ""}
+        />
+      </div>
     </div>
   );
 }

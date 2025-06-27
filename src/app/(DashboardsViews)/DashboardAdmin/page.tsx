@@ -1,7 +1,7 @@
 'use client';
 
 import Loader from '@/components/Loader/Loader';
-import { useAuthContext } from '../../../context/authContext';
+import { useAuthContext } from '../../../../context/authContext';
 import { useSearchParams } from 'next/navigation';
 import TodasInmobiliarias from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-inmobiliarias/TodasInmobiliarias';
 import GestionInmobiliarias from '@/components/Dashboard-Admin/ComponentesDashboard/Gestion-de-inmobiliarias/GestionInmobiliarias';

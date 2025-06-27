@@ -1,10 +1,10 @@
 "use client";
 
 import CeluSidebar from "@/components/Dashboard-Admin/LayoutDashboard/CeluSidebarDash";
-import SidebarDashboard from "../../components/Dashboard-Admin/LayoutDashboard/SideBarDash";
+import SidebarDashboard from "../../../components/Dashboard-Admin/LayoutDashboard/SideBarDash";
 import Navbar from "@/components/navbar/navbar";
-import { useAuthContext } from "../../../context/authContext";
-import Loader from "../../components/Loader/Loader"
+import { useAuthContext } from "../../../../context/authContext";
+import Loader from "../../../components/Loader/Loader"
 
 export default function LayoutSidebar({ children }: Readonly<{ children: React.ReactNode }>) {
   const { user } = useAuthContext()

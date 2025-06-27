@@ -16,7 +16,7 @@ import ReportarError from '@/components/DashBoard-Agente/ComponentesDashboard/so
 import Seguridad from '@/components/DashBoard-Agente/ComponentesDashboard/seguridad/Seguridad';
 import { getAgente } from "@/services/agenteGet";
 import { useEffect, useState } from 'react';
-import { useAuthContext } from '../../../context/authContext';
+import { useAuthContext } from '../../../../context/authContext';
 
 
 export default function DashboardPage() {

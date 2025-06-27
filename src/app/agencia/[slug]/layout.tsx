@@ -40,7 +40,7 @@ export default function AgenciaLayout({
     <AgencyProvider slug={params.slug}>
       <div className="min-h-screen flex flex-col">
         <NavbarAgente />
-        <main className="flex-grow">{children}</main>
+        <main className="flex-grow bg-white">{children}</main>
         <FooterAgencia />
       </div>
     </AgencyProvider>
