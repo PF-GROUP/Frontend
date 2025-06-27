@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -119,7 +120,7 @@ const FotoPerfil: React.FC = () => {
         onDragOver={(e) => e.preventDefault()}
         onDragEnter={() => setIsDragging(true)}
         onDragLeave={() => setIsDragging(false)}
-        className={`relative w-68 h-68 rounded-full bg-gray-700 border-4 shadow-md flex items-center justify-center transition-all ${
+        className={`relative w-68 h-68 rounded-full bg-gray-600 border-4 shadow-md flex items-center justify-center transition-all ${
           isDragging
             ? "border-blue-400 bg-blue-100"
             : "border-blue-600 bg-gray-100"
@@ -149,7 +150,14 @@ const FotoPerfil: React.FC = () => {
         ) : (
           <span className="text-white font-semibold text-sm text-center px-4 select-none">
             Arrastrá una imagen aqui o seleccioná una desde tu dispositivo.
-             <Image size={36} className="text-white text-lg font-semibold text-center mt-5 m-auto"/>
+              {/* Ícono decorado con esquinas como en tu imagen */}
+                  <div className="relative w-14 h-14 bg-[#2e2e2e] m-auto flex items-center justify-center rounded-md mt-5">
+                    <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-white" />
+                    <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-white" />
+                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-white" />
+                    <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-white" />
+                      <Image size={28} className="text-white" />
+                  </div>
           </span>
         )}
       </div>

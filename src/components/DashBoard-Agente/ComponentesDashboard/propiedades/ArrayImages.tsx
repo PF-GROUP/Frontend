@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable jsx-a11y/alt-text */
 "use client";
 
 import React, { useState } from "react";
@@ -13,7 +15,6 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // ✅ Maneja archivos seleccionados por input o drag&drop
   const handleFiles = (files: FileList) => {
     const validImages = Array.from(files).filter((file) => file.type.startsWith("image/"));
     if (validImages.length !== files.length) {
@@ -22,7 +23,6 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
     setImages((prev) => [...prev, ...validImages]);
   };
 
-  // ✅ Drag & Drop
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
@@ -36,23 +36,20 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
 
   const handleDragLeave = () => setIsDragging(false);
 
-  // ✅ Input clásico
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) handleFiles(e.target.files);
   };
 
-  // ❌ Quita una imagen seleccionada
   const removeImage = (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // ✅ Enviar imágenes al backend
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (images.length === 0) return toast.error("Selecciona al menos una imagen");
 
     const formData = new FormData();
-    images.forEach((img) => formData.append("files", img)); // 💡 Nombre del campo = "files"
+    images.forEach((img) => formData.append("files", img));
 
     try {
       setLoading(true);
@@ -69,7 +66,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
       if (!res.ok) throw new Error("Error al subir las imágenes");
 
       toast.success("Imágenes subidas con éxito");
-      setImages([]); // 🧹 Limpia la selección
+      setImages([]);
     } catch (err) {
       console.error(err);
       toast.error("No se pudieron subir las imágenes");
@@ -78,68 +75,73 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
     }
   };
 
-  // 🖼️ Preview en grilla de 2 columnas
   const renderPreviews = () => (
     <div className="flex flex-col gap-4 w-full">
-    {images.map((img, idx) => (
-      <div key={idx} className="relative border-2 border-gray-500 bg-white p-2 rounded shadow w-full">
-        <img
-          src={URL.createObjectURL(img)}
-          alt={`preview-${idx}`}
-          className="w-full h-60 object-contain bg-black"
-        />
-        <button
-          type="button"
-          onClick={() => removeImage(idx)}
-          className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1"
-        >
-          <X size={16} />
-        </button>
-      </div>
-    ))}
-  </div>
-);
+      {images.map((img, idx) => (
+        <div key={idx} className="relative border-2 border-gray-200 bg-white p-2 rounded shadow w-full">
+          <img
+            src={URL.createObjectURL(img)}
+            alt={`preview-${idx}`}
+            className="w-full h-60 object-contain bg-black"
+          />
+          <button
+            type="button"
+            onClick={() => removeImage(idx)}
+            className="absolute top-1 right-1 bg-red-600 hover:bg-red-800 text-white rounded-full p-1"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div className="w-full p-4 md:p-6 md:pl-0 lg:pt-0">
       <form onSubmit={handleSubmit} className="w-full">
         <div className="flex flex-col items-start justify-start rounded-lg p-6 md:p-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)] w-full space-y-6">
           <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] w-full mb-2">
-            Subir Imágenes de Galería
+            Imágenes de la propiedad
           </h2>
 
-          <div className="w-full space-y-4 mt-7 ">
+          <div className="w-full space-y-4 mt-6 ">
             {/* 🎯 Área de arrastre */}
             <div
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              className={`min-h-[250px] p-4 shadow bg-gray-600 overflow-y-auto rounded  transition-all ${
-                isDragging
-                  ? "border-blue-500 bg-blue-100"
-                  : images.length > 0
-                  ? "border-gray-300 bg-gray-50"
-                  : "border-gray-600 bg-gray-300"
-              }`}
+              className={`relative min-h-[250px] p-4 border-3 border-gray-600 shadow overflow-y-auto transition-all ${
+                images.length > 0
+                  ? "border border-gray-300 bg-gray-50"
+                  : "bg-gray-600"
+              } ${isDragging ? "border-blue-500 bg-blue-100" : ""}`}
             >
+              {/* 🔳 Esquinas si no hay imágenes */}
+              {images.length === 0 && (
+                <>
+                  <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-white" />
+                  <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-white" />
+                  <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-white" />
+                  <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-white" />
+                </>
+              )}
+
               {images.length > 0 ? (
                 renderPreviews()
               ) : (
                 <p className="text-white text-lg font-semibold text-center mt-11 flex flex-col items-center">
-  Arrastrá una imagen aqui o seleccioná una desde tu dispositivo.
+                  Arrastrá una imagen aqui o seleccioná una desde tu dispositivo.
 
-  {/* Ícono decorado con esquinas como en tu imagen */}
-  <div className="relative w-14 h-14 bg-[#2c2c2c] flex items-center justify-center rounded-md mt-5">
-    {/* Esquinas estilo "recorte" */}
-    <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-white" />
-    <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-white" />
-    <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-white" />
-    <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-white" />
+                  {/* Ícono decorado con esquinas como en tu imagen */}
+                  <div className="relative w-14 h-14 bg-[#2e2e2e] flex items-center justify-center rounded-md mt-5">
+                    <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-white" />
+                    <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-white" />
+                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-white" />
+                    <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-white" />
 
-    {/* El ícono en el centro */}
-    <Image size={28} className="text-white" />
-  </div>
-</p>
+                    <Image size={28} className="text-white" />
+                  </div>
+                </p>
               )}
             </div>
 
