@@ -70,12 +70,8 @@ function verifySession(token: string | undefined): {
   }
   try {
     const user:userPayload = jwtDecode(token)
-    console.log('user::: ', user);
-    
     const isAdmin = user.isAdmin
     const isPay = user.status
-    console.log(isAdmin)
-    console.log(isPay)
     const isOnBoarding = user.onBoarding ? true : false
     const isAuthenticated = true
 

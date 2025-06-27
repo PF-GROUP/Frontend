@@ -11,22 +11,19 @@ type FormData = {
 export const RegisterSubmit = async (data:  RegisterUserDtoFront, SaveUserData: (data: { user: IUser }) => void) => {
 
     try {
-        const res =  await apiService.post("/auth/createBoth", data)
-        console.log("res", res)
-        const user = await apiService.post("/auth/login", {email: data.email, password: data.password}, true);
-        console.log("user", user)
+        const user =  await apiService.post("/auth/createBoth", data, true, true, true)
         if (!user){
           return null;
         }
         SaveUserData({ user });
-        return res
+        return user
     } catch (error) {
         console.error("Ocurrio un error al Realizar el Register",error);
     }
 };
 export const RegisterSubmitGoogle = async (data:  RegisterUserDtoFront & {token?: string}, SaveUserData: (data: { user: IUser }) => void) => {
   try {
-      const user =  await apiService.post("/auth/createBothWithGoogle", data,true)
+      const user =  await apiService.post("/auth/createBothWithGoogle", data,true,true,true)
       console.log("res", user)
       if (!user){
         return null;
@@ -75,5 +72,18 @@ export const getDataFromGoogle = async (tokenGoogle:string)=>{
   } catch (error) {
     console.log(error);
     return null
+  }
+}
+export const refreshSession = async(SaveUserData: (data: { user: IUser }) => void)=>{
+  try {
+    const user = await apiService.get("session_refresh", true);
+    if (!user){
+      return null;
+    }
+    SaveUserData({ user });
+    return user;
+  } catch (e) {
+    console.error("Error al hacer login:", e);
+    return null;
   }
 }

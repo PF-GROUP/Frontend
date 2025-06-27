@@ -4,12 +4,15 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle } from "lucide-react";
 import confetti from "canvas-confetti";
+import { refreshSession } from "@/services/authService";
+import { useAuthContext } from "../../../../context/authContext";
 
 const PagoExitoso = () => {
     const router = useRouter();
     const hasExploded = useRef(false);
-
+    const { SaveUserData }  = useAuthContext()
   useEffect(() => {
+    refreshSession(SaveUserData)
     if (!hasExploded.current) {
       hasExploded.current = true;
       confetti({
@@ -22,8 +25,8 @@ const PagoExitoso = () => {
     }
 
     const timeout = setTimeout(() => {
-      router.push("/home");
-    }, 3000);
+      router.push("/DashboardAgente");
+    }, 5000);
 
     return () => clearTimeout(timeout);
   }, [router]);

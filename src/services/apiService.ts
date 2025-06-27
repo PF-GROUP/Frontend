@@ -83,9 +83,9 @@ const del = async (url:string,  credentials:boolean = false, showSuccess:boolean
     }
 }
 
-const patch = async (url:string, data:unknown, credentials:boolean = false, , showSuccess:boolean = false, showFail:boolean = false) => {
+const patch = async (url:string, data:unknown, credentials:boolean = false,  showSuccess:boolean = false, showFail:boolean = false) => {
     try {
-        const res = await axiosRes.patch(url, data)
+        const res = await axiosRes.patch(url, data, {withCredentials:credentials})
          if (showSuccess){
             toast.success(res.data.message, { duration: 2000 });
         }

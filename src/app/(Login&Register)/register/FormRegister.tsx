@@ -187,31 +187,17 @@ const FormRegister: React.FC = () => {
       if (googleData && submitData.token) {
         const response = await RegisterSubmitGoogle(submitData, SaveUserData);
         if (response) {
-          toast.success("¡Usuario registrado! Redirigiendo...", {
-            duration: 2500,
-          });
           setTimeout(() => {
             router.push("/stripe");
           }, 2000);
-        } else {
-          toast.error("Dato repetido. Ingresa un valor distinto en Email.", {
-            duration: 2000,
-          });
         }
       } else {
         const response = await RegisterSubmit(submitData, SaveUserData);
-        if (response?.success === true) {
-          toast.success("¡Usuario registrado! Redirigiendo...", {
-            duration: 2500,
-          });
+        if (response) {
           setTimeout(() => {
             router.push("/stripe");
           }, 2000);
-        } else {
-          toast.error("Dato repetido. Ingresa un valor distinto en Email.", {
-            duration: 2000,
-          });
-        }
+        } 
       }
     } catch (error) {
       console.log("mensaje de error catch: ", error);
