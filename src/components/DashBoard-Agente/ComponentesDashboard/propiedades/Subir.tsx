@@ -9,6 +9,7 @@ import { IPropertyForm } from '../../../../../interface/DashboardAgente/subirPro
 import { useState, useEffect } from 'react';
 import { useAuthContext } from '../../../../../context/authContext';
 
+
 interface ITypeOfProperty {
   id: string;
   type: string;
@@ -21,7 +22,8 @@ const DashboardPage = () => {
 
   const fetchTypeOfProperties = async () => {
     try {
-      const response = await fetch('/typeofproperty');
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/typeofproperty`);
+      
       if (!response.ok) throw new Error('Error al obtener tipos de propiedad');
       const data = await response.json();
       setTypeOptions(data);
