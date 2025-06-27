@@ -28,9 +28,6 @@ const SidebarDashboard: React.FC = () => {
     }
   }, [user]);
 
-
-
-
   // Estado para guardar el nombre y apellido del agente
   const [agenteNombre, setAgenteNombre] = useState<string>("Cargando...");
   const [agenteApellido, setAgenteApellido] = useState<string>("");
@@ -94,20 +91,23 @@ const SidebarDashboard: React.FC = () => {
           {/* Header Usuario */}
           <div className="flex items-center justify-start border-b border-gray-400 pb-4 md:mr-6">
             
-            <Link href={"/DashboardAgente?view=cambiar-foto-perfil"} className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-blue-600">
-              {profileImage ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={profileImage}
-                  alt="Foto perfil agente" 
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="bg-gray-900 rounded-full p-2 flex items-center justify-center">
-                  <User className="text-white" size={42} />
-                </div>
-              )}
-            </Link>
+              <Link
+                href={"/DashboardAgente?view=cambiar-foto-perfil"}
+                className="relative w-13 h-13 rounded-full overflow-hidden border-2 border-blue-600"
+              >
+                {profileImage ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={profileImage}
+                    alt="Foto perfil agente"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="bg-gray-900 rounded-full flex items-center justify-center w-full h-full">
+                    <User className="text-white" size={38} />
+                  </div>
+                )}
+              </Link>
 
 
             <div className="flex flex-col items-start justify-start text-center ml-3">

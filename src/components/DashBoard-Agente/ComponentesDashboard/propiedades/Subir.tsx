@@ -85,7 +85,7 @@ const DashboardPage = () => {
 
         {/* Componente para subir imágenes */}
         {/* cambiar el valor luego de "true" a "propertyId"  */}
-        {true ? (
+        {propertyId ? (
           <UploadImageForm propertyId={propertyId} />
         ) : (
           <div className="border-2 border-dashed bg-gray-200 border-gray-400 rounded-lg p-6 text-center text-gray-600">
