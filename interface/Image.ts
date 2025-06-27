@@ -6,7 +6,7 @@ export interface IImage {
   description?: string; 
 }
 
-export interface ICreateImage{
+export interface ICreateImage {
   id: number;
   file: string; 
   title?: string; 

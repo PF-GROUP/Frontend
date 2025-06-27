@@ -33,10 +33,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const fetchUser = async () =>{
             try {
                 const res = await apiService.get('/auth/me',true);
-                console.log(res)
                 setUser(res as IUser);
                 setIsAuth(!!res);
             } catch {
+                console.log("Error al obtener el usuario");
                 setUser(null); 
             } finally{
                 setLoading(false);
@@ -53,7 +53,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const ResetUserData = () => {
         setUser(null);
         setIsAuth(false);
-        console.log("borrando cookie aaaa");
     };
 
     // const id_Agency = user?.agencyId

@@ -4,7 +4,6 @@ const axiosRes = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL || "/api" ,
 })
 
-
 const get = async (url:string,credentials:boolean = false) =>{
     try {
         const res = await axiosRes.get(url, {withCredentials:credentials})
@@ -32,9 +31,9 @@ const put = async (url:string, data:unknown) => {
     }
 }
 
-const del = async (url:string) => {
+const del = async (url:string,  credentials:boolean = false) => {
     try {
-        const res = await axiosRes.delete(url)
+        const res = await axiosRes.delete(url, {withCredentials:credentials})
         return res.data
     } catch (error) {
         console.log(error)
