@@ -61,6 +61,7 @@ function verifySession(token: string | undefined): {
   isAdmin: boolean
   isOnBoarding: boolean 
   isPay: string | undefined | boolean} {
+  console.log(token)
   if (!token) return {
     isAuthenticated: false,
     isAdmin: false,
@@ -69,6 +70,8 @@ function verifySession(token: string | undefined): {
   }
   try {
     const user:userPayload = jwtDecode(token)
+    console.log('user::: ', user);
+    
     const isAdmin = user.isAdmin
     const isPay = user.status
     console.log(isAdmin)

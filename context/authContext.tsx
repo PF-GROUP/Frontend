@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         const fetchUser = async () =>{
             try {
-                const res = await apiService.get('/auth/me',true);
+                const res = await apiService.get('/auth/me',true, true, false);
                 setUser(res as IUser);
                 setIsAuth(!!res);
             } catch {

@@ -40,6 +40,8 @@ export const RegisterSubmitGoogle = async (data:  RegisterUserDtoFront & {token?
     export const loginService = async (data: FormData, SaveUserData: (data: { user: IUser }) => void) => {
   try {
     const user =  await apiService.post("/auth/login", data, true);
+    window.alert("Usuario Logueado, " + user)
+    console.log(user);
     if (!user){
       return null;
     }
