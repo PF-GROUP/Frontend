@@ -152,10 +152,10 @@ const FotoPerfil: React.FC = () => {
             Arrastrá una imagen aqui o seleccioná una desde tu dispositivo.
               {/* Ícono decorado con esquinas como en tu imagen */}
                   <div className="relative w-14 h-14 bg-[#2e2e2e] m-auto flex items-center justify-center rounded-md mt-5">
-                    <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-white" />
-                    <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-white" />
-                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-white" />
-                    <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-white" />
+                    <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-blue-500" />
+                    <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-blue-500" />
+                    <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-blue-500" />
+                    <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-blue-500" />
                       <Image size={28} className="text-white" />
                   </div>
           </span>
