@@ -15,11 +15,31 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // ✅ Maneja los archivos seleccionados o arrastrados
   const handleFiles = (files: FileList) => {
-    const validImages = Array.from(files).filter((file) => file.type.startsWith("image/"));
-    if (validImages.length !== files.length) {
-      toast.error("Algunos archivos no son imágenes válidas");
-    }
+    const currentImages = images;
+
+    const validImages = Array.from(files).filter((file) => {
+      if (!file.type.startsWith("image/")) {
+        toast.error("Algunos archivos no son imágenes válidas");
+        return false;
+      }
+
+      const isDuplicate = currentImages.some(
+        (img) =>
+          img.name === file.name &&
+          img.size === file.size &&
+          img.lastModified === file.lastModified
+      );
+
+      if (isDuplicate) {
+        toast.error(`No puedes agregar imágenes repetidas: "${file.name}"`);
+        return false;
+      }
+
+      return true;
+    });
+
     setImages((prev) => [...prev, ...validImages]);
   };
 
@@ -37,9 +57,11 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
   const handleDragLeave = () => setIsDragging(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) handleFiles(e.target.files);
-  };
-
+  if (e.target.files) {
+    handleFiles(e.target.files);
+    e.target.value = ""; // ← Forzamos reinicio para que vuelva a disparar onChange
+  }
+};
   const removeImage = (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
@@ -52,7 +74,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
     images.forEach((img) => formData.append("files", img));
 
     try {
-      setLoading(true);
+      setLoading(true); 
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/images/property/${propertyId}/gallery`,
@@ -129,7 +151,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
               {images.length > 0 ? (
                 renderPreviews()
               ) : (
-                <p className="text-white text-lg font-semibold text-center mt-11 flex flex-col items-center">
+                <div className="text-white text-lg font-semibold text-center mt-11 flex flex-col items-center">
                   Arrastrá una imagen aqui o seleccioná una desde tu dispositivo.
 
                   {/* Ícono decorado con esquinas como en tu imagen */}
@@ -141,7 +163,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
 
                     <Image size={28} className="text-white" />
                   </div>
-                </p>
+                </div>
               )}
             </div>
 
