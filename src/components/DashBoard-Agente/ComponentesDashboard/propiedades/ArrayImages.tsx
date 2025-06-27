@@ -134,7 +134,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
               onDragLeave={handleDragLeave}
               className={`relative min-h-[250px] p-4 transition-all duration-300 ${
                 isDragging
-                  ? "bg-blue-300 border-4 border-dashed border-blue-500"
+                  ? "bg-blue-200 border-4 border-dashed border-blue-500"
                   : images.length > 0
                   ? "bg-gray-100 border border-gray-300"
                   : "bg-gray-700 border-4 border-gray-700"
@@ -145,22 +145,22 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
                 <>
                   <div
                     className={`absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 ${
-                      isDragging ? "border-blue-400 scale-125" : "border-blue-500"
+                      isDragging ? "border-blue-500 scale-125" : "border-blue-500"
                     } transition-transform duration-300`}
                   />
                   <div
                     className={`absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 ${
-                      isDragging ? "border-blue-400 scale-125" : "border-blue-500"
+                      isDragging ? "border-blue-500 scale-125" : "border-blue-500"
                     } transition-transform duration-300`}
                   />
                   <div
                     className={`absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 ${
-                      isDragging ? "border-blue-400 scale-125" : "border-blue-500"
+                      isDragging ? "border-blue-500 scale-125" : "border-blue-500"
                     } transition-transform duration-300`}
                   />
                   <div
                     className={`absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 ${
-                      isDragging ? "border-blue-400 scale-125" : "border-blue-500"
+                      isDragging ? "border-blue-500 scale-125" : "border-blue-500"
                     } transition-transform duration-300`}
                   />
                 </>
