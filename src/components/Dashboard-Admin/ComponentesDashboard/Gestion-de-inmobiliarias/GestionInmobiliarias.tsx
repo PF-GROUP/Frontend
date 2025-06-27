@@ -84,7 +84,7 @@ export default function GestionInmobiliarias() {
       cerrarModal();
     }
   };
-
+  console.log(softDeleteAgencies)
   return (
     <div className="flex flex-col items-center space-y-12">
       {/* Activas */}
@@ -96,7 +96,8 @@ export default function GestionInmobiliarias() {
           <p className="text-gray-500">No hay inmobiliarias para gestionar.</p>
         ) : (
           <ul className="space-y-4">
-            {inmobiliarias.map((inmo) => (
+            {
+            inmobiliarias.map((inmo) => (
               <li
                 key={inmo.id}
                 className="flex flex-col md:flex-row md:items-center justify-between border border-gray-200 p-4 rounded-lg hover:bg-gray-50 transition"

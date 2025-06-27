@@ -91,23 +91,24 @@ const CeluSidebar: React.FC<CeluSidebarDashboardProps> = ({ name, surname }) => 
     try {
       const formData = new FormData();
       formData.append("file", selectedFile);
-      toast.success("Actualizando foto de perfil...");
+
+      toast.loading("Actualizando foto de perfil...");
 
       const response = await postFotoDePerfil(user.id, formData);
-      if (response) {
+
+      toast.dismiss();
+
+      if (response?.profilePictureUrl) {
         toast.success("Foto de perfil actualizada con éxito");
-        setAdmin((prevAdmin) => {
-          if (!prevAdmin) return prevAdmin;
-          return {
-            ...prevAdmin,
-            profilePictureUrl: response.profilePictureUrl,
-          };
-        });
+        setAdmin((prevAdmin) => prevAdmin ? { ...prevAdmin, profilePictureUrl: response.profilePictureUrl } : prevAdmin);
         closeModal();
+      } else {
+        toast.error("No se pudo actualizar la foto de perfil.");
       }
     } catch (error) {
       console.error("Error al subir la imagen:", error);
-      toast.error("Error al subir la imagen");
+      toast.dismiss();
+      toast.error("Error al subir la imagen.");
     }
   };
 
