@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Upload, X } from "lucide-react";
+import { Upload, X, Image } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuthContext } from "../../../../../context/authContext";
 
@@ -119,7 +119,7 @@ const FotoPerfil: React.FC = () => {
         onDragOver={(e) => e.preventDefault()}
         onDragEnter={() => setIsDragging(true)}
         onDragLeave={() => setIsDragging(false)}
-        className={`relative w-68 h-68 rounded-full bg-gray-400 border-4 shadow-md flex items-center justify-center transition-all ${
+        className={`relative w-68 h-68 rounded-full bg-gray-700 border-4 shadow-md flex items-center justify-center transition-all ${
           isDragging
             ? "border-blue-400 bg-blue-100"
             : "border-blue-600 bg-gray-100"
@@ -149,6 +149,7 @@ const FotoPerfil: React.FC = () => {
         ) : (
           <span className="text-white font-semibold text-sm text-center px-4 select-none">
             Arrastrá una imagen aqui o seleccioná una desde tu dispositivo.
+             <Image size={36} className="text-white text-lg font-semibold text-center mt-5 m-auto"/>
           </span>
         )}
       </div>

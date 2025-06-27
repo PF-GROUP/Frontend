@@ -62,7 +62,7 @@ const DashboardPage = () => {
             Primero completá y enviá los datos del inmueble para poder subir las imágenes.
           </div>
         )}
-
+ 
 
         {/* Formulario de Propiedad */}
         <Formik

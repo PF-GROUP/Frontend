@@ -8,24 +8,10 @@ Este documento explica cómo interactuar con los endpoints de gestión de imáge
 
 Para subir cualquier imagen, tu frontend debe enviar una solicitud `POST` con el encabezado `Content-Type` establecido automáticamente por `FormData`. El archivo de imagen debe adjuntarse al campo del formulario llamado **`file`**.
 
----
 
-### 1. Subir Imagen de Galería de una Propiedad
 
-Este endpoint te permite agregar una nueva imagen a la galería de una propiedad específica.
-
-* **URL:** `POST /images/property/:propertyId/gallery`
-* **Parámetros de URL:**
-    * `propertyId` (UUID): El ID único de la propiedad.
-* **Seguridad:**
-    * **`AuthGuard`**: Requiere que el usuario esté **autenticado**.
-    * **`PropertyOwnershipGuard`**: Asegura que el usuario autenticado sea el **propietario** de la propiedad (o un administrador) para poder subir imágenes a su galería.
-* **Cuerpo de la Solicitud (FormData):**
-    * `file`: El archivo de imagen **(requerido)**.
-
----
 LISTO MATI YA LO HICISTE 
-<!-- ### 2. Subir o Actualizar Foto de Perfil de Usuario
+### 1. Subir o Actualizar Foto de Perfil de Usuario
 
 Utiliza este endpoint para actualizar la foto de perfil de un usuario existente.
 
@@ -38,9 +24,9 @@ Utiliza este endpoint para actualizar la foto de perfil de un usuario existente.
 * **Cuerpo de la Solicitud (FormData):**
     * `file`: El archivo de imagen **(requerido)**.
 
---- -->
+---
 
-### 3. Subir o Actualizar Logo de Personalización (Customization)
+### 2. Subir o Actualizar Logo de Personalización (Customization)
 
 Este endpoint te permite subir o actualizar el logo de una entidad de personalización.
 
@@ -55,7 +41,7 @@ Este endpoint te permite subir o actualizar el logo de una entidad de personaliz
 
 ---
 
-### 4. Subir o Actualizar Banner de Personalización (Customization)
+### 3. Subir o Actualizar Banner de Personalización (Customization)
 
 De manera similar al logo, este endpoint es para subir o actualizar el banner de una entidad de personalización.
 
@@ -70,7 +56,7 @@ De manera similar al logo, este endpoint es para subir o actualizar el banner de
 
 ---
 
-### 5. Eliminar Imagen de Galería de una Propiedad
+### 4. Eliminar Imagen de Galería de una Propiedad
 
 Usa este endpoint para eliminar una imagen específica de la galería de una propiedad.
 
