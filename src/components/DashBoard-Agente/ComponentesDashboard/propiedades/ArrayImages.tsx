@@ -15,7 +15,6 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // ✅ Maneja los archivos seleccionados o arrastrados
   const handleFiles = (files: FileList) => {
     const currentImages = images;
 
@@ -57,11 +56,12 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
   const handleDragLeave = () => setIsDragging(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (e.target.files) {
-    handleFiles(e.target.files);
-    e.target.value = ""; // ← Forzamos reinicio para que vuelva a disparar onChange
-  }
-};
+    if (e.target.files) {
+      handleFiles(e.target.files);
+      e.target.value = "";
+    }
+  };
+
   const removeImage = (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
@@ -74,7 +74,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
     images.forEach((img) => formData.append("files", img));
 
     try {
-      setLoading(true); 
+      setLoading(true);
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/images/property/${propertyId}/gallery`,
@@ -100,7 +100,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
   const renderPreviews = () => (
     <div className="flex flex-col gap-4 w-full">
       {images.map((img, idx) => (
-        <div key={idx} className="relative border-2 border-gray-200 bg-white p-2 rounded shadow w-full">
+        <div key={idx} className="relative border-2 border-gray-300 bg-white p-2 rounded shadow w-full">
           <img
             src={URL.createObjectURL(img)}
             alt={`preview-${idx}`}
@@ -126,25 +126,43 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
             Imágenes de la propiedad
           </h2>
 
-          <div className="w-full space-y-4 mt-6 ">
+          <div className="w-full space-y-4 mt-6">
             {/* 🎯 Área de arrastre */}
             <div
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              className={`relative min-h-[250px] p-4 border-4 border-gray-600 shadow overflow-y-auto transition-all ${
-                images.length > 0
-                  ? "border border-gray-300 bg-gray-50"
-                  : "bg-gray-600"
-              } ${isDragging ? "border-blue-500 bg-blue-100" : ""}`}
+              className={`relative min-h-[250px] p-4 transition-all duration-300 ${
+                isDragging
+                  ? "bg-blue-300 border-4 border-dashed border-blue-500"
+                  : images.length > 0
+                  ? "bg-gray-100 border border-gray-300"
+                  : "bg-gray-700 border-4 border-gray-700"
+              }`}
             >
-              {/* 🔳 Esquinas si no hay imágenes */}
+              {/* 🔳 Esquinas decorativas */}
               {images.length === 0 && (
                 <>
-                  <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-blue-300" />
-                  <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-blue-300" />
-                  <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-blue-300" />
-                  <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-blue-300" />
+                  <div
+                    className={`absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 ${
+                      isDragging ? "border-blue-400 scale-125" : "border-blue-500"
+                    } transition-transform duration-300`}
+                  />
+                  <div
+                    className={`absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 ${
+                      isDragging ? "border-blue-400 scale-125" : "border-blue-500"
+                    } transition-transform duration-300`}
+                  />
+                  <div
+                    className={`absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 ${
+                      isDragging ? "border-blue-400 scale-125" : "border-blue-500"
+                    } transition-transform duration-300`}
+                  />
+                  <div
+                    className={`absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 ${
+                      isDragging ? "border-blue-400 scale-125" : "border-blue-500"
+                    } transition-transform duration-300`}
+                  />
                 </>
               )}
 
@@ -154,13 +172,11 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
                 <div className="text-white text-lg font-semibold text-center mt-11 flex flex-col items-center">
                   Arrastrá una imagen aqui o seleccioná una desde tu dispositivo.
 
-                  {/* Ícono decorado con esquinas como en tu imagen */}
-                  <div className="relative w-14 h-14 bg-[#2e2e2e] flex items-center justify-center rounded-md mt-5">
+                  <div className="relative w-14 h-14 bg-[#1e1e1e] flex items-center justify-center rounded-md mt-5">
                     <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-blue-500" />
                     <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-blue-500" />
                     <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-blue-500" />
                     <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-blue-500" />
-
                     <Image size={28} className="text-white" />
                   </div>
                 </div>

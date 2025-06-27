@@ -84,7 +84,8 @@ const DashboardPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
 
         {/* Componente para subir imágenes */}
-        {propertyId ? (
+        {/* cambiar el valor luego de "true" a "propertyId"  */}
+        {true ? (
           <UploadImageForm propertyId={propertyId} />
         ) : (
           <div className="border-2 border-dashed bg-gray-200 border-gray-400 rounded-lg p-6 text-center text-gray-600">
