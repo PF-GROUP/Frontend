@@ -6,7 +6,6 @@ import { useSearchParams } from 'next/navigation';
 // import Dashboard from '@/components/DashBoard-Agente/DashboardInicio';
 import EditarTitulo from '@/components/DashBoard-Agente/ComponentesDashboard/miSitio/Editar-titulo';
 import CambiarColores from '@/components/DashBoard-Agente/ComponentesDashboard/miSitio/Cambiar-colores';
-import Filtros from '@/components/DashBoard-Agente/ComponentesDashboard/miSitio/Configurar-filtros';
 import SubirPropiedad from '@/components/DashBoard-Agente/ComponentesDashboard/propiedades/Subir';
 import Borrar from '@/components/DashBoard-Agente/ComponentesDashboard/propiedades/Borrar';
 import Facturacion from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Facturacion';
@@ -51,8 +50,6 @@ export default function DashboardPage() {
         return <EditarTitulo />;
       case 'cambiar-colores':
         return <CambiarColores />;
-      case 'configurar-filtros':
-        return <Filtros />;
       case 'subir-propiedad':
         return <SubirPropiedad />;
       case 'borrar-propiedad':

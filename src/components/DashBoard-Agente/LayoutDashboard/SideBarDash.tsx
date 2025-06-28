@@ -135,7 +135,6 @@ const SidebarDashboard: React.FC = () => {
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
                 <li><Link href="/DashboardAgente?view=editar-titulo" className="block text-gray-800 hover:text-[#870505] transition-colors">Editar Nombre y descripción</Link></li>
                 <li><Link href="/DashboardAgente?view=cambiar-colores" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Cambiar colores</Link></li>
-                <li><Link href="/DashboardAgente?view=configurar-filtros" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Configurar filtros</Link></li>
               </ul>
             </details>
           </div>
