@@ -9,7 +9,17 @@ const onBoardingRoutes = ["/stripe"]
 const adminRoutes = ["/DashboardAdmin"]
 const publicRoutes = ["/login", "/register"]
 
-export default function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
+  let isTokenValid = false
+    const sessionToken = request.cookies.get("token")?.value
+  try {
+     isTokenValid = await verifyToken(request)
+  } catch (error) {
+    isTokenValid = false
+  }
+
+
+
   console.log("🚀 Middleware ejecutándose en:", request.nextUrl.pathname)
   const path = request.nextUrl.pathname
   const isProtectedRoute = protectedRoutes.includes(path)
@@ -17,8 +27,12 @@ export default function middleware(request: NextRequest) {
   const isAdminRoute = adminRoutes.includes(path)
   const isPublicRoute = publicRoutes.includes(path)
 
+  if (!isTokenValid && !isPublicRoute && !!sessionToken) {
+    const response =  NextResponse.redirect(new URL("/login", request.nextUrl))
+    response.cookies.delete("token")
+    return response
+  }
   // 2. Obtener la cookie del request
-  const sessionToken = request.cookies.get("token")?.value
   const session = verifySession(sessionToken)
   const { isAuthenticated, isAdmin, isOnBoarding, isPay } = session
 
@@ -55,7 +69,11 @@ export default function middleware(request: NextRequest) {
 
   return NextResponse.next()
 }
-
+async function verifyToken(req) {
+  const res = await fetch(`http://localhost:3000/auth/ValidToken`,{credentials:"include", headers: req.headers})
+  console.log(res.status)
+  return res.status === 200 ? true : false
+}
 function verifySession(token: string | undefined): {
   isAuthenticated: boolean
   isAdmin: boolean
