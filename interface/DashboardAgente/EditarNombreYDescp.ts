@@ -1,5 +1,5 @@
 export interface IEditarNombreYdescAgency{
     name: string,
     description: string,
-    agentUser?: number
+    agentUser?: string
 }

@@ -22,7 +22,7 @@ const EditarTitulo: React.FC = () => {
     try {
       const payload = {
         ...values,
-        agentUser: user.agencyId,
+        agentUser: String(user.agencyId),
       };
 
       const response = await editarAgencia(payload, user.agencyId);
