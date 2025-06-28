@@ -15,16 +15,16 @@ const EditarTitulo: React.FC = () => {
   const router = useRouter();
 
   const handleOnSubmit = async (values: IEditarNombreYdescAgency) => {
-    try {
-      // if (!user) {
-      //   toast.error("Usuario no autenticado");
-      //   return;
-      // }
 
+    if (!user?.agencyId) {
+      toast.error("No se pudo identificar la agencia del usuario.");
+      return;
+    }
+    
+    try {
       const payload = {
         ...values, 
         "agentUser": user?.agencyId
-        // agentUser: user.id, // ✅ mandamos el user.id
       };
 
       const response = await editarAgencia(payload, user?.agencyId);
@@ -48,7 +48,7 @@ const EditarTitulo: React.FC = () => {
 
   return (
     <Formik
-      initialValues={{ name: "", description: "", agentUser: 0 }}
+      initialValues={{ name: "", description: ""}}
       validationSchema={tituloValidations}
       onSubmit={handleOnSubmit}
     >
@@ -73,7 +73,7 @@ const EditarTitulo: React.FC = () => {
             {/* Título */}
             <div className="flex flex-col w-full">
               <label htmlFor="name" className="text-lg md:text-xl font-bold mb-1">
-                Nombre de la Agencia
+                Nombre de la agencia
               </label>
               <input
                 id="name"
