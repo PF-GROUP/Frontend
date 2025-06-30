@@ -102,7 +102,7 @@ export default function LoginForm() {
 
           <button
             type="submit"
-            className="bg-[#a62f55] text-white py-2 rounded hover:bg-[#8f2848] transition-colors w-full"
+            className="bg-[#a62f55] text-white py-2 rounded hover:bg-[#8f2848] transition-colors w-full cursor-pointer"
           >
             Inicia sesión
           </button>

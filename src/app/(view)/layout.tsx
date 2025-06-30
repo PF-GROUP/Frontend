@@ -25,9 +25,10 @@ export default function RootLayout({
 }>) {
   return (
       <>
-        <div className="bg-white">
+        <div className="bg-white h-16">
         <Navbar />
         </div>
+
         {children}
         <ChatbotPrueba />
         <Footer />

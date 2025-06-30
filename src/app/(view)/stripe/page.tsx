@@ -45,13 +45,13 @@ export default function Pago() {
           <CheckCircle className="w-16 h-16 text-[#833444] mx-auto" />
         </div>
 
-        <h2 className="text-2xl font-bold text-[#833444] mb-2">Suscripción Premium</h2>
+        <h2 className="text-2xl font-bold text-[#833444] mb-2">Suscripción</h2>
 
         <p className="text-gray-800 mb-4 font-medium">
           Accedé a contenido exclusivo, soporte prioritario y funciones avanzadas para tu inmobiliaria.
         </p>
 
-        <p className="text-lg font-bold text-[#833444] mb-6">$9.99 / mes</p>
+        <p className="text-lg font-bold text-[#833444] mb-6">$1.000 / mes</p>
 
         <button
           onClick={handleCheckout}
@@ -60,7 +60,7 @@ export default function Pago() {
             loading
               ? 'bg-[#d49c9c] cursor-not-allowed'
               : 'bg-[#833444] hover:bg-[#522d37]'
-          }`}
+          } cursor-pointer`}
         >
           {loading ? 'Redirigiendo...' : 'Suscribirme ahora'}
         </button>

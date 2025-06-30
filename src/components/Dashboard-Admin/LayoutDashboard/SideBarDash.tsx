@@ -6,7 +6,7 @@ import apiService from "@/services/apiService";
 import { postFotoDePerfil, getAdmin } from "@/services/adminService";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Building,
   Users,
@@ -35,22 +35,23 @@ const SidebarDashboard: React.FC<SidebarDashboardProps> = ({
     surname: string;
     profilePictureUrl?: string;
   }
-  
+    console.log(user)
   const [admin, setAdmin] = useState<Admin | null>(null);
 
-  useEffect(() => {
+
     const fetchAdmin = async () => {
-      if (!user || user.isAdmin === false) return;
+      if(!user || user.isAdmin === false) return;
+      
       try {
         const admin = await getAdmin(user.id);
         setAdmin(admin);
       } catch (error) {
         console.error("Error al obtener el admin:", error);
       }
+      console.log(admin);
     };
 
-    fetchAdmin();
-  }, [user]);
+
 
   const handleLogout = () => {
     apiService.post("/auth/logout", {}, true);
@@ -97,7 +98,7 @@ const handleUpload = async () => {
     if (response?.profilePictureUrl) {
       toast.success("Foto de perfil actualizada con éxito", { id: "upload" });
 
-      // Actualizás el admin en el estado local
+      
       setAdmin((prevAdmin: Admin | null) => ({
         ...prevAdmin!,
         profilePictureUrl: response.profilePictureUrl,
@@ -136,6 +137,9 @@ const handleUpload = async () => {
                 </h2>
                 <p className="font-sans text-sm">Administrador</p>
               </div>
+              <button onClick={fetchAdmin}>
+                Click
+              </button>
             </div>
 
             {/* Ícono de cámara con modal */}
@@ -225,7 +229,7 @@ const handleUpload = async () => {
         </div>
 
         {/* Botón de Logout */}
-        <div className="flex items-center justify-start text-center w-full md:w-[200px] mt-auto mb-6 ml-4 rounded-2xl pt-2 pb-2 pl-3 pr-3 bg-[#9b0624] hover:bg-[#870505] transition-colors cursor-pointer">
+        <div className="flex items-center justify-start text-center w-full md:w-[200px] mt-auto mb-6 ml-4 rounded-2xl pt-2 pb-2 pl-3 pr-3 bg-[#A62F55] hover:bg-[#922749] transition-colors cursor-pointer">
           <LogOut size={27} className="text-white text-center" />
           <button onClick={handleLogout} className="block ml-2 font-semibold text-xl text-white text-center cursor-pointer">
             Cerrar sesión

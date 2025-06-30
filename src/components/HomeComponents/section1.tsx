@@ -17,12 +17,12 @@ const Section1 = () => {
           <div className="relative mt-12 md:mt-0 md:ml-10 flex items-end">
             {/* Desktop preview */}
             <div className="bg-[#FCEAE5] text-black w-[240px] h-[170px] md:w-[350px] md:h-[230px] rounded-xl shadow-lg flex items-center justify-center text-center border border-black">
-              <Image src="/InmoPrueba.png" alt="Logo" fill className="object-cover  rounded-xl shadow-lg flex items-center justify-center text-center border-2 border-black " />
+              <Image src="/dreamhomes.png" alt="Logo" fill className="object-cover  rounded-xl shadow-lg flex items-center justify-center text-center border-2 border-black " />
             </div>
 
             {/* Mobile preview */}
             <div className="bg-[#FCEAE5] text-black md:w-[100px] md:h-[180px] w-[60px] h-[120px] rounded-xl shadow-lg flex items-center justify-center text-center border border-black absolute -right-8 -bottom-6">
-              <Image src="/InmoPruebaCelular.png" alt="Logo" fill className="object-cover  rounded-xl shadow-lg flex items-center justify-center text-center border-2 border-black " />
+              <Image src="/dreamhomemobile.png" alt="Logo" fill className="object-cover  rounded-xl shadow-lg flex items-center justify-center text-center border-2 border-black " />
             </div>
           </div>
         </section>
