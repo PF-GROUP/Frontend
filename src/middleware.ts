@@ -72,7 +72,7 @@ export default async function middleware(request: NextRequest) {
 async function verifyToken(req) {
   const res = await fetch(`http://localhost:3000/auth/ValidToken`,{credentials:"include", headers: req.headers})
   console.log(res.status)
-  return res.status === 200 ? true : false
+  return res.status === 401 || res.status === 403 ? false : true
 }
 function verifySession(token: string | undefined): {
   isAuthenticated: boolean
