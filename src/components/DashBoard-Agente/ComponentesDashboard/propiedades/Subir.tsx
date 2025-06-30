@@ -8,6 +8,7 @@ import { validationSchema } from '../../validacionesDashBoard/propiedades';
 import { IPropertyForm } from '../../../../../interface/DashboardAgente/subirPropiedadDTO';
 import { useState, useEffect } from 'react';
 import { useAuthContext } from '../../../../../context/authContext';
+import apiService from '@/services/apiService';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "91.235.34.31:3000";
 
@@ -23,13 +24,9 @@ const DashboardPage = () => {
 
   const fetchTypeOfProperties = async () => {
     try {
-    const response = await fetch(`${API_URL}/typeofproperty`);
-
-      if (!response.ok) throw new Error('Error al obtener tipos de propiedad');
-
-      const res = await response.json();
-
-      const propertyTypes = Array.isArray(res.content) ? res.content : [];
+    const response = await apiService.get('/typeofproperty', true);
+      console.log("Response from API:", response);
+      const propertyTypes = Array.isArray(response) ? response : [];
       setTypeOptions(propertyTypes);
     } catch (error) {
       console.error('Error fetching property types:', error);
