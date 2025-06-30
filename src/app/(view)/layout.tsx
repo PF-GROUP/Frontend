@@ -30,7 +30,7 @@ export default function RootLayout({
         </div>
 
         {children}
-        <ChatbotPrueba />
+        {/* <ChatbotPrueba /> */}
         <Footer />
       </>
       
