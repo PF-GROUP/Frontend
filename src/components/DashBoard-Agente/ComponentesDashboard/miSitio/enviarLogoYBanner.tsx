@@ -27,7 +27,7 @@ const UploadLogoBanner: React.FC<UploadLogoBannerProps> = ({ customizationId }) 
       }
     );
 
-    if (!res.ok) throw new Error(`Error al subir el ${type}`);
+    // if (!res.ok) throw new Error(`Error al subir el ${type}`);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -1,14 +1,4 @@
 import * as Yup from 'yup';
-import { Status, Type } from '../../../../interface/DashboardAgente/subirPropiedadDTO';
-
-// Validación para imagen, acepta File o URL válida (https)
-const imageValidation = Yup.mixed().test(
-  'file-or-url',
-  'Cada imagen debe ser un archivo válido o una URL válida',
-  (value) =>
-    value instanceof File ||
-    (typeof value === 'string' && /^https?:\/\/.+/.test(value))
-);
 
 export const validationSchema = Yup.object({
   name: Yup.string()
@@ -16,12 +6,12 @@ export const validationSchema = Yup.object({
     .min(3, 'El nombre debe tener al menos 3 caracteres')
     .max(80, 'El nombre no puede superar los 80 caracteres'),
 
-  status: Yup.mixed<Status>()
-    .oneOf(Object.values(Status), 'Estado inválido')
+  status: Yup.string()
+    .oneOf(['Disponible'], 'Estado inválido') // 👈 directamente el string, más seguro
     .required('Campo obligatorio'),
 
-  type: Yup.mixed<Type>()
-    .oneOf(Object.values(Type), 'Tipo inválido')
+  type: Yup.string()
+    .oneOf(['Alquiler', 'Venta'], 'Tipo inválido')
     .required('Campo obligatorio'),
 
   type_of_property_id: Yup.string()
@@ -65,8 +55,13 @@ export const validationSchema = Yup.object({
     .min(10, 'La descripción debe tener al menos 10 caracteres')
     .max(500, 'La descripción no puede superar los 500 caracteres'),
 
-  id_images: Yup.array()
-    .of(imageValidation)
-    .min(1, 'Debes subir al menos una imagen')
-    .required('Las imágenes son obligatorias'),
+  id_images: Yup.array().of(
+    Yup.mixed().test(
+      'file-or-url',
+      'Cada imagen debe ser un archivo válido o una URL válida',
+      (value) =>
+        value instanceof File ||
+        (typeof value === 'string' && /^https?:\/\/.+/.test(value))
+    )
+  )
 });
