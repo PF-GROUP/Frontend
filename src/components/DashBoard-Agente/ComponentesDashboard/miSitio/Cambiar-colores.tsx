@@ -89,10 +89,10 @@ const MiSitio: React.FC = () => {
     );
 
       const data = await response.json();
-      console.log("🧠 response completo:", data);
+      console.log("🧠 response completo Colores:", data);
       // Guardar customizationId para usarlo en el componente UploadLogoBanner
-      if (response.ok && data) {
-        setCustomizationId(data.id);
+      if (response.ok && data?.content?.id) {
+      setCustomizationId(data.content.id); // ✅ Acá sí lo vas a setear bien
         toast.success("Colores modificados con Éxito.", { duration: 2500 });
       } else {
         console.warn("⚠️ Hubo un Error al editar los Colores:", data);
