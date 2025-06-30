@@ -9,6 +9,7 @@ import { IPropertyForm } from '../../../../../interface/DashboardAgente/subirPro
 import { useState, useEffect } from 'react';
 import { useAuthContext } from '../../../../../context/authContext';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "91.235.34.31:3000";
 
 interface ITypeOfProperty {
   id: string;
@@ -22,16 +23,18 @@ const DashboardPage = () => {
 
   const fetchTypeOfProperties = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/typeofproperty`);
-      
+    const response = await fetch(`${API_URL}/typeofproperty`);
+
       if (!response.ok) throw new Error('Error al obtener tipos de propiedad');
-      const data = await response.json();
-      setTypeOptions(data);
+
+      const res = await response.json();
+
+      const propertyTypes = Array.isArray(res.content) ? res.content : [];
+      setTypeOptions(propertyTypes);
     } catch (error) {
       console.error('Error fetching property types:', error);
       toast.error('No se pudieron cargar los tipos de propiedad');
-    }
-  };
+  }};
 
   useEffect(() => {
     fetchTypeOfProperties();
@@ -56,17 +59,25 @@ const DashboardPage = () => {
   const handleOnSubmit = async (values: IPropertyForm) => {
     try {
       if (!user?.agencyId) {
+        console.log("Este es el id del usuario: ", user?.id);
+
+
+        console.log("Este es el id de la agencia del usuario: ", user?.agencyId);
+        
         toast.error('No se encontró la agencia del usuario.', { duration: 2500 });
         return;
       }
-
+      console.log("este es el id de la agencia:", user.agencyId);
+      console.log("este es el id del user:", user.id);
+      
+      
       const postProperty = {
         ...values,
         agency: String(user.agencyId),
       };
-
+      
       const response = await CreateProperty(postProperty);
-
+      
       if (response && response.success === true) {
         setPropertyId(response.data.id);
         toast.success('¡Propiedad Creada con Éxito!...', { duration: 2500 });
@@ -78,7 +89,7 @@ const DashboardPage = () => {
       toast.error('Hubo un problema al querer crear la propiedad.', { duration: 2000 });
     }
   };
-
+  
   return (
     <div className="w-full p-4 md:p-6 lg:pt-0">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">

@@ -12,7 +12,6 @@ import {
   Menu,
   ShieldCheck,
 } from "lucide-react";
-import { getAgente } from "@/services/agenteGet";
 import { useAuthContext } from "../../../../context/authContext";
 
 const SidebarDashboard: React.FC = () => {
@@ -28,32 +27,13 @@ const SidebarDashboard: React.FC = () => {
     }
   }, [user]);
 
+
   // Estado para guardar el nombre y apellido del agente
-  const [agenteNombre, setAgenteNombre] = useState<string>("Cargando...");
-  const [agenteApellido, setAgenteApellido] = useState<string>("");
 
+  console.log("Este es el id del user SB: ", user?.id);
+  console.log("Este es el nombre del user SB: ", user?.name);
+  console.log("Este es el apellido del user SB: ", user?.surname);
   // IMPORTANTE LEER REALIZAR EL CONSUMO DEL NOMBRE DEL USUARIO DESDE LAS COOCKIES "user"
-  useEffect(() => {
-    const fetchAgente = async () => {
-      try {
-        if (!user || typeof user.id !== "number") return;
-        const response = await getAgente(user?.id);
-        
-
-        // Asumiendo que el nombre viene en response.data.name
-        setAgenteNombre(response.name || "Nombre no disponible");
-        setAgenteApellido(response.surname || "Nombre no disponible");
-        
-        // Si la URL de imagen viene también, podrías setear profileImageUrl aquí:
-        // setProfileImageUrl(response.data.profileImageUrl);
-      } catch (error) {
-        console.error("Error cargando agente:", error);
-        setAgenteNombre("Error al cargar");
-      }
-    };
-
-    fetchAgente();
-  }, [user]);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
@@ -111,7 +91,7 @@ const SidebarDashboard: React.FC = () => {
 
 
             <div className="flex flex-col items-start justify-start text-center ml-3">
-              <h2 className="font-bold text-base md:text-xl">{agenteNombre} {agenteApellido} </h2>
+              <h2 className="font-bold text-base md:text-xl">{user?.name || "Nombre" } {user?.surname || "apellido "} </h2>
               <p className="font-sans text-sm">Agente inmobiliario</p>
             </div>
           </div>
