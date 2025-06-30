@@ -1,7 +1,7 @@
 import apiService from "./apiService";
 import { IColores } from "../../interface/DashboardAgente/ColoresDTO";
 
-export const editarColoresAgencia = async ( data: IColores, id:number ) => {
+export const editarColoresAgencia = async ( data: IColores, id:string ) => {
   try {
     const response = await apiService.patch(`/agencies/${id}/customization`, data);
     return response;

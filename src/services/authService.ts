@@ -74,7 +74,7 @@ export const getDataFromGoogle = async (tokenGoogle:string)=>{
 }
 export const refreshSession = async(SaveUserData: (data: { user: IUser }) => void)=>{
   try {
-    const user = await apiService.get("session_refresh", true);
+    const user = await apiService.get("auth/session_refresh", true);
     if (!user){
       return null;
     }

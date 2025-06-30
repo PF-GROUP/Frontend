@@ -47,7 +47,7 @@ export default async function middleware(request: NextRequest) {
   // if (isProtectedRoute && !isPay && isAuthenticated) {
   //   return NextResponse.redirect(new URL("/stripe", request.nextUrl))
   // }
-  if (isProtectedRoute && !isOnBoarding && isAuthenticated) {
+  if (isProtectedRoute && isOnBoarding && isAuthenticated) {
     return NextResponse.redirect(new URL("/stripe", request.nextUrl))
   }
   if (isOnBoardingRoute && !isOnBoarding) {
@@ -89,12 +89,17 @@ function verifySession(token: string | undefined): {
   }
   try {
     const user:userPayload = jwtDecode(token)
+    console.log('user::: ', user);
     const isAdmin = user.isAdmin
+    console.log('isAdmin::: ', isAdmin);
     const isPay = user.status
+    console.log('isPay::: ', isPay);
     const isOnBoarding = user.onBoarding ? true : false
+    console.log('isOnBoarding::: ', isOnBoarding);
     const isAuthenticated = true
+    console.log('isAuthenticated::: ', isAuthenticated);
 
-
+    
 
     return {
       isAuthenticated,
