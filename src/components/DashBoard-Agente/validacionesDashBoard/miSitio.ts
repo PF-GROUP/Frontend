@@ -34,13 +34,26 @@ export const colorValidationSchema = Yup.object().shape({
 
 
 // Validacion Editar titulo y descipción:
+// Validación Editar título y descripción:
+
 export const tituloValidations = Yup.object().shape({
   name: Yup.string()
+    .trim("No puede tener espacios al inicio o final")
     .required("El título es obligatorio")
     .min(3, "Debe tener al menos 3 caracteres")
-    .max(60, "No debe superar los 60 caracteres"),
+    .max(60, "No debe superar los 60 caracteres")
+    .matches(
+      /^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,-]*$/,
+      "Solo se permiten letras, números y puntuación básica"
+    ),
+
   description: Yup.string()
+    .trim("No puede tener espacios al inicio o final")
     .required("La descripción es obligatoria")
     .min(10, "Debe tener al menos 10 caracteres")
-    .max(300, "No debe superar los 300 caracteres"),
+    .max(300, "No debe superar los 300 caracteres")
+    .matches(
+      /^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ.,-]*$/,
+      "Solo se permiten letras, números y puntuación básica"
+    ),
 });

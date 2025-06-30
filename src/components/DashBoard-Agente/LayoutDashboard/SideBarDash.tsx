@@ -12,51 +12,28 @@ import {
   Menu,
   ShieldCheck,
 } from "lucide-react";
-import { getAgente } from "@/services/agenteGet";
 import { useAuthContext } from "../../../../context/authContext";
 
 const SidebarDashboard: React.FC = () => {
   const {user} = useAuthContext()
 
   const [isOpen, setIsOpen] = useState(false);
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  // const [profileImage, setProfileImage] = useState<string | null>(null);
 
   // ✅ Cargar imagen de perfil desde el user
-  useEffect(() => {
-    if (user?.profilePictureUrl) {
-      setProfileImage(user.profilePictureUrl);
-    }
-  }, [user]);
-
+ 
   // Estado para guardar el nombre y apellido del agente
-  const [agenteNombre, setAgenteNombre] = useState<string>("Cargando...");
-  const [agenteApellido, setAgenteApellido] = useState<string>("");
 
+  console.log("Este es el id del user SB: ", user?.id);
+  console.log("Este es el nombre del user SB: ", user?.name);
+  console.log("Este es el apellido del user SB: ", user?.surname);
+  console.log("Esta es foto de perfil: ", user?.profilePictureUrl);
   // IMPORTANTE LEER REALIZAR EL CONSUMO DEL NOMBRE DEL USUARIO DESDE LAS COOCKIES "user"
-  useEffect(() => {
-    const fetchAgente = async () => {
-      try {
-        if (!user || typeof user.id !== "number") return;
-        const response = await getAgente(user?.id);
-        
-
-        // Asumiendo que el nombre viene en response.data.name
-        setAgenteNombre(response.name || "Nombre no disponible");
-        setAgenteApellido(response.surname || "Nombre no disponible");
-        
-        // Si la URL de imagen viene también, podrías setear profileImageUrl aquí:
-        // setProfileImageUrl(response.data.profileImageUrl);
-      } catch (error) {
-        console.error("Error cargando agente:", error);
-        setAgenteNombre("Error al cargar");
-      }
-    };
-
-    fetchAgente();
-  }, [user]);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
+
+  
 
   return (
     <>
@@ -95,10 +72,10 @@ const SidebarDashboard: React.FC = () => {
                 href={"/DashboardAgente?view=cambiar-foto-perfil"}
                 className="relative w-13 h-13 rounded-full overflow-hidden border-2 border-blue-600"
               >
-                {profileImage ? (
+                {user?.profilePictureUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={profileImage}
+                    src={user?.profilePictureUrl}
                     alt="Foto perfil agente"
                     className="w-full h-full object-cover"
                   />
@@ -111,7 +88,7 @@ const SidebarDashboard: React.FC = () => {
 
 
             <div className="flex flex-col items-start justify-start text-center ml-3">
-              <h2 className="font-bold text-base md:text-xl">{agenteNombre} {agenteApellido} </h2>
+              <h2 className="font-bold text-base md:text-xl">{user?.name || "Nombre" } {user?.surname || "apellido "} </h2>
               <p className="font-sans text-sm">Agente inmobiliario</p>
             </div>
           </div>
@@ -135,7 +112,6 @@ const SidebarDashboard: React.FC = () => {
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
                 <li><Link href="/DashboardAgente?view=editar-titulo" className="block text-gray-800 hover:text-[#870505] transition-colors">Editar Nombre y descripción</Link></li>
                 <li><Link href="/DashboardAgente?view=cambiar-colores" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Cambiar colores</Link></li>
-                <li><Link href="/DashboardAgente?view=configurar-filtros" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Configurar filtros</Link></li>
               </ul>
             </details>
           </div>
@@ -161,7 +137,7 @@ const SidebarDashboard: React.FC = () => {
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
                 <li><Link href="/DashboardAgente?view=facturacion" className="block text-gray-800 hover:text-[#870505] transition-colors">Facturación</Link></li>
                 <li><Link href="/DashboardAgente?view=cambiar-contrasena" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Cambiar contraseña</Link></li>
-                <li><Link href="/DashboardAgente?view=cambiar-foto-perfil" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Cambiar Foto</Link></li>
+                <li><Link href="/DashboardAgente?view=cambiar-foto-perfil" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Cambiar foto</Link></li>
               </ul>
             </details>
           </div>
