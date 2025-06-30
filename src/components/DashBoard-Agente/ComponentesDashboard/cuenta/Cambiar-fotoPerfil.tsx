@@ -81,7 +81,7 @@ const FotoPerfil: React.FC = () => {
       //   body: formData,
       //   credentials: "include", // incluye cookies para autenticar al usuario
       // });
-      const response = await apiService.post(`/images/profile/${user.id}`,true)
+      const response = await apiService.post(`/images/profile/${user.id}`, formData)
       console.log("Respuesta status:", response.status);
 
       // if (!response.ok) throw new Error("Error al subir la imagen");
