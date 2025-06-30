@@ -111,13 +111,13 @@ export default function GestionInmobiliarias() {
                 <div className="flex flex-col gap-2 md:flex-row md:gap-4">
                   <button
                     onClick={() => abrirModal("suspender", inmo.id)}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded text-sm cursor-pointer"
+                    className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded text-sm cursor-pointer"
                   >
                     Suspender
                   </button>
                   <button
                     onClick={() => abrirModal("eliminar", inmo.id)}
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm cursor-pointer"
+                    className="bg-[#A62F55] hover:bg-[#922749] text-white px-4 py-2 rounded text-sm cursor-pointer"
                   >
                     Eliminar
                   </button>
@@ -157,7 +157,7 @@ export default function GestionInmobiliarias() {
                   </button>
                   <button
                     onClick={() => abrirModal("eliminar", inmo.id)}
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm cursor-pointer"
+                    className="bg-[#A62F55] hover:bg-[#922749] text-white px-4 py-2 rounded text-sm cursor-pointer"
                   >
                     Eliminar
                   </button>
@@ -190,7 +190,7 @@ export default function GestionInmobiliarias() {
               {modalAction === "eliminar" && (
                 <button
                   onClick={confirmarEliminar}
-                  className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 cursor-pointer"
+                  className="px-4 py-2 rounded bg-[#A62F55] hover:bg-[#922749] text-white  cursor-pointer"
                 >
                   Eliminar
                 </button>
@@ -198,7 +198,7 @@ export default function GestionInmobiliarias() {
               {modalAction === "suspender" && (
                 <button
                   onClick={confirmarSuspender}
-                  className="px-4 py-2 rounded bg-yellow-500 text-white hover:bg-yellow-600 cursor-pointer" 
+                  className="px-4 py-2 rounded bg-yellow-600 hover:bg-yellow-700 text-white cursor-pointer" 
                 >
                   Suspender
                 </button>

@@ -60,7 +60,7 @@ export const getAgencySoftDeleted = async () => {
 
 export const postFotoDePerfil = async (id: string, formData: FormData) => {
   try {
-    const response = await apiService.post(`/image`, formData, true);
+    const response = await apiService.post(`/images/profile/${id}`, formData, true);
     return response;
   } catch (error) {
     console.error("Error al subir la foto de perfil:", error);

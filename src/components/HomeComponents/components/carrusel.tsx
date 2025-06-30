@@ -1,13 +1,18 @@
 'use client';
-
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
 export default function Carousel() {
+  const router = useRouter();
   const [index, setIndex] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const imagesCount = 3;
+
+  const handleClick = (slug: string) => {
+    router.push(`/agencia/${slug}`);
+  };
 
   const startCarousel = () => {
     intervalRef.current = setInterval(() => {
@@ -33,23 +38,27 @@ export default function Carousel() {
         className="flex transition-transform duration-700 ease-in-out"
         style={{ transform: `translateX(-${index * 100}%)` }}
       >
+        
         <Image
-          className="w-full h-auto object-cover"
-          src="/inmo1.png"
+          className="w-full h-auto object-cover cursor-pointer"
+          src="/dreamhomes.png"
+          onClick={() => handleClick('dream-homes')}
           alt="Logo"
           width={400}
           height={300}
         />
         <Image
-          className="w-full h-auto object-cover"
-          src="/inmo3.png"
+          className="w-full h-auto object-cover cursor-pointer"
+          src="/UrbanLiving.png"
+          onClick={() => handleClick('urban-living')}
           alt="Logo2"
           width={400}
           height={300}
         />
         <Image
-          className="w-full h-auto object-cover"
-          src="/inmo2.png"
+          className="w-full h-auto object-cover cursor-pointer"
+          src="/luxuryEstates.png"
+          onClick={() => handleClick('luxury-estates')}
           alt="Logo3"
           width={400}
           height={300}

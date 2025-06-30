@@ -45,8 +45,8 @@ export default function PlanPago() {
         </div>
       </div>
       <div className="hidden md:grid grid-cols-1 gap-8 items-center">
-        <Image src="/imagenCompu.png" alt="Logo" width={600} height={300} className="mx-auto mt-0" />
-        <p className="text-2xl font-semibold text-[#4A0E1B] mt-4 text-[40px] text-center">$29/mes</p>
+        <Image src="/fotoRealInmopcyMb.png" alt="Logo" width={600} height={300} className="mx-auto mt-0" />
+        <p className="text-2xl font-semibold text-[#4A0E1B] mt-4 text-[40px] text-center">$1.000/mes</p>
       </div>
             </div>
             </div>
@@ -70,8 +70,8 @@ export default function PlanPago() {
             Comenzar ahora
           </button>
         </div>
-        <Image src="/imagenCompu.png" alt="Logo" width={300} height={150} className="mx-auto mt-4" />
-        <p className="text-xl font-semibold text-[#4A0E1B] mt-4 text-center">$29/mes</p>
+        <Image src="/fotoRealInmopcyMb.png" alt="Logo" width={300} height={150} className="mx-auto mt-4" />
+        <p className="text-xl font-semibold text-[#4A0E1B] mt-4 text-center">$1.000/mes</p>
       </div>
             </div>
     </section>

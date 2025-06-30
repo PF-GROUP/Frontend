@@ -421,7 +421,8 @@ const FormRegister: React.FC = () => {
                   <input
                     type="text"
                     name="slug"
-                    value={values.slug}
+
+                    value={`www.kasapp/agencia/${values.slug}`}
                     readOnly
                     className="w-full border rounded p-2 bg-gray-100 cursor-not-allowed"
                   />
@@ -459,10 +460,13 @@ const FormRegister: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="ml-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer"
-                >
-                  Crear cuenta
-                </button>
+                  className={`ml-auto px-4 py-2 text-white rounded transition-colors duration-200 ${
+                  isSubmitting
+                  ? "bg-green-400 cursor-not-allowed"
+                  : "bg-green-600 hover:bg-green-700"
+                  }`} >
+                  {isSubmitting ? "Creando..." : "Crear cuenta"}
+                  </button>
               )}
             </div>
           </form>

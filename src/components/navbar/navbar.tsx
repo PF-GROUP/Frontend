@@ -64,7 +64,7 @@ const Navbar: React.FC = () => {
   );
 
   return (
-    <nav className="relative flex justify-between items-center px-6 py-4 bg-white shadow-md h-16 mx-auto">
+    <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-white shadow-md h-16">
       <Link href="/home" className="flex items-center space-x-2 h-full">
         <div className="flex items-center space-x-2 h-full">
           <Image
@@ -81,7 +81,7 @@ const Navbar: React.FC = () => {
       {/* Escritorio */}
       <div className="hidden md:flex items-center space-x-4">
         <Link href="/home">Home</Link>
-        <Link href="/#sección0">Nosotros</Link>
+        <Link href="/nosotros">Nosotros</Link>
         <Link href="/contacto">Contacto</Link>
 
         {isAuth === null ? (
@@ -107,7 +107,7 @@ const Navbar: React.FC = () => {
       {showMenu && (
         <div className="absolute right-6 top-full mt-2 md:hidden flex flex-col space-y-2 bg-white shadow-lg p-4 rounded z-50">
           <Link href="/home">Home</Link>
-          <Link href="/#sección0">Nosotros</Link>
+          <Link href="/nosotros">Nosotros</Link>
           <Link href="/contacto">Contacto</Link>
 
           {isAuth ? <AuthButtons /> : <GuestButtons />}
