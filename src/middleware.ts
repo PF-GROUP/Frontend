@@ -44,16 +44,17 @@ export default async function middleware(request: NextRequest) {
   if (isProtectedRoute && !isAuthenticated) {
     return NextResponse.redirect(new URL("/login", request.nextUrl))
   }
-  if (isProtectedRoute && !isPay && isAuthenticated) {
-    return NextResponse.redirect(new URL("/stripe", request.nextUrl))
-  }
-  if (isProtectedRoute && isOnBoarding && isAuthenticated) {
+  // if (isProtectedRoute && !isPay && isAuthenticated) {
+  //   return NextResponse.redirect(new URL("/stripe", request.nextUrl))
+  // }
+  if (isProtectedRoute && !isOnBoarding && isAuthenticated) {
     return NextResponse.redirect(new URL("/stripe", request.nextUrl))
   }
   if (isOnBoardingRoute && !isOnBoarding) {
+    console.log(isOnBoarding)
     return NextResponse.redirect(new URL("/", request.nextUrl))
   }
-
+  console.log("aaaa")
   if (isAdminRoute && !isAdmin) {
     return NextResponse.redirect(new URL("/", request.nextUrl))
   }

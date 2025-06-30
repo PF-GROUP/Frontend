@@ -6,8 +6,9 @@ import React, { useState, useRef } from "react";
 import { Upload, X, Image } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAuthContext } from "../../../../../context/authContext";
+import apiService from "@/services/apiService";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://91.235.34.31:3000";
 
 const FotoPerfil: React.FC = () => {
   const { user, SaveUserData } = useAuthContext();
@@ -67,25 +68,31 @@ const FotoPerfil: React.FC = () => {
     }
 
     setIsUploading(true);
-
+    console.log("Esta es la imagen del user: ", selectedFile)
     try {
       // 📨 Creamos el FormData para enviar la imagen como multipart/form-data
       const formData = new FormData();
       formData.append("file", selectedFile);
 
       // 📤 Enviamos la imagen al backend, que a su vez la sube a Cloudinary
-      const response = await fetch(`${API_URL}/images/profile/${user.id}`, {
-        method: "POST",
-        body: formData,
-        credentials: "include", // incluye cookies para autenticar al usuario
-      });
+      console.log("Este es el id del user:", user.id);
+      // const response = await fetch(`${API_URL}/images/profile/${user.id}`, {
+      //   method: "POST",
+      //   body: formData,
+      //   credentials: "include", // incluye cookies para autenticar al usuario
+      // });
+      const response = await apiService.post(`/images/profile/${user.id}`,true)
+      console.log("Respuesta status:", response.status);
 
-      if (!response.ok) throw new Error("Error al subir la imagen");
+      // if (!response.ok) throw new Error("Error al subir la imagen");
 
-      // ✅ La respuesta debería incluir la URL pública generada por Cloudinary
-      // Esto depende de cómo esté hecho tu backend. Por convención, devolvés algo como:
-      // { imageUrl: "https://res.cloudinary.com/..." }
+      
       const { imageUrl } = await response.json();
+      console.log("Image URL:", imageUrl);
+
+      // const data = await response.json();
+      // console.log("Respuesta completa del backend:", data);
+
 
       // 🧠 Actualizamos el contexto con la nueva URL de la imagen de perfil
       const updatedUser = { ...user, profilePictureUrl: imageUrl };
