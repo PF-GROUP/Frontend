@@ -23,6 +23,8 @@ const MiSitio: React.FC = () => {
   const [hasCustomization, setHasCustomization] = useState<boolean | null>(null);
   const [customizationId, setCustomizationId] = useState<string | null>(null); // Estado agregado
 
+  console.log("Id agencia: ", user?.agencyId);
+  
   useEffect(() => {
     if (!user?.agencyId) return;
 
@@ -74,8 +76,12 @@ const MiSitio: React.FC = () => {
     backgroundColor: cleanColor(values.backgroundColor),
     secondaryColor: cleanColor(values.secondaryColor),
   };
+
   console.log("🎨 Payload listo para enviar:", payload);
+  
   try {
+    console.log("customization:", hasCustomization);
+    
     const method = hasCustomization ? "PATCH" : "POST";
 
     const response = await fetch(
