@@ -86,18 +86,17 @@ const FotoPerfil: React.FC = () => {
 
       // if (!response.ok) throw new Error("Error al subir la imagen");
 
-      // { imageUrl: "https://res.cloudinary.com/..." }
       
-      // const { imageUrl } = await response.json();
-      // console.log("Image URL:", imageUrl);
+      const { imageUrl } = await response.json();
+      console.log("Image URL:", imageUrl);
 
-      const data = await response.json();
-      console.log("Respuesta completa del backend:", data);
+      // const data = await response.json();
+      // console.log("Respuesta completa del backend:", data);
 
 
       // 🧠 Actualizamos el contexto con la nueva URL de la imagen de perfil
-      // const updatedUser = { ...user, profilePictureUrl: imageUrl };
-      // SaveUserData({ user: updatedUser });
+      const updatedUser = { ...user, profilePictureUrl: imageUrl };
+      SaveUserData({ user: updatedUser });
 
       toast.success("Imagen subida y perfil actualizado");
 

@@ -18,25 +18,22 @@ const SidebarDashboard: React.FC = () => {
   const {user} = useAuthContext()
 
   const [isOpen, setIsOpen] = useState(false);
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  // const [profileImage, setProfileImage] = useState<string | null>(null);
 
   // ✅ Cargar imagen de perfil desde el user
-  useEffect(() => {
-    if (user?.profilePictureUrl) {
-      setProfileImage(user.profilePictureUrl);
-    }
-  }, [user]);
-
-
+ 
   // Estado para guardar el nombre y apellido del agente
 
   console.log("Este es el id del user SB: ", user?.id);
   console.log("Este es el nombre del user SB: ", user?.name);
   console.log("Este es el apellido del user SB: ", user?.surname);
+  console.log("Esta es foto de perfil: ", user?.profilePictureUrl);
   // IMPORTANTE LEER REALIZAR EL CONSUMO DEL NOMBRE DEL USUARIO DESDE LAS COOCKIES "user"
 
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
+
+  
 
   return (
     <>
@@ -75,10 +72,10 @@ const SidebarDashboard: React.FC = () => {
                 href={"/DashboardAgente?view=cambiar-foto-perfil"}
                 className="relative w-13 h-13 rounded-full overflow-hidden border-2 border-blue-600"
               >
-                {profileImage ? (
+                {user?.profilePictureUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={profileImage}
+                    src={user?.profilePictureUrl}
                     alt="Foto perfil agente"
                     className="w-full h-full object-cover"
                   />
@@ -140,7 +137,7 @@ const SidebarDashboard: React.FC = () => {
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
                 <li><Link href="/DashboardAgente?view=facturacion" className="block text-gray-800 hover:text-[#870505] transition-colors">Facturación</Link></li>
                 <li><Link href="/DashboardAgente?view=cambiar-contrasena" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Cambiar contraseña</Link></li>
-                <li><Link href="/DashboardAgente?view=cambiar-foto-perfil" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Cambiar Foto</Link></li>
+                <li><Link href="/DashboardAgente?view=cambiar-foto-perfil" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Cambiar foto</Link></li>
               </ul>
             </details>
           </div>

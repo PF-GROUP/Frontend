@@ -41,35 +41,58 @@ const MiSitio: React.FC = () => {
       });
   }, [user?.agencyId]);
 
+  function rgbToHexIfNeeded(color: string): string {
+  // Si ya es hex, devolvelo tal cual
+  if (/^#([0-9A-Fa-f]{3}){1,2}$/.test(color)) return color;
+
+  // Si es RGB o RGBA
+  const rgbMatch = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+
+  if (rgbMatch) {
+    const [, r, g, b] = rgbMatch.map(Number);
+    const hex = `#${[r, g, b]
+      .map((val) => val.toString(16).padStart(2, "0"))
+      .join("")}`;
+    return hex;
+  }
+
+  // Si no es ni hex ni rgb válido, devolvelo sin cambios
+  return color;
+}
+
+
   const handleOnSubmit = async (values: ICustomizationValues) => {
     console.log("🔥 ENVIANDO DATOS:", values);
-    try {
-      const payload = {
-        information: values.information,
-        mainColors: values.mainColors,
-        navbarColor: values.navbarColor,
-        buttonColor: values.buttonColor,
-        backgroundColor: values.backgroundColor,
-        secondaryColor: values.secondaryColor,
-      };
 
-      const method = hasCustomization ? "PATCH" : "POST";
+  const cleanColor = rgbToHexIfNeeded;
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/agencies/${String(user?.agencyId)}/customization`,
-        {
-          method,
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify(payload),
-        }
-      );
+  const payload = {
+    information: values.information,
+    mainColors: cleanColor(values.mainColors),
+    navbarColor: cleanColor(values.navbarColor),
+    buttonColor: cleanColor(values.buttonColor),
+    backgroundColor: cleanColor(values.backgroundColor),
+    secondaryColor: cleanColor(values.secondaryColor),
+  };
+  console.log("🎨 Payload listo para enviar:", payload);
+  try {
+    const method = hasCustomization ? "PATCH" : "POST";
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/agencies/${String(user?.agencyId)}/customization`,
+      {
+        method,
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      }
+    );
 
       const data = await response.json();
-      console.log("🧠 response completo:", data);
+      console.log("🧠 response completo Colores:", data);
       // Guardar customizationId para usarlo en el componente UploadLogoBanner
-      if (response.ok && data) {
-        setCustomizationId(data.id);
+      if (response.ok && data?.content?.id) {
+      setCustomizationId(data.content.id); // ✅ Acá sí lo vas a setear bien
         toast.success("Colores modificados con Éxito.", { duration: 2500 });
       } else {
         console.warn("⚠️ Hubo un Error al editar los Colores:", data);

@@ -6,12 +6,10 @@ import { toast } from "react-hot-toast";
 import { tituloValidations } from "../../validacionesDashBoard/miSitio";
 import { editarAgencia } from "@/services/editarNombreYdescripcion";
 import { IEditarNombreYdescAgency } from "../../../../../interface/DashboardAgente/EditarNombreYDescp";
-import { useRouter } from "next/navigation";
 import { useAuthContext } from "../../../../../context/authContext";
 
 const EditarTitulo: React.FC = () => {
   const { user } = useAuthContext();
-  const router = useRouter();
 
   const handleOnSubmit = async (values: IEditarNombreYdescAgency) => {
     if (!user?.agencyId) {
@@ -25,14 +23,14 @@ const EditarTitulo: React.FC = () => {
         agentUser: String(user.agencyId),
       };
 
-      const response = await editarAgencia(payload, user.agencyId);
+      console.log("Esta es el id de la agencia: ", user.agencyId);
+      console.log("estos son el Nombre y Desc: ", payload);
+
+      const response = await editarAgencia(payload, String(user.agencyId));
       console.log("🧠 response completo:", response);
 
       if (response) {
         toast.success("Nombre y Descripción modificados.", { duration: 2500 });
-        setTimeout(() => {
-          router.push("/home");
-        }, 2000);
       } else {
         console.warn("⚠️ Hubo un Error al editar el Nombre y Descripción:", response);
         toast.error("Hubo un Error al editar el Nombre y Descripción.", { duration: 2000 });
@@ -57,6 +55,7 @@ const EditarTitulo: React.FC = () => {
         handleBlur,
         handleSubmit,
         isSubmitting,
+        resetForm, // ✅ Se destructura resetForm de Formik
       }) => (
         <form
           onSubmit={handleSubmit}
@@ -127,7 +126,10 @@ const EditarTitulo: React.FC = () => {
             </button>
             <button
               type="button"
-              onClick={() => toast("Cancelado")}
+              onClick={() => {
+                resetForm(); // ✅ Resetea valores
+                toast.error("Cambios cancelados"); // ✅ Toast
+              }}
               className="text-white bg-red-600 py-2 px-4 rounded-lg w-full md:w-[200px] font-semibold hover:bg-red-700 transition"
               disabled={isSubmitting}
             >
