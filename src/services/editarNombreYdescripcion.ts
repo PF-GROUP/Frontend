@@ -3,7 +3,7 @@ import { IEditarNombreYdescAgency } from "../../interface/DashboardAgente/Editar
 
 export const editarAgencia = async ( data: IEditarNombreYdescAgency, id:string) => {
   try {
-    const response = await apiService.patch(`/agency/${id}`, data, true);
+    const response = await apiService.patch(`/agency/update/${id}`, data, true,true,true);
     return response;
   } catch (error) {
     console.error("Ocurrió un error al realizar el Register:", error);

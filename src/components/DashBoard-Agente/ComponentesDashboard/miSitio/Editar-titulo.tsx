@@ -28,7 +28,7 @@ const EditarTitulo: React.FC = () => {
       const response = await editarAgencia(payload, user.agencyId);
       console.log("🧠 response completo:", response);
 
-      if (response && response.id) {
+      if (response) {
         toast.success("Nombre y Descripción modificados.", { duration: 2500 });
         setTimeout(() => {
           router.push("/home");
