@@ -12,7 +12,9 @@ const PagoExitoso = () => {
     const hasExploded = useRef(false);
     const { SaveUserData }  = useAuthContext()
   useEffect(() => {
-    refreshSession(SaveUserData)
+    refreshSession(SaveUserData).then(
+      
+    )
     if (!hasExploded.current) {
       hasExploded.current = true;
       confetti({
