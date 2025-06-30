@@ -28,9 +28,7 @@ const BodyLanding: React.FC = () => {
       Nuestra visión es acompañarte en la digitalización de tu inmobiliaria, para que vos te enfoques en lo que mejor sabés hacer: 
       conectar personas con el hogar de sus sueños.
     </p>
-    <div className="w-full flex items-start justify-center mt-8">
-      <a href="#landing"  rel="noopener noreferrer" className="text-blue-800 text-lg">volver al inicio</a>
-    </div>
+    
     </div>
     </div>
 
@@ -113,9 +111,7 @@ const BodyLanding: React.FC = () => {
         </div>
       </div>
     </div>
-<div className="w-full flex items-start justify-center mt-8">
-    <a href="#landing"  rel="noopener noreferrer" className="text-blue-800 text-lg bg-white p-2 pb-2 pl-3 pr-3 rounded-xl">volver al inicio</a>
-  </div>
+
 
     </div>
 
@@ -183,7 +179,6 @@ const BodyLanding: React.FC = () => {
         </div>
       </div>
       
-      <a href="#landing"  rel="noopener noreferrer" className="text-blue-800 text-lg">volver al inicio</a>
     </div>
 
 {/* CUARTA SECCIÓN: PREGUNTAS FRECUENTES. */}
@@ -240,14 +235,18 @@ const BodyLanding: React.FC = () => {
       </p>
     </details>
     
-    <div className="w-full flex items-start justify-center mt-2">
-      <a href="#landing"  rel="noopener noreferrer" className="text-blue-800 text-lg">volver al inicio</a>
-    </div>
   </div>
 
 
-
+      
     </div>
+    <button
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className="fixed bottom-6 right-6 z-50 bg-[#833444] hover:bg-[#a94e5e] text-white font-bold py-3 px-4 rounded-full shadow-lg shadow-black transition duration-300 h-12 w-12 flex items-center justify-center cursor-pointer"
+        aria-label="Volver arriba"
+      >
+        ↑
+      </button>
 </div>
 
 
