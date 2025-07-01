@@ -1,4 +1,3 @@
-// pages/eliminar-propiedades.tsx
 'use client';
 
 import apiService from "@/services/apiService";
@@ -6,6 +5,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../../../../../context/authContext";
 import toast from "react-hot-toast";
+import { Trash } from "lucide-react";
 
 interface Propiedad {
   id: string;
@@ -91,7 +91,7 @@ const EliminarPropiedades = () => {
               </span>
             )}
             {prop.status === "Disponible" && (
-              <span className="absolute top-5 -left-8 rotate-[-45deg] bg-green-600 text-white text-xs font-bold px-8 py-1 shadow-md">
+              <span className="absolute top-5 -left-8 rotate-[-45deg] bg-green-700 text-white text-xs font-bold px-8 py-1 shadow-md">
                 DISPONIBLE
               </span>
             )}
@@ -129,13 +129,14 @@ const EliminarPropiedades = () => {
             <div className="flex flex-col sm:flex-row w-[400px] gap-3 mt-4 md:mt-0">
               <button
                 onClick={() => toggleEstado(prop.id)}
-                className="text-white bg-[#831F40] py-2 px-4 rounded-lg font-semibold hover:bg-[#58313e] transition w-full sm:w-auto"
+                className="text-white bg-[#91274b] py-2 px-4 rounded-lg font-semibold hover:bg-[#621833] transition w-full sm:w-auto"
               >
                 {prop.status === "Vendido" ? "Marcar disponible" : "Marcar vendida"}
               </button>
               <button
+              
                 onClick={() => handleEliminar(prop.id)}
-                className="text-white bg-[#A62F55] py-2 px-4 rounded-lg font-semibold hover:bg-[#831F40] transition w-full sm:w-auto"
+                className="text-white bg-[#bd0909] py-2 px-4 rounded-lg font-semibold hover:bg-[#8d0707] transition w-full sm:w-auto"
               >
                 Eliminar
               </button>
