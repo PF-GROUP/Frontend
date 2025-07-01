@@ -6,12 +6,12 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../../../../../context/authContext";
 
-
 interface Propiedad {
   id: string;
   name: string;
   price: string;
   address: string;
+  status: "sold" | "available";
   type_of_property: {
     type: string;
   };
@@ -19,34 +19,53 @@ interface Propiedad {
 }
 
 const EliminarPropiedades = () => {
-
-  const {user} = useAuthContext()
-
+  const { user } = useAuthContext();
   const [propiedades, setPropiedades] = useState<Propiedad[]>([]);
-
 
   useEffect(() => {
     const fetchPropiedades = async () => {
-      if (!user?.agencyId) return; // Espera que el usuario esté listo
+      if (!user?.agencyId) return;
 
       try {
         const propiedadesData = await apiService.get(
           `/property/agency/${user.agencyId}`,
           true
         );
-        console.log("Estas son las propiedades: ", propiedadesData);
         setPropiedades(propiedadesData);
       } catch (error) {
         console.error("Error al obtener propiedades:", error);
       }
     };
 
-      fetchPropiedades();
-  }, [user?.agencyId, ]);
+    fetchPropiedades();
+  }, [user?.agencyId]);
 
-  // const handleEliminar = (id: number) => {
-  //   setPropiedades((prev) => prev.filter((prop) => prop.id !== id));
-  // };
+  const handleEliminar = async (id: string) => {
+    try {
+      await apiService.del(`/property/soft/${id}`, true);
+      setPropiedades((prev) => prev.filter((prop) => prop.id !== id));
+    } catch (error) {
+      console.error("Error al eliminar propiedad:", error);
+    }
+  };
+
+  const toggleEstado = async (id: string) => {
+    const prop = propiedades.find((p) => p.id === id);
+    if (!prop) return;
+
+    const nuevoEstado = prop.status === "sold" ? "available" : "sold";
+
+    try {
+      await apiService.put(`/property/${id}`, { status: nuevoEstado }, true);
+      setPropiedades((prev) =>
+        prev.map((p) =>
+          p.id === id ? { ...p, status: nuevoEstado } : p
+        )
+      );
+    } catch (error) {
+      console.error("Error al cambiar estado:", error);
+    }
+  };
 
   return (
     <div className="flex flex-col items-start justify-start mx-auto w-full max-w-7xl p-4 md:p-8 lg:p-8 rounded-lg shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
@@ -58,8 +77,20 @@ const EliminarPropiedades = () => {
         {propiedades.map((prop) => (
           <div
             key={prop.id}
-            className="flex flex-col md:flex-row items-start md:items-center justify-between bg-gray-200 border border-gray-300 rounded-lg p-4 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]"
+            className="relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between bg-gray-200 border border-gray-300 rounded-lg p-4 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]"
           >
+            {/* Ribbon de estado dentro del contenedor gris */}
+            {prop.status === "sold" && (
+              <span className="absolute ml-2 top-5 -left-10  rotate-[-45deg] bg-red-600 text-white text-xs font-bold px-10 py-1 shadow-md">
+                VENDIDA
+              </span>
+            )}
+            {prop.status === "available" && (
+              <span className="absolute top-5 -left-8 rotate-[-45deg] bg-green-600 text-white text-xs font-bold px-8 py-1 shadow-md">
+                DISPONIBLE
+              </span>
+            )}
+
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
               <div className="w-full sm:w-[200px] h-[120px] overflow-hidden rounded-md mr-3">
                 <Image
@@ -71,26 +102,39 @@ const EliminarPropiedades = () => {
                 />
               </div>
               <div>
-              <p className="font-semibold text-xl text-[#af355c] mb-1">
-                <span className="font-bold mr-2 text-[#85173b]">nombre:</span> {prop.name}
-              </p>
-              <p className="text-lg text-[#992b50] mb-1 ml-1">
-                <span className="font-semibold mr-2 text-[#8e2446]">dirección:</span> {prop.address}
-              </p>
-              <p className="text-lg italic  text-[#bd486d] mb-2 ml-1">
-                <span className="font-semibold mr-2 text-[#91274b]">tipo:</span> {prop.type_of_property?.type}
-              </p>
-              <p className="text-green-600 font-bold text-lg ml-1">
-                <span className="font-semibold mr-2 text-green-700">precio:</span> ${prop.price}
-              </p>
+                <p className="font-semibold text-xl text-[#af355c] mb-1">
+                  <span className="font-bold mr-2 text-[#85173b]">nombre:</span>{" "}
+                  {prop.name}
+                </p>
+                <p className="text-lg text-[#992b50] mb-1 ml-1">
+                  <span className="font-semibold mr-2 text-[#8e2446]">dirección:</span>{" "}
+                  {prop.address}
+                </p>
+                <p className="text-lg italic  text-[#bd486d] mb-2 ml-1">
+                  <span className="font-semibold mr-2 text-[#91274b]">tipo:</span>{" "}
+                  {prop.type_of_property?.type}
+                </p>
+                <p className="text-green-600 font-bold text-lg ml-1">
+                  <span className="font-semibold mr-2 text-green-700">precio:</span> $
+                  {prop.price}
+                </p>
               </div>
             </div>
-            <button
-              onClick={() => handleEliminar(prop.id)}
-              className="mt-4 md:mt-0 text-white mr-4 bg-[#A62F55] py-2 px-4 rounded-lg font-semibold hover:bg-[#831F40]  transition w-full sm:w-auto"
-            >
-              Eliminar
-            </button>
+
+            <div className="flex flex-col sm:flex-row w-[400px] gap-3 mt-4 md:mt-0">
+              <button
+                onClick={() => toggleEstado(prop.id)}
+                className="text-white bg-[#A62F55] py-2 px-4 rounded-lg font-semibold hover:bg-[#831F40] transition w-full sm:w-auto"
+              >
+                {prop.status === "sold" ? "Marcar disponible" : "Marcar vendida"}
+              </button>
+              <button
+                onClick={() => handleEliminar(prop.id)}
+                className="text-white bg-[#A62F55] py-2 px-4 rounded-lg font-semibold hover:bg-[#831F40] transition w-full sm:w-auto"
+              >
+                Eliminar
+              </button>
+            </div>
           </div>
         ))}
       </div>
