@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { useAuthContext } from "../../../../../context/authContext";
 import apiService from "@/services/apiService";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://91.235.34.31:3000";
+
 
 const FotoPerfil: React.FC = () => {
   const { user, SaveUserData } = useAuthContext();
@@ -62,45 +62,35 @@ const FotoPerfil: React.FC = () => {
       return;
     }
 
-    if (!user || !user.id) {
+    if (!user?.id) {
       toast.error("No se encontró el usuario");
       return;
     }
 
     setIsUploading(true);
-    console.log("Esta es la imagen del user: ", selectedFile)
+
     try {
-      // 📨 Creamos el FormData para enviar la imagen como multipart/form-data
       const formData = new FormData();
       formData.append("file", selectedFile);
 
-      // 📤 Enviamos la imagen al backend, que a su vez la sube a Cloudinary
-      console.log("Este es el id del user:", user.id);
-      // const response = await fetch(`${API_URL}/images/profile/${user.id}`, {
-      //   method: "POST",
-      //   body: formData,
-      //   credentials: "include", // incluye cookies para autenticar al usuario
-      // });
       const response = await apiService.post(`/images/profile/${user.id}`, formData, true)
-      console.log("Respuesta status:", response);
+        console.log(response);
+      if (response?.url) {
+        
+        SaveUserData({
+          user: {
+            ...user,
+            profilePictureUrl: response.url,
+          },
+        });
 
-      // if (!response.ok) throw new Error("Error al subir la imagen");
+        toast.success("Imagen subida y perfil actualizado");
 
-      
-      // const data = await response.json();
-      // console.log("Respuesta completa del backend:", data);
-
-
-      // 🧠 Actualizamos el contexto con la nueva URL de la imagen de perfil
-      const updatedUser = { ...user, profilePictureUrl: user.profilePictureUrl };
-      SaveUserData({ user: updatedUser });
-
-      toast.success("Imagen subida y perfil actualizado");
-
-      // 🧹 Limpiamos estados
-      setSelectedFile(null);
-      setPreviewUrl(null);
-      if (inputRef.current) inputRef.current.value = "";
+        // 🧹 Limpiamos estados
+        setSelectedFile(null);
+        setPreviewUrl(null);
+        if (inputRef.current) inputRef.current.value = "";
+      }
     } catch (error) {
       toast.error("Error al subir la imagen");
       console.error(error);
