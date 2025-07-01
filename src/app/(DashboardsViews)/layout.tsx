@@ -1,4 +1,4 @@
-import ChatbotPrueba  from "../../components/ChatBot/chatbot";
+// import ChatbotPrueba  from "../../components/ChatBot/chatbot";
 import Navbar from "@/components/navbar/navbar";
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

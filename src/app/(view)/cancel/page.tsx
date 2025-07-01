@@ -10,7 +10,7 @@ const PagoCancelado = () => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       router.push("/home");
-    }, 5000);
+    }, 3000);
 
     return () => clearTimeout(timeout);
   }, [router]);
@@ -24,7 +24,7 @@ const PagoCancelado = () => {
           Parece que cancelaste el proceso de pago.
         </p>
         <p className="text-sm text-gray-500 mt-4">
-          Te redirigiremos en 5 segundos...
+          Te redirigiremos en 3 segundos...
         </p>
         <div className="w-8 h-8 border-4 border-[#833444] border-t-transparent rounded-full animate-spin mx-auto mt-6" />
       </div>

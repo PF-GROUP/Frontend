@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { Upload, ArrowDownCircle,  Trash2 } from 'lucide-react';
 import SidebarDashboard from "@/components/DashBoard-Agente/LayoutDashboard/SideBarDash";
-import Navbar from "@/components/navbar/navbar";
+
 // import NavbarLanding from "@/components/LandingComponent/NavbarLanding";
 
 export default function LayoutSidebar({children,}: Readonly<{ children: React.ReactNode }>) {
     return (
     <>
-        <Navbar />
+
         <div className="flex bg-[rgb(240,241,244)]">
         {/* Sidebar */}
             <SidebarDashboard/> 
