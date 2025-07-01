@@ -25,7 +25,7 @@ const Navbar: React.FC = () => {
 
   const AuthButtons = () => (
     <>
-    {console.log(user?.isAdmin)}
+
       {user?.isAdmin ? (
         <Link href="/DashboardAdmin">
           <button className="bg-[#A62F55] hover:bg-[#922749] text-white px-2 py-1 rounded cursor-pointer">
