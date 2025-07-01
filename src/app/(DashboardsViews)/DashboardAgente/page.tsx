@@ -14,7 +14,7 @@ import FotoPerfil from '@/components/DashBoard-Agente/ComponentesDashboard/cuent
 import ReportarError from '@/components/DashBoard-Agente/ComponentesDashboard/soporte/Reportar-error';
 import Seguridad from '@/components/DashBoard-Agente/ComponentesDashboard/seguridad/Seguridad';
 import { useAuthContext } from '../../../../context/authContext';
-
+import SuscripciónNewsletter from '@/components/DashBoard-Agente/ComponentesDashboard/soporte/SuscripciónNewsletter';
 
 export default function DashboardPage() {
   const { user } = useAuthContext(); 
@@ -32,6 +32,8 @@ export default function DashboardPage() {
         return <CambiarColores />;
       case 'subir-propiedad':
         return <SubirPropiedad />;
+      case 'SuscripciónNewsletter':
+        return <SuscripciónNewsletter />;
       case 'borrar-propiedad':
         return <Borrar />;
       case 'facturacion':
