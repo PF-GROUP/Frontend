@@ -2,8 +2,8 @@ import Image from 'next/image';
 import ContactForm from '../../../components/FormContacto/FormContacto';
 export default function Contacto() {
   return (
-    <div className=" flex flex-col items-center justify-center  bg-white py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-lg mx-auto">
+    <div className="h-screen flex flex-col items-center justify-center bg-white">
+      <div className="flex flex-col items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold mb-4">Contáctanos</h2>
         <p className="text-lg mb-6">
           Si tienes alguna pregunta o necesitas ayuda, no dudes en
@@ -27,8 +27,8 @@ export default function Contacto() {
             />
           </div>
         </div>
+        <ContactForm />
       </div>
-      <ContactForm />
     </div>
   );
 }

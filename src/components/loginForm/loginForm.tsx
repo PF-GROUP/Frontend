@@ -1,5 +1,6 @@
 "use client";
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { loginService } from '../../services/authService';
@@ -9,6 +10,8 @@ import { useAuthContext } from '../../../context/authContext';
 import toast from 'react-hot-toast';
 
 import Image from 'next/image';
+
+import { Eye, EyeOff } from 'react-feather';
 
 
 const schema = yup.object().shape({
@@ -35,7 +38,7 @@ export default function LoginForm() {
   } = useForm<FormData>({
     resolver: yupResolver(schema),
   });
-
+  const [showPassword, setShowPassword] = useState(false);
   const { SaveUserData } = useAuthContext();
 
   const handleGoHome = () => {
@@ -45,8 +48,8 @@ export default function LoginForm() {
   const onSubmit = async (data: FormData) => {
     try {
       const token = await loginService(data, SaveUserData) ;
-      if (!token) {
-        console.error('No se recibió un token válido');
+      if (token === null) {
+        toast.error("Error al iniciar sesión, por favor verifica tu email y contraseña");
         return;
       }
 
@@ -59,7 +62,7 @@ export default function LoginForm() {
             } else {
                 toast.error('Dato repetido. Ingresa un valor distinto en Email.', { duration: 2000 });
             }
-      //CERRA EL ORTO - DANI
+
       handleGoHome();
     } catch (error) {
       console.error('Error enviando datos:', error);
@@ -88,17 +91,32 @@ export default function LoginForm() {
             )}
           </div>
 
-          <div>
-            <label className="block text-sm mb-1">Contraseña</label>
-            <input
-              type="password"
-              {...register('password')}
-              className="w-full px-3 py-2 border border-gray-400 rounded text-sm"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
-            )}
-          </div>
+          <div className="relative w-full">
+  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+    Contraseña
+  </label>
+
+  <div className="relative">
+    <input
+      id="password"
+      type={showPassword ? "text" : "password"}
+      {...register('password')}
+      className="w-full px-3 py-2 pr-10 border border-gray-400 rounded text-sm focus:outline-none focus:ring-2 focus:ring-[#A62F55]"
+    />
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute inset-y-0 right-2 flex items-center text-gray-600"
+      tabIndex={-1}
+    >
+      {showPassword ? <Eye size={20} className='cursor-pointer'/> : <EyeOff size={20}  className='cursor-pointer'/>}
+    </button>
+  </div>
+
+  {errors.password && (
+    <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+  )}
+</div>
 
           <button
             type="submit"

@@ -32,6 +32,7 @@ function ContactForm() {
         id="email"
         type="email"
         name="email"
+        placeholder="Tu email"
         required
         className="mt-1 p-3 block w-full rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A62F55]"
       />
@@ -50,6 +51,7 @@ function ContactForm() {
       <textarea
         id="message"
         name="message"
+        placeholder="Tu mensaje"
         rows={4}
         required
         className="mt-1 p-3 block w-full rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A62F55]"
@@ -65,7 +67,7 @@ function ContactForm() {
     <button
       type="submit"
       disabled={state.submitting}
-      className="bg-[#A62F55] hover:bg-[#921D46] text-white font-semibold py-2 px-4 rounded-xl transition duration-200"
+      className="bg-[#A62F55] hover:bg-[#921D46] text-white font-semibold py-2 px-4 rounded-xl transition duration-200 cursor-pointer"
     >
       {state.submitting ? 'Enviando...' : 'Enviar'}
     </button>

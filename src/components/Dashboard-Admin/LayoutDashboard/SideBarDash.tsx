@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "../../../../context/authContext";
 import apiService from "@/services/apiService";
-import { postFotoDePerfil, getAdmin } from "@/services/adminService";
+import { postFotoDePerfil } from "@/services/adminService";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -27,29 +27,10 @@ const SidebarDashboard: React.FC<SidebarDashboardProps> = ({
   name = "",
   surname = "",
 }) => {
-  const { ResetUserData, user } = useAuthContext();
+  const { ResetUserData, user, SaveUserData } = useAuthContext();
+
   const router = useRouter();
-  interface Admin {
-    id: string;
-    name: string;
-    surname: string;
-    profilePictureUrl?: string;
-  }
-    console.log(user)
-  const [admin, setAdmin] = useState<Admin | null>(null);
-
-
-    const fetchAdmin = async () => {
-      if(!user || user.isAdmin === false) return;
-      
-      try {
-        const admin = await getAdmin(user.id);
-        setAdmin(admin);
-      } catch (error) {
-        console.error("Error al obtener el admin:", error);
-      }
-      console.log(admin);
-    };
+ 
 
 
 
@@ -94,16 +75,10 @@ const handleUpload = async () => {
     toast.loading("Subiendo imagen...", { id: "upload" });
 
     const response = await postFotoDePerfil(user.id, formData);
-
-    if (response?.profilePictureUrl) {
+    
+    if (response) {
       toast.success("Foto de perfil actualizada con éxito", { id: "upload" });
-
-      
-      setAdmin((prevAdmin: Admin | null) => ({
-        ...prevAdmin!,
-        profilePictureUrl: response.profilePictureUrl,
-      }));
-
+      SaveUserData({ user: { ...user, profilePictureUrl: response.url } });
       closeModal();
     } else {
       toast.error("No se pudo actualizar la foto de perfil", { id: "upload" });
@@ -121,9 +96,9 @@ const handleUpload = async () => {
           <div className="flex items-center justify-between border-b border-gray-400 pb-4 mr-6 pr-2">
             <div className="flex items-center">
               <div className="rounded-full w-14 h-14 bg-gray-200 flex items-center justify-center overflow-hidden">
-                {admin?.profilePictureUrl ? (
+                {user?.profilePictureUrl ? (
                   <img
-                    src={admin.profilePictureUrl}
+                    src={user?.profilePictureUrl}
                     alt="Foto de perfil"
                     className="w-full h-full object-cover"
                   />
@@ -137,9 +112,6 @@ const handleUpload = async () => {
                 </h2>
                 <p className="font-sans text-sm">Administrador</p>
               </div>
-              <button onClick={fetchAdmin}>
-                Click
-              </button>
             </div>
 
             {/* Ícono de cámara con modal */}

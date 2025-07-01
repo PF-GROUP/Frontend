@@ -2,7 +2,7 @@
 
 import CeluSidebar from "@/components/Dashboard-Admin/LayoutDashboard/CeluSidebarDash";
 import SidebarDashboard from "../../../components/Dashboard-Admin/LayoutDashboard/SideBarDash";
-import Navbar from "@/components/navbar/navbar";
+
 import { useAuthContext } from "../../../../context/authContext";
 import Loader from "../../../components/Loader/Loader"
 
@@ -20,7 +20,7 @@ export default function LayoutSidebar({ children }: Readonly<{ children: React.R
 
   return (
     <>
-      <Navbar />
+      
 
       <div className="flex flex-col md:flex-row bg-[rgb(240,241,244)]">
         {/* Sidebar */}
