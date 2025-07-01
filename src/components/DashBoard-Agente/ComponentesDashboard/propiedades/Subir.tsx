@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react';
 import { useAuthContext } from '../../../../../context/authContext';
 import apiService from '@/services/apiService';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "91.235.34.31:3000";
+
 
 interface ITypeOfProperty {
   id: string;
@@ -63,20 +63,22 @@ const DashboardPage = () => {
         
         toast.error('No se encontró la agencia del usuario.', { duration: 2500 });
         return;
+        
       }
+        
+        const postProperty = {
+          ...values,
+          agency: String(user.agencyId),
+        };
+        
+        const response = await CreateProperty(postProperty);
+        console.log("Este es el resultado de crear propiedad", response);
+        
       console.log("este es el id de la agencia:", user.agencyId);
       console.log("este es el id del user:", user.id);
-      
-      
-      const postProperty = {
-        ...values,
-        agency: String(user.agencyId),
-      };
-      
-      const response = await CreateProperty(postProperty);
-      
-      if (response && response.success === true) {
-        setPropertyId(response.data.id);
+
+      if (response && response.id ) {
+        setPropertyId(response.id);
         toast.success('¡Propiedad Creada con Éxito!...', { duration: 2500 });
       } else {
         toast.error('Hubo un error al crear la propiedad.', { duration: 2000 });

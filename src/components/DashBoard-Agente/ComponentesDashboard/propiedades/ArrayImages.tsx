@@ -5,6 +5,7 @@
 import React, { useState } from "react";
 import { Upload, X, Image } from "lucide-react";
 import toast from "react-hot-toast";
+import apiService from "@/services/apiService";
 
 interface UploadGalleryProps {
   propertyId: string;
@@ -76,16 +77,18 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
     try {
       setLoading(true);
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/images/property/${propertyId}/gallery`,
-        {
-          method: "POST",
-          body: formData,
-          credentials: "include",
-        }
-      );
+      // const res = await fetch(
+      //  images/property/${propertyId}/gallery,
+      //   {
+      //     method: "POST",
+      //     body: formData,
+      //     credentials: "include",
+      //   }
+      // );
 
-      if (!res.ok) throw new Error("Error al subir las imágenes");
+      
+      const res = apiService.post(`images/property/${propertyId}/gallery`,formData ,true)
+      if (!res) throw new Error("Error al subir las imágenes");
 
       toast.success("Imágenes subidas con éxito");
       setImages([]);
