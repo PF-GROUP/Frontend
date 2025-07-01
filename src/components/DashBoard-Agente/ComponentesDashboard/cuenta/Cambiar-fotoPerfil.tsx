@@ -8,7 +8,6 @@ import toast from "react-hot-toast";
 import { useAuthContext } from "../../../../../context/authContext";
 import apiService from "@/services/apiService";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://91.235.34.31:3000";
 
 const FotoPerfil: React.FC = () => {
   const { user, SaveUserData } = useAuthContext();
@@ -87,6 +86,7 @@ const FotoPerfil: React.FC = () => {
       // if (!response.ok) throw new Error("Error al subir la imagen");
 
       
+
       // const data = await response.json();
       // console.log("Respuesta completa del backend:", data);
 
