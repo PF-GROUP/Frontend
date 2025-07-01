@@ -129,7 +129,7 @@ const EliminarPropiedades = () => {
             <div className="flex flex-col sm:flex-row w-[400px] gap-3 mt-4 md:mt-0">
               <button
                 onClick={() => toggleEstado(prop.id)}
-                className="text-white bg-[#A62F55] py-2 px-4 rounded-lg font-semibold hover:bg-[#831F40] transition w-full sm:w-auto"
+                className="text-white bg-[#831F40] py-2 px-4 rounded-lg font-semibold hover:bg-[#58313e] transition w-full sm:w-auto"
               >
                 {prop.status === "Vendido" ? "Marcar disponible" : "Marcar vendida"}
               </button>
