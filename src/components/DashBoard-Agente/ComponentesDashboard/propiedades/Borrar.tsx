@@ -5,13 +5,14 @@ import apiService from "@/services/apiService";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../../../../../context/authContext";
+import toast from "react-hot-toast";
 
 interface Propiedad {
   id: string;
   name: string;
   price: string;
   address: string;
-  status: "sold" | "available";
+  status: "Vendido" | "Disponible";
   type_of_property: {
     type: string;
   };
@@ -31,6 +32,8 @@ const EliminarPropiedades = () => {
           `/property/agency/${user.agencyId}`,
           true
         );
+        console.log("Propiedades del user: ", propiedadesData);
+        
         setPropiedades(propiedadesData);
       } catch (error) {
         console.error("Error al obtener propiedades:", error);
@@ -42,8 +45,10 @@ const EliminarPropiedades = () => {
 
   const handleEliminar = async (id: string) => {
     try {
+
       await apiService.del(`/property/soft/${id}`, true);
-      setPropiedades((prev) => prev.filter((prop) => prop.id !== id));
+      toast.success("Propiedad eliminada con exito")
+       setPropiedades((prev) => prev.filter((prop) => prop.id !== id));
     } catch (error) {
       console.error("Error al eliminar propiedad:", error);
     }
@@ -53,10 +58,10 @@ const EliminarPropiedades = () => {
     const prop = propiedades.find((p) => p.id === id);
     if (!prop) return;
 
-    const nuevoEstado = prop.status === "sold" ? "available" : "sold";
+    const nuevoEstado = prop.status === "Vendido" ? "Disponible" : "Vendido";
 
     try {
-      await apiService.put(`/property/${id}`, { status: nuevoEstado }, true);
+      await apiService.patch(`/property/${id}`, { status: nuevoEstado }, true);
       setPropiedades((prev) =>
         prev.map((p) =>
           p.id === id ? { ...p, status: nuevoEstado } : p
@@ -80,12 +85,12 @@ const EliminarPropiedades = () => {
             className="relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between bg-gray-200 border border-gray-300 rounded-lg p-4 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]"
           >
             {/* Ribbon de estado dentro del contenedor gris */}
-            {prop.status === "sold" && (
+            {prop.status === "Vendido" && (
               <span className="absolute ml-2 top-5 -left-10  rotate-[-45deg] bg-red-600 text-white text-xs font-bold px-10 py-1 shadow-md">
                 VENDIDA
               </span>
             )}
-            {prop.status === "available" && (
+            {prop.status === "Disponible" && (
               <span className="absolute top-5 -left-8 rotate-[-45deg] bg-green-600 text-white text-xs font-bold px-8 py-1 shadow-md">
                 DISPONIBLE
               </span>
@@ -126,7 +131,7 @@ const EliminarPropiedades = () => {
                 onClick={() => toggleEstado(prop.id)}
                 className="text-white bg-[#A62F55] py-2 px-4 rounded-lg font-semibold hover:bg-[#831F40] transition w-full sm:w-auto"
               >
-                {prop.status === "sold" ? "Marcar disponible" : "Marcar vendida"}
+                {prop.status === "Vendido" ? "Marcar disponible" : "Marcar vendida"}
               </button>
               <button
                 onClick={() => handleEliminar(prop.id)}

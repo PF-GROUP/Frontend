@@ -25,7 +25,6 @@ const DashboardPage = () => {
   const fetchTypeOfProperties = async () => {
     try {
     const response = await apiService.get('/typeofproperty', true);
-      console.log("Response from API:", response);
       const propertyTypes = Array.isArray(response) ? response : [];
       setTypeOptions(propertyTypes);
     } catch (error) {
