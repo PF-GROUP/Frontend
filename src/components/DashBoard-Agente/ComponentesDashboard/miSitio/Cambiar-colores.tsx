@@ -1,5 +1,5 @@
 "use client";
-
+import { cambiarColores } from "@/services/editarColores";
 import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
 import { toast } from "react-hot-toast";
@@ -21,16 +21,17 @@ interface ICustomizationValues {
 const MiSitio: React.FC = () => {
   const { user } = useAuthContext();
   const [hasCustomization, setHasCustomization] = useState<boolean | null>(null);
-  const [customizationId, setCustomizationId] = useState<string | null>(null); // Estado agregado
+  const [customizationId, setCustomizationId] = useState<string | null>(null); 
 
   console.log("Id agencia: ", user?.agencyId);
-  
+    console.log(user)
   useEffect(() => {
     if (!user?.agencyId) return;
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/agencies/${user.agencyId}/customization`, {
       credentials: "include",
     })
+      
       .then((res) => {
         if (res.status === 200) {
           setHasCustomization(true);
@@ -82,32 +83,22 @@ const MiSitio: React.FC = () => {
   try {
     console.log("customization:", hasCustomization);
     
-    const method = hasCustomization ? "PATCH" : "POST";
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/agencies/${String(user?.agencyId)}/customization`,
-      {
-        method,
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(payload),
-      }
-    );
 
-      const data = await response.json();
-      console.log("🧠 response completo Colores:", data);
-      // Guardar customizationId para usarlo en el componente UploadLogoBanner
-      if (response.ok && data?.content?.id) {
-      setCustomizationId(data.content.id); // ✅ Acá sí lo vas a setear bien
-        toast.success("Colores modificados con Éxito.", { duration: 2500 });
-      } else {
-        console.warn("⚠️ Hubo un Error al editar los Colores:", data);
-        toast.error(" Hubo un Error al editar los Colores.", { duration: 2000 });
+    try {
+      const response = await cambiarColores(String(user?.agencyId ?? ""), payload);
+      console.log(" response completo:", response);
+      if (response) {
+        toast.success("Colores cambiados correctamente");
+        setHasCustomization(true);
+        setCustomizationId(response.id)
       }
-    } catch (error) {
-      console.error("❌ Error en los datos:", error);
-      toast.error("Error al ingresar los datos.", { duration: 2000 });
-    }
+  } catch (error) {
+    console.error("Error al cambiar los colores:", error);
+  }
+  } catch (error) {
+    console.error("Error al cambiar los colores:", error);
+  }
   };
 
   return (
@@ -146,7 +137,7 @@ const MiSitio: React.FC = () => {
               </h2>
               <a
                 href="#Logo"
-                className="text-white bg-blue-600 pt-2 pb-2 pl-3 pr-3 rounded-lg hover:bg-blue-700"
+                className="text-white bg-blue-800 pt-2 pb-2 pl-3 pr-3 rounded-lg hover:bg-blue-900"
               >
                 Comenzar a editar
               </a>
@@ -255,7 +246,7 @@ const MiSitio: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="text-white bg-blue-700 py-2 px-4 rounded-lg w-full font-semibold hover:bg-blue-800 transition"
+                className="text-white bg-blue-800 py-2 px-4 rounded-lg w-full font-semibold hover:bg-blue-900 transition"
               >
                 Aplicar cambios
               </button>
@@ -265,7 +256,7 @@ const MiSitio: React.FC = () => {
       </Formik>
 
       {/* Renderizado condicional del componente de subir logo y banner */}
-      {hasCustomization && <UploadLogoBanner customizationId={customizationId || null} />}
+      {customizationId && <UploadLogoBanner customizationId={customizationId} />}
     </>
   );
 };

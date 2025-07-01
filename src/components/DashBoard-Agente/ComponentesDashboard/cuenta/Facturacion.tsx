@@ -20,8 +20,8 @@ const Cuenta: React.FC = () => {
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4">
-          <button className="bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-lg text-sm sm:text-base">
-            Cancelar Suscripción
+          <button className="bg-[#A62F55] hover:bg-[#831F40] text-white px-5 py-3 font-semibold rounded-lg text-lg transition disabled:opacity-70 disabled:cursor-not-allowed sm:text-base">
+            Cancelar suscripción
           </button>
         </div>
       </div>

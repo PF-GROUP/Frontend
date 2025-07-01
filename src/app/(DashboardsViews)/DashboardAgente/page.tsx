@@ -45,10 +45,10 @@ export default function DashboardPage() {
         return <Seguridad />;
       default:
         return(
-          <div className="bg-gray-200 border-l-8 border-[#4A0E1B] shadow-lg rounded-lg p-6">
+          <div className="bg-gray-200 border-l-8 border-[#A62F55] shadow-lg rounded-lg p-6">
             {/* AQUI TAMBIEN IMPLEMENTAR EL USER DE LAS COOCKIES */}
-            <h1 className="text-2xl font-bold text-[#4A0E1B] mb-2">¡Bienvenido/a {user?.name} !</h1>
-            <p className="text-gray-700">Deste tu pagína gestionar todo lo relacionado con tu sitio, propiedades, clientes y mucho más. 🚀
+            <h1 className="text-2xl font-bold text-[#831F40] mb-2">¡Bienvenido/a {user?.name} !</h1>
+            <p className="text-gray-700">Desde tu pagína gestionar todo lo relacionado con tu sitio, propiedades, clientes y mucho más. 🚀
             </p>
           </div>
           )

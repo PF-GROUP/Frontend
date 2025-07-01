@@ -86,13 +86,13 @@ const Contrasena: React.FC = () => {
             <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
               <button
                 type="submit"
-                className="text-white bg-blue-700 hover:bg-blue-800 py-3 px-4 rounded-lg w-full sm:w-[250px] text-base font-semibold"
+                className="text-white bg-blue-800 hover:bg-blue-900 py-2  px-4 rounded-lg w-full sm:w-full text-base font-semibold transition disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 Enviar
               </button>
               <button
                 type="reset"
-                className="text-white bg-red-600 hover:bg-red-700 py-3 px-4 rounded-lg w-full sm:w-[200px] text-base"
+                className="text-white bg-[#A62F55] font-semibold hover:bg-[#831F40] py-2 px-4 rounded-lg w-full sm:w-full text-base transition disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 Cancelar
               </button>

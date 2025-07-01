@@ -13,10 +13,13 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useAuthContext } from "../../../../context/authContext";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import apiService from "@/services/apiService";
 
 const SidebarDashboard: React.FC = () => {
-  const {user} = useAuthContext()
-
+  const {user, ResetUserData} = useAuthContext()
+const router = useRouter()
   const [isOpen, setIsOpen] = useState(false);
   // const [profileImage, setProfileImage] = useState<string | null>(null);
 
@@ -33,7 +36,14 @@ const SidebarDashboard: React.FC = () => {
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
 
-  
+  const handleLogout = () => {
+    apiService.post("/auth/logout", {}, true);
+    toast.success("Cerrando sesión, redirigiendo a home...");
+    ResetUserData();
+    setTimeout(() => {
+      router.push("/home");
+    }, 1000);
+  };
 
   return (
     <>
@@ -108,10 +118,10 @@ const SidebarDashboard: React.FC = () => {
           <div className="flex items-start gap-2 mt-6 hover:bg-gray-300 rounded-md p-2 cursor-pointer w-full">
             <User size={24} className="text-gray-750" />
             <details className="[&>summary]:list-none [&>summary::-webkit-details-marker]:hidden w-full">
-              <summary className="font-semibold text-base md:text-xl">Mi Sitio</summary>
+              <summary className="font-semibold text-base md:text-xl">Mi sitio</summary>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
-                <li><Link href="/DashboardAgente?view=editar-titulo" className="block text-gray-800 hover:text-[#870505] transition-colors">Editar Nombre y descripción</Link></li>
-                <li><Link href="/DashboardAgente?view=cambiar-colores" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Cambiar colores</Link></li>
+                <li><Link href="/DashboardAgente?view=editar-titulo" className="block text-gray-800 hover:text-[#870505] transition-colors">editar nombre y descripción</Link></li>
+                <li><Link href="/DashboardAgente?view=cambiar-colores" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">cambiar colores</Link></li>
               </ul>
             </details>
           </div>
@@ -122,8 +132,8 @@ const SidebarDashboard: React.FC = () => {
             <details className="[&>summary]:list-none [&>summary::-webkit-details-marker]:hidden w-full">
               <summary className="font-semibold text-base md:text-xl">Propiedades</summary>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
-                <li><Link href="/DashboardAgente?view=subir-propiedad" className="block text-gray-800 hover:text-[#870505] transition-colors">Subir y gestionar propiedades</Link></li>
-                <li><Link href="/DashboardAgente?view=borrar-propiedad" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Borrar propiedades</Link></li>
+                <li><Link href="/DashboardAgente?view=subir-propiedad" className="block text-gray-800 hover:text-[#870505] transition-colors">subir propiedades</Link></li>
+                <li><Link href="/DashboardAgente?view=borrar-propiedad" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">eliminar propiedades</Link></li>
                 <li><Link href="/DashboardAgente?view=borrar-propiedad" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">ver y editar imagenes</Link></li>
               </ul>
             </details>
@@ -133,11 +143,11 @@ const SidebarDashboard: React.FC = () => {
           <div className="flex items-start gap-2 mt-6 hover:bg-gray-300 rounded-md p-2 cursor-pointer w-full">
             <Wallet size={24} className="text-gray-750" />
             <details className="[&>summary]:list-none [&>summary::-webkit-details-marker]:hidden w-full">
-              <summary className="font-semibold text-base md:text-xl">Cuenta</summary>
+              <summary className="font-semibold text-base md:text-xl">Mi cuenta</summary>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
-                <li><Link href="/DashboardAgente?view=facturacion" className="block text-gray-800 hover:text-[#870505] transition-colors">Facturación</Link></li>
-                <li><Link href="/DashboardAgente?view=cambiar-contrasena" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Cambiar contraseña</Link></li>
-                <li><Link href="/DashboardAgente?view=cambiar-foto-perfil" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Cambiar foto</Link></li>
+                <li><Link href="/DashboardAgente?view=facturacion" className="block text-gray-800 hover:text-[#870505] transition-colors">facturación</Link></li>
+                <li><Link href="/DashboardAgente?view=cambiar-contrasena" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">cambiar contraseña</Link></li>
+                <li><Link href="/DashboardAgente?view=cambiar-foto-perfil" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">cambiar foto de perfil</Link></li>
               </ul>
             </details>
           </div>
@@ -148,7 +158,7 @@ const SidebarDashboard: React.FC = () => {
             <details className="[&>summary]:list-none [&>summary::-webkit-details-marker]:hidden w-full">
               <summary className="font-semibold text-base md:text-xl">Soporte</summary>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
-                <li><Link href="/DashboardAgente?view=reportar-error" className="block text-gray-800 hover:text-[#870505] transition-colors">Reportar error</Link></li>
+                <li><Link href="/DashboardAgente?view=reportar-error" className="block text-gray-800 hover:text-[#870505] transition-colors">reportar error</Link></li>
               </ul>
             </details>
           </div>
@@ -159,15 +169,15 @@ const SidebarDashboard: React.FC = () => {
             <details className="[&>summary]:list-none [&>summary::-webkit-details-marker]:hidden w-full">
               <summary className="font-semibold text-base md:text-xl">Seguridad</summary>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
-                <li><Link href="/DashboardAgente?view=seguridad" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">Seguridad</Link></li>
+                <li><Link href="/DashboardAgente?view=seguridad" className="block text-gray-800 hover:text-[#870505] transition-colors mt-2">¿como mantener segura mi cuenta?</Link></li>
               </ul>
             </details>
           </div>
 
           {/* --- Botón Salir --- */}
-          <div className="flex items-center justify-start text-center w-full md:w-[150px] mt-11 ml-2 md:ml-4 rounded-2xl pt-2 pb-2 px-4 bg-[#9b0624] hover:bg-[#870505] transition-colors">
+          <div className="flex items-center justify-start text-center w-full md:w-[120px] mt-11 ml-2 md:ml-1 rounded-2xl pt-2 pb-2 px-4 bg-[#A62F55] hover:bg-[#831F40] transition-colors">
             <LogOut size={24} className="text-white" />
-            <Link href="/" className="ml-2 font-semibold text-base md:text-xl text-white">Salir</Link>
+            <button onClick={handleLogout} className="ml-2 font-semibold text-center text-base md:text-xl text-white">Salir</button>
           </div>
         </div>
 

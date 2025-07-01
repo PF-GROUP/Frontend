@@ -14,6 +14,9 @@ const UploadLogoBanner: React.FC<UploadLogoBannerProps> = ({ customizationId }) 
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
 
+
+  console.log("Este es el customization id",customizationId);
+  
   const uploadImage = async (file: File, type: "logo" | "banner") => {
     const formData = new FormData();
     formData.append("file", file);

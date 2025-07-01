@@ -1,47 +1,48 @@
-// pages/eliminar-propiedades.tsx
 'use client';
 
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useAuthContext } from '../../../../../context/authContext';
+import apiService from '@/services/apiService';
 
-const propiedadesIniciales = [
-  {
-    id: 1,
-    titulo: "Casa en el centro",
-    precio: "$150.000",
-    imagen: "/casa-centro.jpg",
-  },
-  {
-    id: 2,
-    titulo: "Apartamento con vista al mar",
-    precio: "$200.000",
-    imagen: "/vista-mar.jpg",
-  },
-  {
-    id: 3,
-    titulo: "Casa suburbana",
-    precio: "$250.000",
-    imagen: "/suburbana.jpg",
-  },
-  {
-    id: 4,
-    titulo: "Estudio acogedor",
-    precio: "$100.000",
-    imagen: "/estudio.jpg",
-  },
-  {
-    id: 5,
-    titulo: "villa 13 14",
-    precio: "$1.000.000",
-    imagen: "/estudio.jpg",
-  },
-];
+interface IPropiedad {
+  id: string;
+  name: string;
+  price: number;
+  agency: string;
+}
 
 const EliminarPropiedades = () => {
-  const [propiedades, setPropiedades] = useState(propiedadesIniciales);
+  const { user } = useAuthContext();
+  const [propiedades, setPropiedades] = useState<IPropiedad[]>([]);
 
-  const handleEliminar = (id: number) => {
-    setPropiedades((prev) => prev.filter((prop) => prop.id !== id));
+  console.log("hola");
+  useEffect(() => {
+    const fetchPropiedades = async () => {
+      
+      try {
+        const response = await apiService.get("/property", true);
+        const propiedadesFiltradas = response.filter(
+          (prop) => prop.agency === user?.agencyId
+        );
+        console.log("Propiedades Filter: ",propiedadesFiltradas);
+        
+        setPropiedades(propiedadesFiltradas);
+      } catch (error) {
+        console.error("Error al traer propiedades:", error);
+      }
+    };
+    
+    if (user?.agencyId) fetchPropiedades();
+  }, [user]);
+
+  const handleEliminar = async (id:string) => {
+    try {
+      await apiService.del(`/property/soft/${id}`, true);
+      setPropiedades((prev) => prev.filter((prop) => prop.id !== id));
+    } catch (error) {
+      console.error("Error al eliminar propiedad:", error);
+    }
   };
 
   return (
@@ -59,16 +60,16 @@ const EliminarPropiedades = () => {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
               <div className="w-full sm:w-[200px] h-[120px] overflow-hidden rounded-md">
                 <Image
-                  src={prop.imagen}
-                  alt={prop.titulo}
+                  src={prop.id_images[0]} // reemplazar si tenés URL real de imagen
+                  alt={prop.name}
                   width={200}
                   height={120}
                   className="object-cover w-full h-full"
                 />
               </div>
               <div>
-                <p className="font-semibold text-lg">{prop.titulo}</p>
-                <p className="text-gray-600">{prop.precio}</p>
+                <p className="font-semibold text-lg">{prop.name}</p>
+                <p className="text-gray-600">${prop.price.toLocaleString()}</p>
               </div>
             </div>
             <button

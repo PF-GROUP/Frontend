@@ -299,17 +299,17 @@ const DashboardPage = () => {
               </div>
 
               {/* Botones */}
-              <div className="flex flex-col md:flex-row justify-between items-center w-full gap-4">
+              <div className="flex flex-col md:flex-row justify-between items-center w-full gap-3">
                 <button
                   type="submit"
-                  className="text-white bg-blue-700 py-3 px-4 rounded-lg w-full md:w-[250px] text-lg"
+                  className="text-white bg-blue-800 py-2 px-4 rounded-lg w-full md:w-full font-semibold hover:bg-blue-900 transition"
                 >
                   Subir Propiedad
                 </button>
                 <button
                   type="button"
                   onClick={() => resetForm()}
-                  className="text-white bg-red-600 py-3 px-4 text-lg rounded-lg w-full md:w-[200px]"
+                  className="text-white bg-[#A62F55] py-2 px-4 rounded-lg w-full md:w-full font-semibold hover:bg-[#831F40] transition"
                 >
                   Cancelar
                 </button>

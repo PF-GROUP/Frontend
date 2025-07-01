@@ -76,17 +76,6 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
 
     try {
       setLoading(true);
-
-      // const res = await fetch(
-      //  images/property/${propertyId}/gallery,
-      //   {
-      //     method: "POST",
-      //     body: formData,
-      //     credentials: "include",
-      //   }
-      // );
-
-      
       const res = apiService.post(`images/property/${propertyId}/gallery`,formData ,true)
       if (!res) throw new Error("Error al subir las imágenes");
 

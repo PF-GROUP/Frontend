@@ -165,7 +165,7 @@ const FotoPerfil: React.FC = () => {
       {/* 📁 Botón para seleccionar imagen desde input */}
       <label
         htmlFor="file-upload"
-        className={`flex items-center gap-2 bg-blue-700 text-white font-semibold text-base sm:text-lg py-2 px-4 rounded-lg cursor-pointer ${
+        className={`flex items-center gap-2 bg-blue-800 hover:bg-blue-900 text-white font-semibold text-base sm:text-lg py-2 px-4 rounded-lg cursor-pointer transition disabled:opacity-70 disabled:cursor-not-allowed ${
           isUploading ? "opacity-70 pointer-events-none" : ""
         }`}
       >
@@ -187,10 +187,10 @@ const FotoPerfil: React.FC = () => {
         <button
           onClick={handleUpload}
           disabled={isUploading}
-          className={`w-full max-w-xs py-2 px-4 rounded-lg font-semibold text-white ${
+          className={`w-full max-w-xs py-2 px-4 rounded-lg font-semibold text-white transition disabled:opacity-70 disabled:cursor-not-allowed ${
             isUploading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-green-600 hover:bg-green-700"
+              ? "bg-gray-500 cursor-not-allowed"
+              : "bg-[#A62F55]  hover:bg-[#831F40]"
           }`}
         >
           {isUploading ? "Subiendo..." : "Subir Imagen"}
