@@ -18,7 +18,6 @@ import { useAuthContext } from '../../../../context/authContext';
 
 export default function DashboardPage() {
   const { user } = useAuthContext(); 
-
   
   
   const searchParams = useSearchParams(); 
@@ -49,7 +48,7 @@ export default function DashboardPage() {
           <div className="bg-gray-200 border-l-8 border-[#4A0E1B] shadow-lg rounded-lg p-6">
             {/* AQUI TAMBIEN IMPLEMENTAR EL USER DE LAS COOCKIES */}
             <h1 className="text-2xl font-bold text-[#4A0E1B] mb-2">¡Bienvenido/a {user?.name} !</h1>
-            <p className="text-gray-700">Deste tu pagína  gestionar todo lo relacionado con tu sitio, propiedades, clientes y mucho más. 🚀
+            <p className="text-gray-700">Deste tu pagína gestionar todo lo relacionado con tu sitio, propiedades, clientes y mucho más. 🚀
             </p>
           </div>
           )

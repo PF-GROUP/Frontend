@@ -75,10 +75,6 @@ const FotoPerfil: React.FC = () => {
 
       // 📤 Enviamos la imagen al backend, que a su vez la sube a Cloudinary
       console.log("Este es el id del user:", user.id);
-      // const response = await fetch(`${API_URL}/images/profile/${user.id}`, {
-      //   method: "POST",
-      //   body: formData,
-      //   credentials: "include", // incluye cookies para autenticar al usuario
       // });
       const response = await apiService.post(`/images/profile/${user.id}`, formData, true)
       console.log("Respuesta status:", response);
