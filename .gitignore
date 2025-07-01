@@ -43,3 +43,4 @@ yarn-error.log*
 next-env.d.ts
 weebhook.js
 Dockerfile
+next.config.ts
