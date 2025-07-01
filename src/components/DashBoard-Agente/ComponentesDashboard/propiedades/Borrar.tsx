@@ -5,7 +5,6 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../../../../../context/authContext";
 import toast from "react-hot-toast";
-import { Trash } from "lucide-react";
 
 interface Propiedad {
   id: string;
