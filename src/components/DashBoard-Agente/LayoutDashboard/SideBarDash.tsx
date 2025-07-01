@@ -175,9 +175,9 @@ const router = useRouter()
           </div>
 
           {/* --- Botón Salir --- */}
-          <div className="flex items-center justify-start text-center w-full md:w-[120px] mt-11 ml-2 md:ml-1 rounded-2xl pt-2 pb-2 px-4 bg-[#A62F55] hover:bg-[#831F40] transition-colors">
+          <div className="flex items-center justify-start text-center w-full md:w-[200px] mt-11 ml-2 md:ml-1 rounded-2xl pt-2 pb-2 px-4 bg-[#A62F55] hover:bg-[#831F40] transition-colors">
             <LogOut size={24} className="text-white" />
-            <button onClick={handleLogout} className="ml-2 font-semibold text-center text-base md:text-xl text-white">Salir</button>
+            <button onClick={handleLogout} className="ml-2 font-semibold text-center text-base md:text-xl text-white">Cerrar sesión</button>
           </div>
         </div>
 
