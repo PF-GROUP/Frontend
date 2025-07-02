@@ -45,7 +45,7 @@ const Contrasena: React.FC = () => {
   return (
     <div className="w-full p-4 sm:p-6 lg:p-10 max-w-2xl mx-auto rounded-lg shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)] bg-white">
       <h2 className="text-2xl sm:text-3xl font-bold text-[#230c89] mb-6">
-        Cambiar Contraseña
+        Cambiar contraseña
       </h2>
 
       <Formik

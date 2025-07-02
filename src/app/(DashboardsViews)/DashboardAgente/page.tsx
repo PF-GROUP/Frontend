@@ -8,7 +8,6 @@ import EditarTitulo from '@/components/DashBoard-Agente/ComponentesDashboard/miS
 import CambiarColores from '@/components/DashBoard-Agente/ComponentesDashboard/miSitio/Cambiar-colores';
 import SubirPropiedad from '@/components/DashBoard-Agente/ComponentesDashboard/propiedades/Subir';
 import Borrar from '@/components/DashBoard-Agente/ComponentesDashboard/propiedades/Borrar';
-import Facturacion from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Facturacion';
 import Contrasena from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Cambiar-contraseña';
 import FotoPerfil from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Cambiar-fotoPerfil';
 import ReportarError from '@/components/DashBoard-Agente/ComponentesDashboard/soporte/Reportar-error';
@@ -36,8 +35,6 @@ export default function DashboardPage() {
         return <SubirPropiedad />;
       case 'borrar-propiedad':
         return <Borrar />;
-      case 'facturacion':
-        return <Facturacion />;
       case 'cambiar-contrasena':
         return <Contrasena />;
       case 'cambiar-foto-perfil':

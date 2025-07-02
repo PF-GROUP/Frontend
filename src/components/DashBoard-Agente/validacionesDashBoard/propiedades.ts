@@ -6,9 +6,7 @@ export const validationSchema = Yup.object({
     .min(3, 'El nombre debe tener al menos 3 caracteres')
     .max(80, 'El nombre no puede superar los 80 caracteres'),
 
-  status: Yup.string()
-    .oneOf(['Disponible'], 'Estado inválido') // 👈 directamente el string, más seguro
-    .required('Campo obligatorio'),
+
 
   type: Yup.string()
     .oneOf(['Alquiler', 'Venta'], 'Tipo inválido')

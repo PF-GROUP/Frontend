@@ -6,7 +6,7 @@ import apiService from '@/services/apiService';
 
 interface UploadGalleryProps {
   propertyId: string;
-  setPropertyId: (id: string | null) => void;
+  setShowImageEditor: (id: boolean) => void;
 }
 
 // Definimos la interfaz para las imágenes que vienen del backend
@@ -20,7 +20,7 @@ interface BackendImage {
   deletedAt?: string;
 }
 
-const EditarImagenesPropiedades: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId }) => {
+const EditarImagenesPropiedades: React.FC<UploadGalleryProps> = ({ propertyId, setShowImageEditor }) => {
   
   
   // Estado para las imágenes nuevas que el usuario selecciona antes de subir
@@ -110,7 +110,7 @@ const EditarImagenesPropiedades: React.FC<UploadGalleryProps> = ({ propertyId, s
     const handleOnCancel = () => {
         setShowModal(false);
         setImages([]);
-        setPropertyId(null);
+        setShowImageEditor(false);
     };
     
     // Subir imágenes nuevas al backend

@@ -124,9 +124,9 @@ const SidebarDashboard: React.FC = () => {
             <details className="[&>summary]:list-none [&>summary::-webkit-details-marker]:hidden w-full">
               <summary className="font-semibold text-base md:text-xl">Mi sitio</summary>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
-                <li><Link href="/DashboardAgente?view=editar-titulo" className="block text-gray-800 hover:text-[#831F40] transition-colors">editar nombre y descripción</Link></li>
-                <li><Link href="/DashboardAgente?view=cambiar-colores" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">editar colores</Link></li>
-                <li><Link href="/DashboardAgente?view=enviarLogoYBanner" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">editar logo y banner</Link></li>
+                <li><Link href="/DashboardAgente?view=editar-titulo" className="block text-gray-800 hover:text-[#831F40] transition-colors">Editar nombre y descripción</Link></li>
+                <li><Link href="/DashboardAgente?view=cambiar-colores" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">Editar colores</Link></li>
+                <li><Link href="/DashboardAgente?view=enviarLogoYBanner" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">Editar logo y banner</Link></li>
               </ul>
             </details>
           </div>  
@@ -137,8 +137,8 @@ const SidebarDashboard: React.FC = () => {
             <details className="[&>summary]:list-none [&>summary::-webkit-details-marker]:hidden w-full">
               <summary className="font-semibold text-base md:text-xl">Propiedades</summary>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
-                <li><Link href="/DashboardAgente?view=subir-propiedad" className="block text-gray-800 hover:text-[#831F40] transition-colors">subir propiedades</Link></li>
-                <li><Link href="/DashboardAgente?view=borrar-propiedad" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">administrar propiedades</Link></li>
+                <li><Link href="/DashboardAgente?view=subir-propiedad" className="block text-gray-800 hover:text-[#831F40] transition-colors">Subir propiedades</Link></li>
+                <li><Link href="/DashboardAgente?view=borrar-propiedad" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">Administrar propiedades</Link></li>
               </ul>
             </details>
           </div>
@@ -149,9 +149,8 @@ const SidebarDashboard: React.FC = () => {
             <details className="[&>summary]:list-none [&>summary::-webkit-details-marker]:hidden w-full">
               <summary className="font-semibold text-base md:text-xl">Mi cuenta</summary>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
-                <li><Link href="/DashboardAgente?view=facturacion" className="block text-gray-800 hover:text-[#831F40] transition-colors">facturación</Link></li>
-                <li><Link href="/DashboardAgente?view=cambiar-contrasena" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">cambiar contraseña</Link></li>
-                <li><Link href="/DashboardAgente?view=cambiar-foto-perfil" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">cambiar foto de perfil</Link></li>
+                <li><Link href="/DashboardAgente?view=cambiar-contrasena" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">Cambiar contraseña</Link></li>
+                <li><Link href="/DashboardAgente?view=cambiar-foto-perfil" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">Cambiar foto de perfil</Link></li>
               </ul>
             </details>
           </div>
@@ -162,7 +161,7 @@ const SidebarDashboard: React.FC = () => {
             <details className="[&>summary]:list-none [&>summary::-webkit-details-marker]:hidden w-full">
               <summary className="font-semibold text-base md:text-xl">Soporte</summary>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
-                <li><Link href="/DashboardAgente?view=reportar-error" className="block text-gray-800 hover:text-[#831F40] transition-colors">reportar error</Link></li>
+                <li><Link href="/DashboardAgente?view=reportar-error" className="block text-gray-800 hover:text-[#831F40] transition-colors">Reportar error</Link></li>
               </ul>
             </details>
           </div>
@@ -173,7 +172,7 @@ const SidebarDashboard: React.FC = () => {
             <details className="[&>summary]:list-none [&>summary::-webkit-details-marker]:hidden w-full">
               <summary className="font-semibold text-base md:text-xl">Seguridad</summary>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
-                <li><Link href="/DashboardAgente?view=seguridad" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">¿como mantener segura mi cuenta?</Link></li>
+                <li><Link href="/DashboardAgente?view=seguridad" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">¿Como mantener segura mi cuenta?</Link></li>
               </ul>
             </details>
           </div>

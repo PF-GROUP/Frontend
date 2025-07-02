@@ -90,7 +90,7 @@ const DashboardPage = () => {
         initialValues={initialValues}
         onSubmit={handleOnSubmit}
         validationSchema={validationSchema}
-      >
+      > 
         {({
           handleChange,
           handleBlur,
@@ -105,7 +105,7 @@ const DashboardPage = () => {
             className="flex flex-col items-start justify-start rounded-xl p-4 md:p-6 shadow-md w-full bg-white border border-gray-200"
           >
             <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] tracking-wide w-full mb-6">
-              Datos del Inmueble
+              Datos del inmueble
             </h2>
 
                 {/* Campos del formulario (Nombre, Estado, Tipo, etc.) */}

@@ -16,12 +16,19 @@ interface ITypeOfProperty {
 interface Props {
   id: string;
   onBack: () => void;
+  setPropertyId: (id: string | null) => void;
+}
+
+interface UploadGalleryProps {
+  propertyId: string;
+  setPropertyId: (id: string | null) => void;
 }
 
 const EditarPropiedad: React.FC<Props> = ({ id, onBack }) => {
   // Estado para controlar si mostrar el editor de imágenes
   const [showImageEditor, setShowImageEditor] = useState(false);
 
+  
   // Estado para guardar los valores iniciales del formulario
   const [initialValues, setInitialValues] = useState<PropertyForm | null>(null);
 
@@ -91,7 +98,7 @@ const EditarPropiedad: React.FC<Props> = ({ id, onBack }) => {
     <div className="p-6 border border-gray-200 rounded-md w-[60vw] m-auto shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
       {/* Si ya se hizo submit, mostrar el componente de editar imágenes */}
       {showImageEditor ? (
-        <EditarImagenesPropiedades propertyId={id} onBack={() => setShowImageEditor(false)} />
+        <EditarImagenesPropiedades propertyId={id}  setShowImageEditor={setShowImageEditor} />
       ) : (
         <>
           {/* Título */}
@@ -124,24 +131,7 @@ const EditarPropiedad: React.FC<Props> = ({ id, onBack }) => {
                   )}
                 </div>
 
-                {/* Estado */}
-                <div className="flex flex-col w-full">
-                  <label htmlFor="status" className="text-lg font-bold mb-1">Estado</label>
-                  <select
-                    id="status"
-                    name="status"
-                    value={values.status}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    className={`border ${errors.status && touched.status ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow`}
-                  >
-                    <option value="DISPONIBLE">Disponible</option>
-                    <option value="VENDIDO">Vendido</option>
-                  </select>
-                  {errors.status && touched.status && (
-                    <p className="text-red-500 text-sm mt-1">{errors.status}</p>
-                  )}
-                </div>
+             
 
                 {/* Tipo */}
                 <div className="flex flex-col w-full">
