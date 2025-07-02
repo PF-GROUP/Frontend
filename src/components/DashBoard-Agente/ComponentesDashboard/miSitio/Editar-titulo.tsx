@@ -23,11 +23,7 @@ const EditarTitulo: React.FC = () => {
         agentUser: String(user.agencyId),
       };
 
-      console.log("Esta es el id de la agencia: ", user.agencyId);
-      console.log("estos son el Nombre y Desc: ", payload);
-
       const response = await editarAgencia(payload, String(user.agencyId));
-      console.log("🧠 response completo:", response);
 
       if (response) {
         toast.success("Nombre y Descripción modificados.", { duration: 2500 });

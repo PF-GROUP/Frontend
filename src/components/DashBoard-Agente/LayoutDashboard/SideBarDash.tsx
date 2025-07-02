@@ -27,10 +27,6 @@ const SidebarDashboard: React.FC = () => {
  
   // Estado para guardar el nombre y apellido del agente
 
-  console.log("Este es el id del user SB: ", user?.id);
-  console.log("Este es el nombre del user SB: ", user?.name);
-  console.log("Este es el apellido del user SB: ", user?.surname);
-  console.log("Esta es foto de perfil: ", user?.profilePictureUrl);
   // IMPORTANTE LEER REALIZAR EL CONSUMO DEL NOMBRE DEL USUARIO DESDE LAS COOCKIES "user"
 
   const toggleSidebar = () => setIsOpen(!isOpen);
@@ -46,7 +42,6 @@ const SidebarDashboard: React.FC = () => {
   };
 
   useEffect(() => {
-  console.log("Sidebar: user cambió", user);
 }, [user]);  
   return (
     <>

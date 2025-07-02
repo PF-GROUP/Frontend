@@ -67,15 +67,12 @@ const FotoPerfil: React.FC = () => {
     }
 
     setIsUploading(true);
-    console.log("Esta es la imagen del user: ", selectedFile)
     try {
       // 📨 Creamos el FormData para enviar la imagen como multipart/form-data
       const formData = new FormData();
       formData.append("file", selectedFile);
 
       // 📤 Enviamos la imagen al backend, que a su vez la sube a Cloudinary
-      console.log("Este es el id del user:", user.id);
-      // });
       const response = await apiService.post(`/images/profile/${user.id}`, formData, true)
       
       if(response) {

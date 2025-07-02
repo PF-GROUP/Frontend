@@ -17,7 +17,6 @@ const UploadLogoBanner: React.FC<UploadLogoBannerProps> = ({ customizationId, se
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
 
-  console.log("Este es el customization id", customizationId);
 
   const imageValidationSchema = Yup.object().shape({
   logoFile: Yup.mixed()

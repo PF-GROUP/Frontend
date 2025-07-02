@@ -74,13 +74,11 @@ const EditarPropiedad: React.FC<Props> = ({ id, onBack }) => {
   // Enviar formulario y mostrar editor de imágenes
   const handleOnSubmit = async (values: PropertyForm) => {
     try {
-      console.log("Estos son los valores: ", values);
       const cleanValues = {
         ...values,
         agency: typeof values.agency === "object" ? values.agency.id : values.agency,
       };
       const response = await apiService.patch(`/property/${id}`, cleanValues, true);
-      console.log("PATCH exitoso:", response);
       toast.success("Propiedad actualizada correctamente");
 
       // Pasar al editor de imágenes
