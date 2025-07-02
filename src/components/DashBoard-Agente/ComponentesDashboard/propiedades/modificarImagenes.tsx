@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Upload, X, Image } from 'lucide-react';
 import toast from 'react-hot-toast';
 import apiService from '@/services/apiService';
@@ -9,12 +9,44 @@ interface UploadGalleryProps {
   setPropertyId: (id: string | null) => void;
 }
 
-const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId }) => {
+// Definimos la interfaz para las imágenes que vienen del backend
+interface BackendImage {
+  id: string;
+  file: string; // URL de la imagen
+  publicId?: string;
+  title?: string;
+  description?: string;
+  propertyId?: string;
+  deletedAt?: string;
+}
+
+const EditarImagenesPropiedades: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId }) => {
+  // Estado para las imágenes nuevas que el usuario selecciona antes de subir
   const [images, setImages] = useState<File[]>([]);
+  // Estado para las imágenes que ya existen en la propiedad (vienen del backend)
+  const [existingImages, setExistingImages] = useState<BackendImage[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
+  // Cuando cambia propertyId, hacemos fetch para traer las imágenes existentes
+  useEffect(() => {
+    if (!propertyId) return;
+
+    const fetchPropertyImages = async () => {
+      try {
+        const response = await apiService.get(`/property/${propertyId}`, true);
+        // response.images es el array con las imágenes que ya están guardadas
+        setExistingImages(response.images || []);
+      } catch (error) {
+        toast.error('No se pudieron cargar las imágenes existentes');
+      }
+    };
+
+    fetchPropertyImages();
+  }, [propertyId]);
+
+  // Función para validar y agregar imágenes nuevas al estado local
   const handleFiles = (files: FileList) => {
     const validImages = Array.from(files).filter((file) => {
       if (!file.type.startsWith('image/')) {
@@ -22,6 +54,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
         return false;
       }
 
+      // Evitar agregar imágenes duplicadas (comparando nombre, tamaño y fecha)
       const isDuplicate = images.some(
         (img) =>
           img.name === file.name &&
@@ -37,69 +70,113 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
       return true;
     });
 
+    // Agregamos las nuevas imágenes válidas al estado
     setImages((prev) => [...prev, ...validImages]);
   };
 
+  // Drag & Drop handlers
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
     if (e.dataTransfer.files) handleFiles(e.dataTransfer.files);
   };
-
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => setIsDragging(false);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      handleFiles(e.target.files);
-      e.target.value = '';
-    }
-  };
-
-  const removeImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleOnCancel = () => {
-    setShowModal(false);
-    setImages([]);
-    setPropertyId(null);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (images.length === 0) return toast.error('Selecciona al menos una imagen');
-
-    const formData = new FormData();
-    images.forEach((img) => formData.append('files', img));
-
-    try {
-      setLoading(true);
-      const res = await apiService.post(`images/property/${propertyId}/gallery`, formData, true);
-      if (!res) throw new Error('Error al subir las imágenes');
-      toast.success('Imágenes subidas con éxito');
-      setImages([]);
-    } catch (err) {
-      console.error(err);
-      toast.error('No se pudieron subir las imágenes');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const renderPreviews = () => (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 w-full">
-      {images.map((img, idx) => (
-        <div
-          key={idx}
-          className="relative bg-white p-2 rounded shadow border border-gray-300"
+      e.preventDefault();
+      setIsDragging(true);
+    };
+    const handleDragLeave = () => setIsDragging(false);
+    
+    // Cambio de input tipo file
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            handleFiles(e.target.files);
+            e.target.value = '';
+        }
+    };
+    
+    // Quitar una imagen nueva del preview antes de subir
+    const removeImage = (index: number) => {
+        setImages((prev) => prev.filter((_, i) => i !== index));
+    };
+    
+    // Aquí podrías implementar eliminar imágenes existentes, si tu backend lo soporta.
+    // Por ahora solo mostramos.
+    
+    // Cancelar subida: limpiar todo y cerrar modal
+    const handleOnCancel = () => {
+        setShowModal(false);
+        setImages([]);
+        setPropertyId(null);
+    };
+    
+    // Subir imágenes nuevas al backend
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (images.length === 0) return toast.error('Selecciona al menos una imagen');
+        
+        const formData = new FormData();
+        images.forEach((img) => formData.append('files', img));
+        
+        try {
+            setLoading(true);
+            const res = await apiService.post(`images/property/${propertyId}/gallery`, formData, true);
+            if (!res) throw new Error('Error al subir las imágenes');
+            toast.success('Imágenes subidas con éxito');
+            setImages([]);
+            // Actualizamos la lista de imágenes existentes para que se vean las nuevas
+            const refreshedProperty = await apiService.get(`/property/${propertyId}`, true);
+            setExistingImages(refreshedProperty.images || []);
+        } catch (err) {
+            console.error(err);
+            toast.error('No se pudieron subir las imágenes');
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    // Renderizamos previews: tanto las imágenes existentes como las nuevas
+   const renderPreviews = () => (
+  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-3 w-full">
+    {/* Imágenes existentes */}
+    {existingImages.map((img) => (
+      <div
+        key={`existing-${img.id}`}
+        className="relative bg-white p-2 rounded shadow border border-gray-300 flex flex-col items-center"
+      >
+        <img
+          src={img.file}
+          alt={img.title || 'Imagen existente'}
+          className="w-full h-32 object-cover rounded-md"
+        />
+        <button
+          type="button"
+          onClick={async () => {
+            try {
+              await apiService.del(`/images/property/${propertyId}/gallery/${img.id}`, true);
+              toast.success('Imagen eliminada');
+              // Actualizamos el estado para remover la imagen del frontend
+              setExistingImages((prev) => prev.filter((i) => i.id !== img.id));
+            } catch (error) {
+              console.error(error);
+              toast.error('Error al eliminar la imagen');
+            }
+          }}
+          className="mt-3 text-sm bg-[#A62F55] hover:bg-[#831F40] text-white font-semibold py-1 px-3 rounded"
         >
+          Eliminar
+        </button>
+      </div>
+    ))}
+
+      {/* Imágenes nuevas (preview local) */}
+      {images.map((img, idx) => (
+          <div
+          key={`new-${idx}`}
+          className="relative bg-white p-2 rounded shadow border border-gray-300"
+          >
           <img
             src={URL.createObjectURL(img)}
+            alt={`Imagen nueva ${idx + 1}`}
             className="w-full h-32 object-cover rounded-md"
           />
           <button
@@ -115,10 +192,10 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
   );
 
   return (
-    <div className="w-full px-4 md:px-6 py-4">
-      <div className="max-w-4xl mx-auto">
-        <form onSubmit={handleSubmit} className="w-full">
-          <div className="flex flex-col items-start justify-start rounded-2xl p-4 md:p-6 shadow-md bg-white border border-gray-200 w-full space-y-6 min-h-[700px] md:min-h-[900px]">
+    <div className="w-full px-1 pt-0 md:px-1 py-4 ">
+      <div className="max mx-auto mb-10">
+        <form onSubmit={handleSubmit} className="w-full ">
+          <div className="flex flex-col items-start justify-start rounded-2xl p-1 md:p-2  bg-white  w-full space-y-6 min-h-[700px] md:min-h-[400px] ">
             <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] tracking-wide w-full">
               Imágenes de la propiedad
             </h2>
@@ -127,15 +204,16 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              className={`relative w-full h-[320px] transition-all duration-300 rounded-lg overflow-hidden ${
+              className={`relative w-full h-[380px] p-2 transition-all duration-300 rounded-lg overflow-hidden ${
                 isDragging
                   ? "bg-blue-200 border-4 border-dashed border-blue-500"
-                  : images.length > 0
-                  ? "bg-gray-100 border border-gray-300"
-                  : "bg-gray-700 border-4 border-gray-700"
+                  : (images.length > 0 || existingImages.length > 0)
+                    ? "bg-gray-300 border border-gray-300"
+                    : "bg-gray-700 border-4 border-gray-700"
               }`}
             >
-              {images.length === 0 ? (
+              {/* Si no hay imágenes nuevas ni existentes, mostramos mensaje */}
+              {(images.length === 0 && existingImages.length === 0) ? (
                 <>
                   {["top-0 left-0", "top-0 right-0", "bottom-0 left-0", "bottom-0 right-0"].map((pos, i) => (
                     <div
@@ -176,7 +254,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
               </label>
             </div>
 
-            <div className="flex flex-col md:flex-row justify-end items-center w-full gap-4 pt-2 mt-auto">
+            <div className="flex flex-col md:flex-row justify-center md:w-full items-center w-full gap-4 pt-2 mt-auto">
               <button
                 type="button"
                 onClick={() => setShowModal(true)}
@@ -201,26 +279,27 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
         </form>
       </div>
 
+      {/* Modal para confirmar cancelación */}
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4">
           <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-md">
             <h3 className="text-xl font-bold text-gray-800 mb-4">¿Cancelar la subida de imágenes?</h3>
             <p className="text-gray-600 mb-6">
-              Si cancelás ahora, tu propiedad podría quedar publicada sin imágenes. ¿Estás seguro?
+            Si cancelás ahora, tu propiedad podría quedar publicada sin imágenes. ¿Estás seguro?
             </p>
             <div className="flex justify-end gap-4">
-              <button
+            <button
                 onClick={() => setShowModal(false)}
                 className="text-gray-600 hover:text-gray-800 font-medium px-4 py-2 rounded-lg border border-gray-300 cursor-pointer"
-              >
+            >
                 Volver
-              </button>
-              <button
+            </button>
+            <button
                 onClick={handleOnCancel}
                 className="bg-[#A62F55] hover:bg-[#831F40] text-white font-medium px-4 py-2 rounded-lg transition cursor-pointer"
-              >
+            >
                 Confirmar Cancelación
-              </button>
+            </button>
             </div>
           </div>
         </div>
@@ -229,4 +308,4 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
   );
 };
 
-export default UploadGallery;
+export default EditarImagenesPropiedades;
