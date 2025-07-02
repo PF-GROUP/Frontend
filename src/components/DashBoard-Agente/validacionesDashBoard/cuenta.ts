@@ -8,8 +8,7 @@ import * as Yup from "yup";
 export const validationCambiarContraseña = Yup.object({
   currentPassword: Yup.string()
     .required("La contraseña actual es obligatoria")
-    .min(8, "Debe tener al menos 8 caracteres")
-    .max(15, "No puede tener más de 15 caracteres"),
+    .max(20, "No puede tener más de 15 caracteres"),
 
   newPassword: Yup.string()
     .required("La nueva contraseña es obligatoria")
