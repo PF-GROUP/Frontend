@@ -59,7 +59,13 @@ const EditarPropiedad: React.FC<Props> = ({ id, onBack }) => {
 
   const handleOnSubmit = async (values: PropertyForm) => {
     try {
-      const response = await apiService.patch(`/property/${id}`, values, true);
+        console.log("Estos son los valores: ", values);
+        
+        const cleanValues = {
+  ...values,
+  agency: typeof values.agency === "object" ? values.agency.id : values.agency,
+};
+      const response = await apiService.patch(`/property/${id}`, cleanValues, true);
       console.log("PATCH exitoso:", response);
       toast.success("Propiedad actualizada correctamente");
       onBack();
