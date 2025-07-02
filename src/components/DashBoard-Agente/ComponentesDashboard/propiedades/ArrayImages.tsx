@@ -200,7 +200,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
               type="submit"
               disabled={loading}
               className={`text-white py-3 px-4 rounded-lg w-full md:w-[250px] text-lg ${
-                loading ? "bg-gray-500 cursor-not-allowed" : "bg-blue-700"
+                loading ? "bg-gray-500 cursor-not-allowed" : "bg-blue-800 hover:bg-blue-900 transition"
               }`}
             >
               {loading ? "Subiendo..." : "Subir Imágenes"}
@@ -209,7 +209,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId }) => {
               type="button"
               onClick={() => setImages([])}
               disabled={loading}
-              className="text-white bg-red-600 py-3 px-4 text-lg rounded-lg w-full md:w-[200px]"
+              className="text-white bg-[#A62F55] hover:bg-[#831F40] transition py-3 px-4 text-lg rounded-lg w-full md:w-[200px]"
             >
               Cancelar
             </button>
