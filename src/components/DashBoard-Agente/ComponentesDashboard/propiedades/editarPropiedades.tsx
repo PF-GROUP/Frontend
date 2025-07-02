@@ -306,7 +306,7 @@ const EditarPropiedad: React.FC<Props> = ({ id, onBack }) => {
                 {/* Botones */}
                 <div className="flex flex-col md:flex-row justify-between items-center w-full gap-3 md:col-span-2">
                   <button type="submit" className="text-white bg-blue-800 py-2 px-4 rounded-lg w-full md:w-full font-semibold hover:bg-blue-900 transition">
-                    Siguiente
+                    Guardar y ver las imagenes
                   </button>
                   <button type="button" onClick={onBack} className="text-white bg-[#A62F55] py-2 px-4 rounded-lg w-full md:w-full font-semibold hover:bg-[#831F40] transition">
                     Volver

@@ -118,7 +118,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
     <div className="w-full px-4 md:px-6 py-4">
       <div className="max-w-4xl mx-auto">
         <form onSubmit={handleSubmit} className="w-full">
-          <div className="flex flex-col items-start justify-start rounded-2xl p-4 md:p-6 shadow-md bg-white border border-gray-200 w-full space-y-6 min-h-[700px] md:min-h-[900px]">
+          <div className="flex flex-col items-start justify-start rounded-2xl p-4 md:p-6 shadow-md bg-white border border-gray-200 w-full space-y-6 min-h-[700px] md:min-h-[600px]">
             <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] tracking-wide w-full">
               Imágenes de la propiedad
             </h2>
@@ -176,7 +176,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
               </label>
             </div>
 
-            <div className="flex flex-col md:flex-row justify-end items-center w-full gap-4 pt-2 mt-auto">
+            <div className="flex flex-col md:flex-row justify-center items-center w-full gap-4 pt-2 mt-auto">
               <button
                 type="button"
                 onClick={() => setShowModal(true)}
