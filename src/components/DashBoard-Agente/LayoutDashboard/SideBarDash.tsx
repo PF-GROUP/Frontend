@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Building,
   User,
@@ -45,6 +45,9 @@ const SidebarDashboard: React.FC = () => {
     }, 1000);
   };
 
+  useEffect(() => {
+  console.log("Sidebar: user cambió", user);
+}, [user]);  
   return (
     <>
       {/* Botón hamburguesa solo visible en mobile */}
@@ -85,6 +88,7 @@ const SidebarDashboard: React.FC = () => {
                 {user?.profilePictureUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
+                    key={user.profilePictureUrl}
                     src={user?.profilePictureUrl}
                     alt="Foto perfil agente"
                     className="w-full h-full object-cover"

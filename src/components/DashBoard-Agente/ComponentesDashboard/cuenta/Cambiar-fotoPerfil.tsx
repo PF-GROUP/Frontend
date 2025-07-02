@@ -77,21 +77,14 @@ const FotoPerfil: React.FC = () => {
       console.log("Este es el id del user:", user.id);
       // });
       const response = await apiService.post(`/images/profile/${user.id}`, formData, true)
-      console.log("Respuesta status:", response);
-
-      // if (!response.ok) throw new Error("Error al subir la imagen");
-
       
+      if(response) {
+        SaveUserData({user: {...user, profilePictureUrl: response.url}});
+        toast.success("Imagen subida y perfil actualizado");
+      }
+      // 👇 Asegurate de que response.profilePictureUrl venga completa (http...)
 
-      // const data = await response.json();
-      // console.log("Respuesta completa del backend:", data);
 
-
-      // 🧠 Actualizamos el contexto con la nueva URL de la imagen de perfil
-      const updatedUser = { ...user, profilePictureUrl: user.profilePictureUrl };
-      SaveUserData({ user: updatedUser });
-
-      toast.success("Imagen subida y perfil actualizado");
 
       // 🧹 Limpiamos estados
       setSelectedFile(null);
