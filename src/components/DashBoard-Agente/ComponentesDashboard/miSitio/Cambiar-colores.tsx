@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
-import { toast } from "react-hot-toast";
 import { colorValidationSchema } from "../../validacionesDashBoard/miSitio";
 import { useAuthContext } from "../../../../../context/authContext";
 import UploadLogoBanner from "./enviarLogoYBanner";
-import apiService from "@/services/apiService";
 import { cambiarColoresPatch, cambiarColoresPost } from "@/services/editarColores";
+import { toast } from "react-hot-toast";
+import apiService from "@/services/apiService";
 
 interface ICustomizationValues {
   information: string;
@@ -23,35 +23,7 @@ const MiSitio: React.FC = () => {
   const [hasCustomization, setHasCustomization] = useState<boolean | null>(null);
   const [customizationId, setCustomizationId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!user?.agencyId) return;
-
-    const fetchCustomization = async () => {
-      try {
-        const res = await apiService.get(`/agencies/${user?.agencyId}/customization`, true);
-        const customization = res.data?.content;
-
-        if (customization && customization.id) {
-          console.log("✅ Ya existe customización", customization);
-          setHasCustomization(true);
-          setCustomizationId(customization.id);
-        } else {
-          setHasCustomization(false);
-        }
-      } catch (error: any) {
-        if (error.response?.status === 404) {
-          console.log("❌ No hay customización previa (404)");
-          setHasCustomization(false);
-        } else {
-          console.error("⚠️ Error inesperado al obtener customización:", error);
-          setHasCustomization(false);
-        }
-      }
-    };
-
-    fetchCustomization();
-  }, [user?.agencyId]);
-
+  // 🎨 Convierte rgb/rgba a hex si hace falta
   function rgbToHexIfNeeded(color: string): string {
     if (/^#([0-9A-Fa-f]{3}){1,2}$/.test(color)) return color;
     const rgbMatch = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
@@ -62,10 +34,41 @@ const MiSitio: React.FC = () => {
     return color;
   }
 
+  // 🔁 Consulta si la agencia ya tiene customization
+  useEffect(() => {
+  const fetchAgency = async () => {
+    try {
+      const res = await apiService.get(`/agency/getByUser/${user?.id}`, true);
+
+      if (res?.content) {
+        if (res.content.customization) {
+          setHasCustomization(true);
+          setCustomizationId(res.content.customization.id);
+        } else {
+          setHasCustomization(false);
+        }
+      } else {
+        console.warn("Respuesta inesperada:", res);
+        toast.error("No se pudo obtener la información de la agencia.");
+        setHasCustomization(false);
+      }
+    } catch (error) {
+      console.error("Error al obtener la agencia:", error);
+      toast.error("Hubo un error al cargar la configuración de la agencia.");
+    }
+  };
+
+  if (user?.id) {
+    fetchAgency();
+  }
+}, [user]);
+
+  // ⏳ Mientras carga info de la agencia
   if (hasCustomization === null) {
     return <div className="text-center text-lg text-blue-700">Cargando configuración...</div>;
   }
 
+  // ✅ Manejo de submit del formulario
   const handleOnSubmit = async (values: ICustomizationValues) => {
     const cleanColor = rgbToHexIfNeeded;
 
@@ -82,27 +85,27 @@ const MiSitio: React.FC = () => {
       let response;
 
       if (hasCustomization) {
+        // PATCH si ya existe customization
         response = await cambiarColoresPatch(String(user?.agencyId), payload);
       } else {
-        response = await cambiarColoresPatch(String(user?.agencyId), payload);
+        // POST si no existe customization
+        response = await cambiarColoresPost(String(user?.agencyId), payload);
       }
 
-      if (response && response.id) {
-        toast.success("Colores cambiados correctamente");
-        setHasCustomization(true);
-        setCustomizationId(response.id);
-      }
+      setCustomizationId(response.id);
+      toast.success("Colores guardados correctamente.");
     } catch (error) {
-      console.error("❌ Error al aplicar los colores:", error);
-      toast.error("Hubo un error al aplicar los colores");
+      console.error("Error al enviar los colores:", error);
+      toast.error("Hubo un error al guardar los cambios.");
     }
   };
 
+  // Si ya cargó customization, pasamos al siguiente paso
   if (customizationId) {
     return <UploadLogoBanner customizationId={customizationId} />;
   }
 
-  // 🖌️ Renderizamos el formulario inicial
+  // 🖌️ Renderizamos el formulario
   return (
     <Formik
       initialValues={{
