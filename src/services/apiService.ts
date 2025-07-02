@@ -16,7 +16,7 @@ const get = async (url:string,credentials:boolean = false, showSuccess:boolean =
         }
         return res.data
         
-    } catch (error) {
+    } catch (error: any) {
         if (showFail){
             toast.error(error.response.data.message, { duration: 2000 });
         }
@@ -37,7 +37,7 @@ const post = async (url:string, data:unknown, credentials:boolean = false, showS
         }
         return res.data
 
-    } catch (error) {
+    } catch (error:any) {
         if (showFail){
             toast.error(error.response.data.message, { duration: 2000 });
         }
@@ -56,7 +56,7 @@ const put = async (url:string, data:unknown, credentials:boolean = false , showS
             return res.data.content
         }
         return res.data
-    } catch (error) {
+    } catch (error:any) {
         if (showFail){
             toast.error(error.response.data.message, { duration: 2000 });
         }
@@ -75,7 +75,7 @@ const del = async (url:string,  credentials:boolean = false, showSuccess:boolean
             return res.data.content
         }
         return res.data
-    } catch (error) {
+    } catch (error:any) {
         if (showFail){
             toast.error(error.response.data.message, { duration: 2000 });
         }
@@ -94,7 +94,7 @@ const patch = async (url:string, data:unknown, credentials:boolean = false,  sho
             return res.data.content
         }
         return res.data
-    } catch (error) {
+    } catch (error:any) {
         if (showFail){
             toast.error(error.response.data.message, { duration: 2000 });
         }

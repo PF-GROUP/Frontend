@@ -180,6 +180,7 @@ const MiSitio: React.FC = () => {
             </div>
           </div>
 
+
           {/* Inputs de colores */}
           <div
             id="Logo"
@@ -228,6 +229,7 @@ const MiSitio: React.FC = () => {
         </form>
       )}
     </Formik>
+
   );
 };
 

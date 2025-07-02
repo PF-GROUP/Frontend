@@ -1,15 +1,13 @@
 import Link from "next/link";
 import { Upload, ArrowDownCircle, ClipboardList } from 'lucide-react';
 import SidebarDashboard from "@/components/DashBoard-Agente/LayoutDashboard/SideBarDash";
-import NavbarDashboard from "@/components/DashBoard-Agente/LayoutDashboard/NavbarDash";
+
 // import NavbarLanding from "@/components/LandingComponent/NavbarLanding";
 
 
 export default function LayoutSidebar({children,}: Readonly<{ children: React.ReactNode }>) {
     return (
     <>
-        {/* Navbar dashboard */}
-            <NavbarDashboard/>
 
         <div className="flex bg-[rgb(240,241,244)]">
         {/* Sidebar */}

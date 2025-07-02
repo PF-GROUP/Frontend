@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { jwtDecode } from "jwt-decode"
 import { userPayload } from "@/interfaces/userPayload.dto"
+import { projectTraceSource } from "next/dist/build/swc/generated-native"
 
 // 1. Definir rutas protegidas y públicas
 const protectedRoutes = ["/DashboardAgente"]
@@ -15,6 +16,7 @@ export default async function middleware(request: NextRequest) {
   try {
      isTokenValid = await verifyToken(request)
   } catch (error) {
+    console.log("Error al verificar el token:", error)
     isTokenValid = false
   }
 
@@ -70,9 +72,17 @@ export default async function middleware(request: NextRequest) {
 
   return NextResponse.next()
 }
-async function verifyToken(req) {
-  const res = await fetch(`http://localhost:3000/auth/ValidToken`,{credentials:"include", headers: req.headers})
-  console.log(res.status)
+async function verifyToken(req: NextRequest) {
+  
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+  console.log(API_URL)
+  const res = await fetch(`${API_URL}/api/auth/validToken`, {
+    headers: {
+      Cookie: `token=${req.cookies.get('token')?.value}`,
+    },
+    cache: 'no-store',
+  });
+
   return res.status === 401 || res.status === 403 ? false : true
 }
 function verifySession(token: string | undefined): {

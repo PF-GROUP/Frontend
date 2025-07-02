@@ -21,7 +21,7 @@ export default function NavbarAgente() {
       style={{ backgroundColor: customization.navbarColor }}
     >
       {/* Logo + nombre */}
-      <Link href={`/agencia/${slug}/home`} className="flex items-center space-x-3 h-full">
+      <Link href={`/agencia/${slug}`} className="flex items-center space-x-3 h-full">
         <img
           src={customization.logoImage}
           alt={`${slug} logo`}
@@ -32,7 +32,7 @@ export default function NavbarAgente() {
 
       {/* Menú escritorio */}
       <div className="hidden md:flex items-center space-x-6">
-        <Link href={`/agencia/${slug}/`} className="text-white hover:underline">
+        <Link href={`/agencia/${slug}`} className="text-white hover:underline">
           Home
         </Link>
         <Link href={`/agencia/${slug}/propiedades`} className="text-white hover:underline">
@@ -60,7 +60,7 @@ export default function NavbarAgente() {
       {/* Menú móvil desplegable */}
       {isOpen && (
         <div className="absolute right-6 top-full mt-2 md:hidden flex flex-col space-y-2 bg-white rounded shadow-lg p-4 z-50" style={{ minWidth: 160 }}>
-          <Link href={`/agencia/${slug}/home`} className="text-[#4A0E1B] font-semibold hover:underline">
+          <Link href={`/agencia/${slug}`} className="text-[#4A0E1B] font-semibold hover:underline">
             Home
           </Link>
           <Link

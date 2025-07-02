@@ -158,6 +158,9 @@ const SidebarDashboard: React.FC = () => {
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
                 <li><Link href="/DashboardAgente?view=reportar-error" className="block text-gray-800 hover:text-[#831F40] transition-colors">Reportar error</Link></li>
               </ul>
+              <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
+                <li><Link href="/DashboardAgente?view=SuscripciónNewsletter" className="block text-gray-800 hover:text-[#870505] transition-colors">Boletín informativo</Link></li>
+              </ul>
             </details>
           </div>
 

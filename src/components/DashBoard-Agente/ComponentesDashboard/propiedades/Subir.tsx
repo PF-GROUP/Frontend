@@ -7,6 +7,7 @@ import UploadGallery from './UploadGallery';
 import { CreateProperty } from '@/services/subirPropiedad';
 import { validationSchema } from '../../validacionesDashBoard/propiedades';
 import { IPropertyForm } from '../../../../../interface/DashboardAgente/subirPropiedadDTO';
+
 import { useAuthContext } from '../../../../../context/authContext';
 import apiService from '@/services/apiService';
 import { IStatus, IType } from '../../../../../interface/DashboardAgente/subirPropiedadDTO';
@@ -40,6 +41,7 @@ const DashboardPage = () => {
     name: '',
     status: IStatus.DISPONIBLE, // Sólo disponible al crear
     type: IType.ALQUILER,   // Alquiler o Venta
+
     type_of_property_id: '',
     address: '',
     city: '',

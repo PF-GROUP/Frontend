@@ -7,7 +7,7 @@ import Link from "next/link";
 import Loader from "@/components/Loader/Loader";
 export default function ContactoPage() {
   const { agencia, loading } = useAgency();
-
+  
  if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -37,6 +37,7 @@ export default function ContactoPage() {
   );
 }
 
+
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="rounded-2xl p-8 max-w-md w-full">
@@ -45,6 +46,7 @@ export default function ContactoPage() {
           surname={agencia.user.surname ?? ""}
           email={agencia.user.email}
           phone={agencia.user.phone ?? ""}
+          foto = {agencia.user.profilePictureUrl}
         />
       </div>
     </div>

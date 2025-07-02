@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import {
@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { useAuthContext } from "../../../../context/authContext";
 import apiService from "@/services/apiService";
-import { postFotoDePerfil, getAdmin } from "@/services/adminService";
+import { postFotoDePerfil } from "@/services/adminService";
 
 interface CeluSidebarDashboardProps {
   name: string;
@@ -28,28 +28,10 @@ interface CeluSidebarDashboardProps {
 const CeluSidebar: React.FC<CeluSidebarDashboardProps> = ({ name, surname }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const { ResetUserData, user } = useAuthContext();
-  interface Admin {
-    id: string;
-    name: string;
-    surname: string;
-    profilePictureUrl?: string;
-  }
-  
-  const [admin, setAdmin] = useState<Admin | null>(null);
+  const { ResetUserData, user, SaveUserData } = useAuthContext();
 
-  useEffect(() => {
-    const fetchAdmin = async () => {
-      if (!user || user.isAdmin === false) return;
-      try {
-        const admin = await getAdmin(user.id);
-        setAdmin(admin);
-      } catch (error) {
-        console.error("Error al obtener el admin:", error);
-      }
-    };
-    fetchAdmin();
-  }, [user]);
+
+
 
   const toggleMenu = () => setOpen(!open);
 
@@ -83,33 +65,30 @@ const CeluSidebar: React.FC<CeluSidebarDashboardProps> = ({ name, surname }) => 
   };
 
   const handleUpload = async () => {
-    if (!selectedFile || !user?.id) {
-      toast.error("No hay imagen seleccionada o el usuario no está identificado.");
-      return;
+  if (!selectedFile || !user?.id) {
+    toast.error("No hay imagen seleccionada o el usuario no está identificado.");
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    toast.loading("Subiendo imagen...", { id: "upload" });
+
+    const response = await postFotoDePerfil(user.id, formData);
+
+    if (response) {
+      toast.success("Foto de perfil actualizada con éxito", { id: "upload" });
+      SaveUserData({ user: { ...user, profilePictureUrl: response.url } });
+      closeModal();
+    } else {
+      toast.error("No se pudo actualizar la foto de perfil", { id: "upload" });
     }
-
-    try {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-
-      toast.loading("Actualizando foto de perfil...");
-
-      const response = await postFotoDePerfil(user.id, formData);
-
-      toast.dismiss();
-
-      if (response?.profilePictureUrl) {
-        toast.success("Foto de perfil actualizada con éxito");
-        setAdmin((prevAdmin) => prevAdmin ? { ...prevAdmin, profilePictureUrl: response.profilePictureUrl } : prevAdmin);
-        closeModal();
-      } else {
-        toast.error("No se pudo actualizar la foto de perfil.");
-      }
-    } catch (error) {
-      console.error("Error al subir la imagen:", error);
-      toast.dismiss();
-      toast.error("Error al subir la imagen.");
-    }
+  } catch (error) {
+    console.error("Error al subir la imagen:", error);
+    toast.error("Error al subir la imagen", { id: "upload" });
+  }
   };
 
   return (
@@ -135,22 +114,22 @@ const CeluSidebar: React.FC<CeluSidebarDashboardProps> = ({ name, surname }) => 
 
             <div className="flex items-center gap-3 mt-10 mb-4 border-b border-gray-300 pb-4">
               <div className="relative bg-gray-200 rounded-full w-14 h-14 overflow-hidden flex items-center justify-center">
-                {admin?.profilePictureUrl ? (
-                  <img src={admin.profilePictureUrl} alt="Foto de perfil" className="w-full h-full object-cover" />
+                {user?.profilePictureUrl ? (
+                  <img src={user.profilePictureUrl} alt="Foto de perfil" className="w-full h-full object-cover" />
                 ) : (
                   <User className="text-gray-600" size={32} />
                 )}
-                <button
-                  onClick={openModal}
-                  className="absolute bottom-0 right-0 bg-white p-[2px] rounded-full shadow-md"
-                >
-                  <Camera size={18} className="text-gray-700 hover:text-[#A71424] transition" />
-                </button>
               </div>
               <div className="flex flex-col">
                 <h2 className="font-bold text-xl">{name} {surname}</h2>
                 <p className="text-sm">Administrador</p>
               </div>
+              <button
+                onClick={openModal}
+                className="bg-white p-2 rounded-full shadow-md ml-auto"
+              >
+                <Camera size={18} className="text-gray-700 hover:text-[#A71424] transition" />
+              </button>
             </div>
 
             <nav className="space-y-4">
@@ -197,7 +176,7 @@ const CeluSidebar: React.FC<CeluSidebarDashboardProps> = ({ name, surname }) => 
                 </ul>
               </details>
 
-              <button onClick={handleLogout} className="flex items-center gap-2 text-lg text-white bg-[#9b0624] hover:bg-[#870505] p-2 mt-6 rounded w-full">
+              <button onClick={handleLogout} className="flex items-center gap-2 text-lg text-white bg-[#9b0624] hover:bg-[#870505] p-2 mt-6 rounded-4xl w-full">
                 <LogOut size={24} /> Cerrar sesión
               </button>
             </nav>

@@ -7,6 +7,7 @@ import { Formik, useFormikContext } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import { UserIcon, IdCardIcon, HomeIcon } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -89,6 +90,7 @@ const StepProgressBar: React.FC<{ step: number }> = ({ step }) => (
 const AutoFillForm: React.FC<{ googleData: GoogleUserData | null }> = ({ googleData }) => {
   const { setValues } = useFormikContext<RegisterUserDtoFront>();
 
+
   useEffect(() => {
     if (googleData) {
       setValues((prev) => ({
@@ -127,6 +129,7 @@ const validationSchema = Yup.object().shape({
 const FormRegister: React.FC = () => {
   const [step, setStep] = useState(1);
   const [googleData, setGoogleData] = useState<GoogleUserData | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const [formikHelpers, setFormikHelpers] = useState<{
     values: RegisterUserDtoFront;
     setFieldValue: (
@@ -325,27 +328,36 @@ const FormRegister: React.FC = () => {
                   )}
                 </div>
                 <div>
-                  <label className="block mb-1 font-semibold">
-                    Contraseña {googleData ? "" : <span className="text-red-500">*</span>}
-                  </label>
-                  {googleData ? (
-                    <p className="text-sm text-gray-500">No requerida al iniciar con Google</p>
-                  ) : (
-                    <>
-                      <input
-                        name="password"
-                        type="password"
-                        value={values.password}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className="w-full border rounded p-2"
-                      />
-                      {touched.password && errors.password && (
-                        <p className="text-red-500 text-sm">{errors.password}</p>
-                      )}
-                    </>
-                  )}
-                </div>
+  <label className="block mb-1 font-semibold">
+    Contraseña {googleData ? "" : <span className="text-red-500">*</span>}
+  </label>
+
+  {googleData ? (
+    <p className="text-sm text-gray-500">No requerida al iniciar con Google</p>
+  ) : (
+    <div className="relative">
+      <input
+        name="password"
+        type={showPassword ? "text" : "password"}
+        value={values.password}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        className="w-full border rounded p-2 pr-10"
+      />
+      <button
+        type="button"
+        onClick={() => setShowPassword(!showPassword)}
+        className="absolute inset-y-0 right-2 flex items-center text-gray-600"
+        tabIndex={-1}
+      >
+        {showPassword ? <Eye size={20} className="cursor-pointer"/> : <EyeOff size={20} className="cursor-pointer" />}
+      </button>
+      {touched.password && errors.password && (
+        <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+      )}
+    </div>
+  )}
+</div>
                 <div className="flex flex-col items-center mt-4">
                   <p className="mb-2">O registrate con Google:</p>
                   <GoogleRegisterButton fillUpForm={handleFillUpForm} />

@@ -15,7 +15,9 @@ import Slider3 from "@/components/LandingComponent/Slider3";
 export default function CarruselFullWidth() {
   return (
     <>
+    <div className="bg-white h-16">
     <NavbarLanding/>
+    </div>
     <div className="w-full">
       <Swiper
         modules={[Autoplay, Pagination, Navigation]}
