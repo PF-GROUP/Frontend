@@ -21,6 +21,8 @@ interface BackendImage {
 }
 
 const EditarImagenesPropiedades: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId }) => {
+  
+  
   // Estado para las imágenes nuevas que el usuario selecciona antes de subir
   const [images, setImages] = useState<File[]>([]);
   // Estado para las imágenes que ya existen en la propiedad (vienen del backend)
@@ -28,11 +30,11 @@ const EditarImagenesPropiedades: React.FC<UploadGalleryProps> = ({ propertyId, s
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
+  
   // Cuando cambia propertyId, hacemos fetch para traer las imágenes existentes
   useEffect(() => {
     if (!propertyId) return;
-
+    
     const fetchPropertyImages = async () => {
       try {
         const response = await apiService.get(`/property/${propertyId}`, true);
@@ -43,10 +45,11 @@ const EditarImagenesPropiedades: React.FC<UploadGalleryProps> = ({ propertyId, s
         console.warn(error)
       }
     };
-
+    
     fetchPropertyImages();
   }, [propertyId]);
-
+  
+ 
   // Función para validar y agregar imágenes nuevas al estado local
   const handleFiles = (files: FileList) => {
     const validImages = Array.from(files).filter((file) => {
@@ -54,7 +57,7 @@ const EditarImagenesPropiedades: React.FC<UploadGalleryProps> = ({ propertyId, s
         toast.error('Algunos archivos no son imágenes válidas');
         return false;
       }
-
+      
       // Evitar agregar imágenes duplicadas (comparando nombre, tamaño y fecha)
       const isDuplicate = images.some(
         (img) =>

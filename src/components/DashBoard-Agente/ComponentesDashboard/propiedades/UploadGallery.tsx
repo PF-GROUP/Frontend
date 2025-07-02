@@ -69,7 +69,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
     setImages([]);
     setPropertyId(null);
   };
-
+ 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (images.length === 0) return toast.error('Selecciona al menos una imagen');
@@ -218,7 +218,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
               <button
                 onClick={handleOnCancel}
                 className="bg-[#A62F55] hover:bg-[#831F40] text-white font-medium px-4 py-2 rounded-lg transition cursor-pointer"
-              >
+              > 
                 Confirmar Cancelación
               </button>
             </div>

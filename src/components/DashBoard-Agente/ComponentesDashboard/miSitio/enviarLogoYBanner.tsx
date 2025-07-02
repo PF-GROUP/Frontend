@@ -7,9 +7,10 @@ import * as Yup from "yup";
 
 interface UploadLogoBannerProps {
   customizationId: string;
+  setCustomizationId: (id:string | null)=>void;
 }
 
-const UploadLogoBanner: React.FC<UploadLogoBannerProps> = ({ customizationId }) => {
+const UploadLogoBanner: React.FC<UploadLogoBannerProps> = ({ customizationId, setCustomizationId }, ) => {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -178,7 +179,7 @@ const UploadLogoBanner: React.FC<UploadLogoBannerProps> = ({ customizationId }) 
                   setBannerFile(null);
                   setLogoPreview(null);
                   setBannerPreview(null);
-                  OnBack()
+                  setCustomizationId(null)
                 }}
                 className="bg-[#A62F55] hover:bg-[#831F40] text-white font-medium px-4 py-2 rounded-lg transition"
               >

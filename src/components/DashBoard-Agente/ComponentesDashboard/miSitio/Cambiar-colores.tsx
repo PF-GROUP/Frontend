@@ -61,7 +61,7 @@ const MiSitio: React.FC = () => {
 
   // Si ya cargó customization, pasamos al siguiente paso
   if (customizationId) {
-    return <UploadLogoBanner customizationId={customizationId} />;
+    return <UploadLogoBanner customizationId={customizationId} setCustomizationId={setCustomizationId} />;
   }
 
   // 🖌️ Renderizamos el formulario
