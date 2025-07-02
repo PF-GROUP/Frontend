@@ -15,7 +15,7 @@ import {
 import { useAuthContext } from "../../../../context/authContext";
 
 const SidebarDashboard: React.FC = () => {
-  const {user} = useAuthContext()
+  const {user,} = useAuthContext()
 
   const [isOpen, setIsOpen] = useState(false);
   // const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -149,6 +149,9 @@ const SidebarDashboard: React.FC = () => {
               <summary className="font-semibold text-base md:text-xl">Soporte</summary>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
                 <li><Link href="/DashboardAgente?view=reportar-error" className="block text-gray-800 hover:text-[#870505] transition-colors">Reportar error</Link></li>
+              </ul>
+              <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
+                <li><Link href="/DashboardAgente?view=SuscripciónNewsletter" className="block text-gray-800 hover:text-[#870505] transition-colors">Boletín informativo</Link></li>
               </ul>
             </details>
           </div>
