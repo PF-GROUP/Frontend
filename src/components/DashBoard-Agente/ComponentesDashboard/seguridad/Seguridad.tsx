@@ -52,9 +52,9 @@ export default function Seguridad() {
   return (
     <section className="flex flex-col items-center w-full max-w-3xl m-auto justify-start px-4 py-8 md:px-7">
       <div className="w-full bg-white border border-gray-300 rounded-lg p-9 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
-        <h1 className="text-3xl font-bold text-blue-800 mb-6">
-          Seguridad para Agentes Inmobiliarios
-        </h1>
+        <h2 className="text-3xl font-bold text-blue-800 mb-6">
+          Seguridad para agentes inmobiliarios
+        </h2>
         <p className="text-lg text-gray-700 mb-8">
           Como agente inmobiliario, tenés acceso a funcionalidades clave como subir propiedades, editar tu sitio, ver información de facturación, enviar mensajes, etc. Para proteger tu cuenta y la información de tus clientes, seguí estas recomendaciones de seguridad digital dentro de la plataforma.
         </p>

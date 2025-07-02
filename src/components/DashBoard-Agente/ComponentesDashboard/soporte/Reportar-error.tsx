@@ -25,7 +25,7 @@ const ReportarError: React.FC = () => {
   return (
     <div className="flex flex-col justify-center items-center w-full px-4 sm:px-6 md:px-8 lg:px-0 py-8">
   <div className="w-full max-w-lg bg-white rounded-xl shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)] p-6 sm:p-8">
-    <h2 className="text-xl sm:text-2xl font-semibold text-[#421424] text-center mb-4">
+    <h2 className="text-2xl sm:text-3xl font-bold text-[#230c89] text-center mb-4">
       Reportar un error
     </h2>
 
