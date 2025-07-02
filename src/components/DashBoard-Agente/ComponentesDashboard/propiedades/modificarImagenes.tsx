@@ -204,7 +204,7 @@ const EditarImagenesPropiedades: React.FC<UploadGalleryProps> = ({ propertyId, s
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              className={`relative w-full h-[380px] p-2 transition-all duration-300 rounded-lg overflow-hidden ${
+              className={`relative w-full h-[420px] p-2 transition-all duration-300 rounded-lg overflow-hidden ${
                 isDragging
                   ? "bg-blue-200 border-4 border-dashed border-blue-500"
                   : (images.length > 0 || existingImages.length > 0)
@@ -233,7 +233,7 @@ const EditarImagenesPropiedades: React.FC<UploadGalleryProps> = ({ propertyId, s
                   </div>
                 </>
               ) : (
-                <div className="overflow-y-auto max-h-[300px] p-2">{renderPreviews()}</div>
+                <div className="overflow-y-auto max-h-full  p-2">{renderPreviews()}</div>
               )}
             </div>
 
