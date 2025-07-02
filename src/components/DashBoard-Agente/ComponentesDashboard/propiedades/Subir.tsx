@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import toast from 'react-hot-toast';
 import { CreateProperty } from '@/services/subirPropiedad';
 import { validationSchema } from '../../validacionesDashBoard/propiedades';
-import { IPropertyForm } from '../../../../../interface/DashboardAgente/subirPropiedadDTO';
+import { IPropertyForm, Status, Type } from '../../../../../interface/DashboardAgente/subirPropiedadDTO';
 import { useState, useEffect } from 'react';
 import { useAuthContext } from '../../../../../context/authContext';
 import apiService from '@/services/apiService';
@@ -39,8 +39,8 @@ const DashboardPage = () => {
 
   const initialValues: IPropertyForm = {
     name: '',
-    status: 'Disponible', // Sólo disponible al crear
-    type: '',   // Alquiler o Venta
+    status: Status.DISPONIBLE, // Sólo disponible al crear
+    type: Type.ALQUILER,   // Alquiler o Venta
     type_of_property_id: '',
     address: '',
     city: '',

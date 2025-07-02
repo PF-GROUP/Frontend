@@ -265,7 +265,7 @@ const MiSitio: React.FC = () => {
       </Formik>
 
       {/* Renderizado condicional del componente de subir logo y banner */}
-      {hasCustomization && <UploadLogoBanner customizationId={customizationId || null} />}
+      {hasCustomization && <UploadLogoBanner customizationId={customizationId || ""} />}
     </>
   );
 };
