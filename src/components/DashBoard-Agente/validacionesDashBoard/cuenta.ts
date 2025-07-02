@@ -1,7 +1,4 @@
 import * as Yup from "yup";
-// Validaciones:
-
-
 
 // Validaciónes de Cambiar Contraseña
 
