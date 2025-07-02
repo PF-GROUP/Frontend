@@ -16,16 +16,15 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const handleFiles = (files: FileList) => {
-    const currentImages = images;
 
+  const handleFiles = (files: FileList) => {
     const validImages = Array.from(files).filter((file) => {
       if (!file.type.startsWith('image/')) {
         toast.error('Algunos archivos no son imágenes válidas');
         return false;
       }
 
-      const isDuplicate = currentImages.some(
+      const isDuplicate = images.some(
         (img) =>
           img.name === file.name &&
           img.size === file.size &&
@@ -68,10 +67,10 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
   };
 
   const handleOnCancel = () => {
-  setShowModal(false);
-  setImages([]);
-  setPropertyId(null); 
-};
+    setShowModal(false);
+    setImages([]);
+    setPropertyId(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,7 +83,6 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
       setLoading(true);
       const res = await apiService.post(`images/property/${propertyId}/gallery`, formData, true);
       if (!res) throw new Error('Error al subir las imágenes');
-
       toast.success('Imágenes subidas con éxito');
       setImages([]);
     } catch (err) {
@@ -95,37 +93,38 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
     }
   };
 
- const renderPreviews = () => (
-  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full">
-    {images.map((img, idx) => (
-      <div key={idx} className="relative bg-white p-2 rounded shadow border border-gray-300">
-        <img
-          src={URL.createObjectURL(img)}
-          alt={`preview-${idx}`}
-          className="w-full h-32 object-cover rounded-md"
-        />
-        <button
-          type="button"
-          onClick={() => removeImage(idx)}
-          className="absolute top-1 right-1 bg-red-600 hover:bg-red-800 text-white rounded-full p-1"
+  const renderPreviews = () => (
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4 w-full">
+      {images.map((img, idx) => (
+        <div
+          key={idx}
+          className="relative bg-white p-2 rounded shadow border border-gray-300"
         >
-          <X size={16} />
-        </button>
-      </div>
-    ))}
-  </div>
-);
+          <img
+            src={URL.createObjectURL(img)}
+            className="w-full h-32 object-cover rounded-md"
+          />
+          <button
+            type="button"
+            onClick={() => removeImage(idx)}
+            className="absolute top-1 right-1 bg-red-600 hover:bg-red-800 text-white rounded-full p-1"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div className="w-full px-4 md:px-6 py-4">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <form onSubmit={handleSubmit} className="w-full">
-          <div className="flex flex-col items-start justify-start rounded-2xl p-6 shadow-md bg-white border border-gray-200 w-full space-y-6 min-h-[900px]">
-            <h2 className="text-3xl font-bold text-[#230c89] tracking-wide w-full">
+          <div className="flex flex-col items-start justify-start rounded-2xl p-4 md:p-6 shadow-md bg-white border border-gray-200 w-full space-y-6 min-h-[700px] md:min-h-[900px]">
+            <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] tracking-wide w-full">
               Imágenes de la propiedad
             </h2>
-  
-            {/* Área de arrastre */}
+
             <div
               onDrop={handleDrop}
               onDragOver={handleDragOver}
@@ -138,8 +137,7 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
                   : "bg-gray-700 border-4 border-gray-700"
               }`}
             >
-              {/* Esquinas decorativas */}
-              {images.length === 0 && (
+              {images.length === 0 ? (
                 <>
                   {["top-0 left-0", "top-0 right-0", "bottom-0 left-0", "bottom-0 right-0"].map((pos, i) => (
                     <div
@@ -151,26 +149,22 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
                       } transition-transform duration-300`}
                     />
                   ))}
-                </>
-              )}
-  
-              {images.length > 0 ? (
-                <div className="overflow-y-auto max-h-[300px] p-2">{renderPreviews()}</div>
-              ) : (
-                <div className="text-white text-lg font-semibold text-center mt-12 flex flex-col items-center px-6">
-                  Arrastrá una imagen aquí o seleccioná una desde tu dispositivo.
-                  <div className="relative w-14 h-14 bg-[#1e1e1e] flex items-center justify-center rounded-md mt-5">
-                    <Image size={28} className="text-white" />
+                  <div className="text-white text-base md:text-lg font-semibold text-center mt-12 flex flex-col items-center px-4 md:px-6">
+                    Arrastrá una imagen aquí o seleccioná una desde tu dispositivo.
+                    <div className="relative w-14 h-14 bg-[#1e1e1e] flex items-center justify-center rounded-md mt-5">
+                      <Image size={28} className="text-white" />
+                    </div>
                   </div>
-                </div>
+                </>
+              ) : (
+                <div className="overflow-y-auto max-h-[300px] p-2">{renderPreviews()}</div>
               )}
             </div>
-  
-            {/* Botón seleccionar imágenes */}
+
             <div className="flex justify-center mt-4 w-full border-b border-gray-300 pb-6">
               <label
                 htmlFor="file-upload"
-                className="flex items-center gap-2 bg-blue-700 text-white font-semibold text-lg py-2 px-5 rounded-lg cursor-pointer hover:bg-blue-800 transition"
+                className="flex items-center gap-2 bg-blue-700 text-white font-semibold text-base md:text-lg py-2 px-5 rounded-lg cursor-pointer hover:bg-blue-800 transition"
               >
                 <Upload size={22} /> Seleccionar imágenes
                 <input
@@ -183,21 +177,20 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
                 />
               </label>
             </div>
-  
-            {/* Botones */}
+
             <div className="flex flex-col md:flex-row justify-end items-center w-full gap-4 pt-2 mt-auto">
               <button
                 type="button"
                 onClick={() => setShowModal(true)}
                 disabled={loading}
-                className="text-white bg-[#A62F55] hover:bg-[#831F40] transition-all duration-200 py-2.5 px-6 text-lg rounded-xl font-medium w-full md:w-auto cursor-pointer"
+                className="text-white bg-[#A62F55] hover:bg-[#831F40] transition-all duration-200 py-2.5 px-6 text-base md:text-lg rounded-xl font-medium w-full md:w-auto cursor-pointer"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className={`text-white py-2.5 px-6 rounded-xl font-medium w-full md:w-auto text-lg cursor-pointer ${
+                className={`text-white py-2.5 px-6 rounded-xl font-medium w-full md:w-auto text-base md:text-lg cursor-pointer ${
                   loading
                     ? "bg-gray-500 cursor-not-allowed"
                     : "bg-blue-800 hover:bg-blue-900 transition-all duration-200"
@@ -209,32 +202,32 @@ const UploadGallery: React.FC<UploadGalleryProps> = ({ propertyId, setPropertyId
           </div>
         </form>
       </div>
+
       {showModal && (
-  <div className="fixed inset-0 z-50 bg-black/70  flex items-center justify-center">
-    <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-md">
-      <h3 className="text-xl font-bold text-gray-800 mb-4">¿Cancelar la subida de imágenes?</h3>
-      <p className="text-gray-600 mb-6">
-        Si cancelás ahora, tu propiedad podría quedar publicada sin imágenes. ¿Estás seguro?
-      </p>
-      <div className="flex justify-end gap-4">
-        <button
-          onClick={() => setShowModal(false)}
-          className="text-gray-600 hover:text-gray-800 font-medium px-4 py-2 rounded-lg border border-gray-300 cursor-pointer"
-        >
-          Volver
-        </button>
-        <button
-          onClick={handleOnCancel}
-          className="bg-[#A62F55] hover:bg-[#831F40] text-white font-medium px-4 py-2 rounded-lg transition cursor-pointer"
-        >
-          Confirmar Cancelación
-        </button>
-      </div>
+        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4">
+          <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-md">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">¿Cancelar la subida de imágenes?</h3>
+            <p className="text-gray-600 mb-6">
+              Si cancelás ahora, tu propiedad podría quedar publicada sin imágenes. ¿Estás seguro?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-600 hover:text-gray-800 font-medium px-4 py-2 rounded-lg border border-gray-300 cursor-pointer"
+              >
+                Volver
+              </button>
+              <button
+                onClick={handleOnCancel}
+                className="bg-[#A62F55] hover:bg-[#831F40] text-white font-medium px-4 py-2 rounded-lg transition cursor-pointer"
+              >
+                Confirmar Cancelación
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  </div>
-)}
-    </div>
-    
   );
 };
 
