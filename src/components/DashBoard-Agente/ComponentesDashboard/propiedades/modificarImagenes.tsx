@@ -40,6 +40,7 @@ const EditarImagenesPropiedades: React.FC<UploadGalleryProps> = ({ propertyId, s
         setExistingImages(response.images || []);
       } catch (error) {
         toast.error('No se pudieron cargar las imágenes existentes');
+        console.warn(error)
       }
     };
 
