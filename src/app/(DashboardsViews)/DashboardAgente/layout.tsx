@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Upload, ArrowDownCircle,  Trash2, Briefcase, List, ClipboardList } from 'lucide-react';
+import { Upload, ArrowDownCircle, ClipboardList } from 'lucide-react';
 import SidebarDashboard from "@/components/DashBoard-Agente/LayoutDashboard/SideBarDash";
 import NavbarDashboard from "@/components/DashBoard-Agente/LayoutDashboard/NavbarDash";
 // import NavbarLanding from "@/components/LandingComponent/NavbarLanding";

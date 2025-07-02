@@ -85,7 +85,7 @@ const EliminarPropiedades = () => {
 
   return (
     <div className="flex flex-col items-start justify-start mx-auto w-full max-w-7xl p-4 md:p-8 lg:p-8 rounded-lg shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
-      <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] mb-6 ml-2 md:ml-4 border-b border-gray-300 w-full pb-4">
+      <h2 className="text-2xl md:text-3xl font-bold text-[#230c89]  ml-2 md:ml-4 border-b mb-6  border-gray-300 w-full pb-4">
         Mis propiedades
       </h2>
 
@@ -97,7 +97,7 @@ const EliminarPropiedades = () => {
               <p className="font-semibold text-[#230c89] text-xl">Propiedad N°{i+1}</p>
               <button
                 onClick={() => setIdSeleccionado(prop.id)}
-                className="text-white hover:underline text-sm font-semibold  flex bg-[#06a867] px-3 py-1 rounded-xl  hover:bg-[#047c4b] transition"
+                className="text-white  text-sm font-semibold  flex bg-[#06a867] px-3 py-1.5 rounded-xl  hover:bg-[#047c4b] transition"
               >
                 <Pencil size={20} className="w-4 h-4 mr-1" />
                 Editar propiedad
@@ -105,7 +105,7 @@ const EliminarPropiedades = () => {
             </div>
 
             {/* Contenido propiedad */}
-            <div className="relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between bg-gray-200 border border-gray-300 rounded-lg p-4 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]">
+            <div className="relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between bg-gray-200 border border-b mb-6   border-gray-300 rounded-lg p-4 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]">
               {prop.status === "Vendido" && (
                 <span className="absolute ml-2 top-5 -left-10 rotate-[-45deg] shadow-sm shadow-black bg-red-600 text-white text-xs font-bold px-10 py-1 ">
                   VENDIDA
@@ -128,16 +128,16 @@ const EliminarPropiedades = () => {
                 </div>
                 <div>
                   <p className="font-semibold text-xl text-[#af355c] mb-1">
-                    <span className="font-bold mr-2 text-[#85173b]">nombre:</span> {prop.name}
+                    <span className="font-bold mr-2 text-[#85173b]">Nombre:</span>{prop.name}
                   </p>
                   <p className="text-lg text-[#992b50] mb-1 ml-1">
-                    <span className="font-semibold mr-2 text-[#8e2446]">dirección:</span> {prop.address}
+                    <span className="font-semibold mr-2 text-[#8e2446]">dirección:</span>{prop.address}
                   </p>
                   <p className="text-lg italic text-[#bd486d] mb-2 ml-1">
-                    <span className="font-semibold mr-2 text-[#91274b]">tipo:</span> {prop.type_of_property?.type}
+                    <span className="font-semibold mr-2 text-[#91274b]">tipo:</span>{prop.type_of_property?.type}
                   </p>
                   <p className="text-green-600 font-bold text-lg ml-1">
-                    <span className="font-semibold mr-2 text-green-700">precio:</span> ${prop.price}
+                    <span className="font-semibold mr-2 text-green-700">precio:</span>${prop.price}
                   </p>
                 </div>
               </div>
@@ -145,13 +145,13 @@ const EliminarPropiedades = () => {
               <div className="flex flex-col sm:flex-row w-[400px] gap-3 mt-4 md:mt-0">
                 <button
                   onClick={() => toggleEstado(prop.id)}
-                  className="text-white bg-[#91274b] py-2 px-4 rounded-lg font-semibold hover:bg-[#621833] transition w-full sm:w-auto"
+                  className="text-white bg-[#A62F55] py-2 px-4 rounded-lg font-semibold hover:bg-[#922749] transition w-full sm:w-auto"
                 >
                   {prop.status === "Vendido" ? "Marcar disponible" : "Marcar vendida"}
                 </button>
                 <button
                   onClick={() => handleEliminar(prop.id)}
-                  className="text-white bg-[#bd0909] py-2 px-4 rounded-lg font-semibold hover:bg-[#8d0707] transition w-full sm:w-auto"
+                  className="text-white bg-[#A62F55] py-2 px-4 rounded-lg font-semibold hover:bg-[#922749] transition w-full sm:w-auto"
                 >
                   Eliminar
                 </button>
