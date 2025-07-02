@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Formik } from "formik";
 import { colorValidationSchema } from "../../validacionesDashBoard/miSitio";
 import { useAuthContext } from "../../../../../context/authContext";
 import UploadLogoBanner from "./enviarLogoYBanner";
-import { cambiarColoresPatch, cambiarColoresPost } from "@/services/editarColores";
+import { cambiarColoresPatch } from "@/services/editarColores";
 import { toast } from "react-hot-toast";
-import apiService from "@/services/apiService";
 
 interface ICustomizationValues {
   information: string;
@@ -20,7 +19,6 @@ interface ICustomizationValues {
 
 const MiSitio: React.FC = () => {
   const { user } = useAuthContext();
-  const [hasCustomization, setHasCustomization] = useState<boolean | null>(null);
   const [customizationId, setCustomizationId] = useState<string | null>(null);
 
   // 🎨 Convierte rgb/rgba a hex si hace falta
@@ -35,38 +33,7 @@ const MiSitio: React.FC = () => {
   }
 
   // 🔁 Consulta si la agencia ya tiene customization
-  useEffect(() => {
-  const fetchAgency = async () => {
-    try {
-      const res = await apiService.get(`/agency/getByUser/${user?.id}`, true);
-
-      if (res?.content) {
-        if (res.content.customization) {
-          setHasCustomization(true);
-          setCustomizationId(res.content.customization.id);
-        } else {
-          setHasCustomization(false);
-        }
-      } else {
-        console.warn("Respuesta inesperada:", res);
-        toast.error("No se pudo obtener la información de la agencia.");
-        setHasCustomization(false);
-      }
-    } catch (error) {
-      console.error("Error al obtener la agencia:", error);
-      toast.error("Hubo un error al cargar la configuración de la agencia.");
-    }
-  };
-
-  if (user?.id) {
-    fetchAgency();
-  }
-}, [user]);
-
-  // ⏳ Mientras carga info de la agencia
-  if (hasCustomization === null) {
-    return <div className="text-center text-lg text-blue-700">Cargando configuración...</div>;
-  }
+  
 
   // ✅ Manejo de submit del formulario
   const handleOnSubmit = async (values: ICustomizationValues) => {
@@ -82,15 +49,7 @@ const MiSitio: React.FC = () => {
     };
 
     try {
-      let response;
-
-      if (hasCustomization) {
-        // PATCH si ya existe customization
-        response = await cambiarColoresPatch(String(user?.agencyId), payload);
-      } else {
-        // POST si no existe customization
-        response = await cambiarColoresPost(String(user?.agencyId), payload);
-      }
+      const response = await cambiarColoresPatch(String(user?.agencyId), payload);
 
       setCustomizationId(response.id);
       toast.success("Colores guardados correctamente.");

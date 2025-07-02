@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import apiService from "@/services/apiService";
+import * as Yup from "yup";
 
 interface UploadLogoBannerProps {
   customizationId: string;
@@ -17,6 +18,19 @@ const UploadLogoBanner: React.FC<UploadLogoBannerProps> = ({ customizationId }) 
 
   console.log("Este es el customization id", customizationId);
 
+  const imageValidationSchema = Yup.object().shape({
+  logoFile: Yup.mixed()
+    .test("fileRequired", "El logo es obligatorio si no subís un banner.", function (value) {
+      const { bannerFile } = this.parent;
+      return value || bannerFile;
+    }),
+  bannerFile: Yup.mixed()
+    .test("fileRequired", "El banner es obligatorio si no subís un logo.", function (value) {
+      const { logoFile } = this.parent;
+      return value || logoFile;
+    }),
+});
+
   const uploadImage = async (file: File, type: "logo" | "banner") => {
     const formData = new FormData();
     formData.append("file", file);
@@ -28,34 +42,44 @@ const UploadLogoBanner: React.FC<UploadLogoBannerProps> = ({ customizationId }) 
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
+
+  const values = { logoFile, bannerFile };
+
+  try {
+    await imageValidationSchema.validate(values, { abortEarly: false });
 
     if (!customizationId) {
-      toast.error("No hay ID de personalización para subir imágenes.", { duration: 3000 });
+      toast.error("No hay ID de personalización para subir imágenes.");
       return;
     }
 
-    try {
-      if (logoFile) await uploadImage(logoFile, "logo");
-      if (bannerFile) await uploadImage(bannerFile, "banner");
+    if (logoFile) await uploadImage(logoFile, "logo");
+    if (bannerFile) await uploadImage(bannerFile, "banner");
 
-      toast.success("Imágenes subidas con éxito.", { duration: 2500 });
+    toast.success("Imágenes subidas con éxito.");
 
-      setLogoFile(null);
-      setBannerFile(null);
-      setLogoPreview(null);
-      setBannerPreview(null);
-    } catch (err) {
+    setLogoFile(null);
+    setBannerFile(null);
+    setLogoPreview(null);
+    setBannerPreview(null);
+  } catch (err: any) {
+    if (err.name === "ValidationError") {
+      err.inner.forEach((e: Yup.ValidationError) => {
+        toast.error(e.message);
+      });
+    } else {
       console.error(err);
-      toast.error("Error al subir imágenes.", { duration: 2500 });
+      toast.error("Error al subir imágenes.");
     }
-  };
+  }
+};
 
   return (
-    <div className="w-full px-4 md:px-6 py-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="w-full px-4 md:px-6 py-4 rounded-xl ">
+      <div className="max-w-4xl mx-auto rounded-xl shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
         <form onSubmit={handleSubmit} className="w-full">
-          <div className="flex flex-col items-start justify-start rounded-2xl p-4 md:p-6 shadow-md bg-white border border-gray-200 w-full space-y-6">
+          <div className="flex flex-col items-start justify-start rounded-xl p-4 md:p-6 shadow-md bg-white border border-gray-200 w-full space-y-6">
             <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] tracking-wide w-full">
               Subir imágenes
             </h2>
@@ -63,7 +87,7 @@ const UploadLogoBanner: React.FC<UploadLogoBannerProps> = ({ customizationId }) 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
               {/* Logo */}
               <div className="flex flex-col items-center gap-4">
-                <label className="block text-center text-sm font-semibold mb-2">Logo</label>
+                <label className="block text-center text-xl font-bold mb-2">Logo</label>
                 <input
                   type="file"
                   accept="image/*"
@@ -76,7 +100,7 @@ const UploadLogoBanner: React.FC<UploadLogoBannerProps> = ({ customizationId }) 
                     }
                   }}
                 />
-                <div className="w-32 h-14 bg-white rounded shadow flex items-center justify-center overflow-hidden">
+                <div className="w-full h-56 bg-gray-300 rounded shadow flex items-center justify-center overflow-hidden">
                   {logoPreview && (
                     <img
                       src={logoPreview}
@@ -89,7 +113,7 @@ const UploadLogoBanner: React.FC<UploadLogoBannerProps> = ({ customizationId }) 
 
               {/* Banner */}
               <div className="flex flex-col items-center gap-4">
-                <label className="block text-center text-sm font-semibold mb-2">Banner</label>
+                <label className="block text-center text-xl font-bold mb-2">Banner</label>
                 <input
                   type="file"
                   accept="image/*"
@@ -118,7 +142,7 @@ const UploadLogoBanner: React.FC<UploadLogoBannerProps> = ({ customizationId }) 
               <button
                 type="button"
                 onClick={() => setShowModal(true)}
-                className="text-white bg-[#A62F55] hover:bg-[#831F40] transition-all duration-200 py-2.5 px-6 text-base md:text-lg rounded-xl font-medium w-full md:w-auto"
+                className="text-white bg-[#A62F55] hover:bg-[#831F40] transition-all duration-200 py-2 px-6 text-base md:text-lg rounded-xl font-medium w-full md:w-auto"
               >
                 Cancelar
               </button>
@@ -154,6 +178,7 @@ const UploadLogoBanner: React.FC<UploadLogoBannerProps> = ({ customizationId }) 
                   setBannerFile(null);
                   setLogoPreview(null);
                   setBannerPreview(null);
+                  OnBack()
                 }}
                 className="bg-[#A62F55] hover:bg-[#831F40] text-white font-medium px-4 py-2 rounded-lg transition"
               >
