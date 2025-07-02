@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Share, ChevronUp, ChevronDown } from "react-feather";
 import { getPropertyById } from "../../../../../services/agenciaService";
@@ -8,12 +9,13 @@ import Loader from "@/components/Loader/Loader";
 import { useAgency } from "../../../../../../context/agencyContext";
 import Link from "next/link";
 import { AlertTriangle } from "lucide-react";
-import {use} from "react";interface Params {
-  params: Promise<{ slug: string; id: string }>;
+
+interface Params {
+  params: { slug: string; id: string };
 }
 
 export default function PropiedadDetalle({ params }: Params) {
-  const { id} = use(params);
+  const { id } = params;
   const [propiedad, setPropiedad] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [actualImage, setActualImage] = useState(0);
@@ -24,45 +26,44 @@ export default function PropiedadDetalle({ params }: Params) {
   const { agencia } = useAgency();
 
   useEffect(() => {
-    const fetchPropiedad = async () => {
-      setLoading(true);
-      const response = await getPropertyById(id);
-      if (response) setPropiedad(response);
-      setLoading(false);
-    };
+  setLoading(true);
+  const fetchPropiedad = async () => {
+    const response = await getPropertyById(id);
+    if (response) setPropiedad(response);
+    setLoading(false);
+  };
 
-    fetchPropiedad();
-  }, [id]);
+  fetchPropiedad();
+}, [id]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader />
-      </div>
-    );
-  }
-
-  if (!agencia) {
+if (loading || !agencia) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[rgb(240,241,244)] text-gray-800 p-6">
-      <div className="bg-white shadow-lg rounded-2xl p-8 flex flex-col items-center text-center max-w-md w-full">
-        <AlertTriangle className="text-[#9b0624] mb-4" size={64} />
-        <h1 className="text-4xl font-extrabold mb-2">404</h1>
-        <p className="text-lg font-semibold mb-4">Página no encontrada</p>
-        <p className="text-gray-600 mb-6">
-          Lo sentimos, la página que estás buscando no existe o fue movida.
-        </p>
-        <Link
-          href="/home"
-          className="bg-[#9b0624] hover:bg-[#870505] text-white font-semibold py-2 px-6 rounded-full transition-colors"
-        >
-          Volver al inicio
-        </Link>
-      </div>
+    <div className="flex items-center justify-center h-screen">
+      <Loader />
     </div>
   );
 }
-
+  if (!agencia ) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[rgb(240,241,244)] text-gray-800 p-6">
+        <div className="bg-white shadow-lg rounded-2xl p-8 flex flex-col items-center text-center max-w-md w-full">
+          <AlertTriangle className="text-[#9b0624] mb-4" size={64} />
+          <h1 className="text-4xl font-extrabold mb-2">404</h1>
+          <p className="text-lg font-semibold mb-4">Página no encontrada</p>
+          <p className="text-gray-600 mb-6">
+            Lo sentimos, la página que estás buscando no existe o fue movida.
+          </p>
+          <Link
+            href="/home"
+            className="bg-[#9b0624] hover:bg-[#870505] text-white font-semibold py-2 px-6 rounded-full transition-colors"
+          >
+            Volver al inicio
+          </Link>
+        </div>
+      </div>
+    );
+  }
+    
   if (!propiedad || !propiedad.agency) {
     return (
       <div className="flex flex-col items-center justify-center max-w-md mx-auto min-h-screen px-4 text-center">
@@ -71,9 +72,7 @@ export default function PropiedadDetalle({ params }: Params) {
           alt="Logo Agencia"
           className="h-20 w-20 mb-6 rounded-full shadow-md object-contain"
         />
-        <h1 className="text-4xl font-bold text-gray-800 mb-4">
-          Propiedad no encontrada
-        </h1>
+        <h1 className="text-4xl font-bold text-gray-800 mb-4">Propiedad no encontrada</h1>
         <p className="text-gray-600 text-base mb-6">
           No pudimos encontrar la propiedad que estás buscando. Puede que haya sido eliminada o que el enlace esté roto.
         </p>
@@ -108,12 +107,14 @@ export default function PropiedadDetalle({ params }: Params) {
   };
 
   return (
-    <div>
     <div className="min-h-screen bg-gray-100 py-10 px-4 md:px-6 flex flex-col justify-center items-center">
       <div className="max-w-6xl w-full bg-white rounded-2xl shadow-2xl p-6 flex flex-col md:flex-row gap-6">
         <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-
-          <div className="flex flex-row md:flex-col gap-2 md:gap-4 order-2 md:order-none mt-4 md:mt-0 overflow-x-auto md:overflow-y-auto max-w-full md:max-h-[400px] scroll-smooth relative" id="thumbs">
+          {/* Miniaturas */}
+          <div
+            className="flex flex-row md:flex-col gap-2 md:gap-4 order-2 md:order-none mt-4 md:mt-0 overflow-x-auto md:overflow-y-auto max-w-full md:max-h-[400px] scroll-smooth relative"
+            id="thumbs"
+          >
             {propiedad.images.length > 3 && (
               <>
                 <button
@@ -167,6 +168,7 @@ export default function PropiedadDetalle({ params }: Params) {
             ))}
           </div>
 
+          {/* Imagen Principal */}
           <div className="relative">
             <img
               src={propiedad.images[actualImage].file}
@@ -194,6 +196,7 @@ export default function PropiedadDetalle({ params }: Params) {
           </div>
         </div>
 
+        {/* Info Propiedad */}
         <div className="flex flex-col justify-between flex-1 md:gap-6">
           <div>
             <h1 className="text-2xl font-bold mb-1">{propiedad.name}</h1>
@@ -201,7 +204,6 @@ export default function PropiedadDetalle({ params }: Params) {
               {propiedad.rooms} ambientes • {propiedad.bathroom} baños • {propiedad.m2} m²
             </p>
             <p className="text-gray-500 mb-4">{propiedad.address}, {propiedad.city}</p>
-
             <p className="text-2xl font-bold text-green-600 mb-4">${propiedad.price.toLocaleString()}</p>
 
             <div className="text-sm text-gray-700 space-y-1 mb-4">
@@ -230,59 +232,61 @@ export default function PropiedadDetalle({ params }: Params) {
         </div>
       </div>
 
+      {/* Descripción */}
       <div className="max-w-6xl w-full mt-6 bg-white rounded-2xl shadow-2xl p-6">
         <h2 className="text-xl font-semibold mb-2">Descripción</h2>
         <p className="text-gray-800">{propiedad.description}</p>
       </div>
 
-     {showModal && (
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-    <div className="bg-white p-6 rounded-xl shadow-xl w-80">
-      <h2 className="text-lg font-bold mb-4">Agendar visita</h2>
-      <label className="block mb-2 text-sm font-medium">Seleccioná una fecha:</label>
-      <input
-        type="date"
-        value={selectedDate}
-        onChange={(e) => {
-          const selected = new Date(e.target.value);
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-xl shadow-xl w-80">
+            <h2 className="text-lg font-bold mb-4">Agendar visita</h2>
+            <label className="block mb-2 text-sm font-medium">Seleccioná una fecha:</label>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => {
+                const selected = new Date(e.target.value);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
 
-          if (selected < today) {
-            setDateError("La fecha no puede ser anterior a hoy.");
-            setSelectedDate("");
-          } else {
-            setDateError("");
-            setSelectedDate(e.target.value);
-          }
-        }}
-        className={`w-full mb-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-          dateError ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-green-500 cursor-pointer"
-        }`}
-      />
-      {dateError && (
-        <p className="text-red-600 text-sm mt-[-10px] mb-2 pt-3">{dateError}</p>
+                if (selected < today) {
+                  setDateError("La fecha no puede ser anterior a hoy.");
+                  setSelectedDate("");
+                } else {
+                  setDateError("");
+                  setSelectedDate(e.target.value);
+                }
+              }}
+              className={`w-full mb-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                dateError
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-gray-300 focus:ring-green-500 cursor-pointer"
+              }`}
+            />
+            {dateError && (
+              <p className="text-red-600 text-sm mt-[-10px] mb-2 pt-3">{dateError}</p>
+            )}
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-sm font-medium cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleWhatsapp}
+                disabled={!selectedDate || !!dateError}
+                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 text-sm font-medium cursor-pointer"
+              >
+                Enviar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
-      <div className="flex justify-end gap-2 mt-4">
-        <button
-          onClick={() => setShowModal(false)}
-          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 text-sm font-medium cursor-pointer"
-        >
-          Cancelar
-        </button>
-        <button
-          onClick={handleWhatsapp}
-          disabled={!selectedDate || !!dateError}
-          className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 text-sm font-medium cursor-pointer"
-        >
-          Enviar
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
-    </div>
     </div>
   );
 }

@@ -11,3 +11,16 @@ export const getAgente = async (id:string) => {
     throw error;
   }
 };
+
+export const postNewsletter = async (email: string) => {
+  try {
+    const formData = new URLSearchParams();
+    formData.append("email", email);
+
+    const response = await apiService.post('/schedule/subscribe', formData, true);
+    return response;
+  } catch (error) {
+    console.error('Ocurrió un error al enviar el newsletter:', error);
+    throw error;
+  }
+};

@@ -3,11 +3,11 @@
 import { useAuthContext } from "../../../../../context/authContext";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-
+import {postNewsletter} from "../../../../services/agenteGet";
 const SuscripcionNewsletter = () => {
   const { user } = useAuthContext();
   const [loading, setLoading] = useState(false);
-
+    console.log(user)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -17,11 +17,14 @@ const SuscripcionNewsletter = () => {
     }
 
     setLoading(true);
-
-    setTimeout(() => {
-      setLoading(false);
-      toast.success("¡Te suscribiste al newsletter!");
-    }, 1500);
+    console.log("Email del usuario:", user.email);
+    const response = await postNewsletter(user.email);
+    if (response) {
+      toast.success(response);
+    } else {
+      toast.error("Hubo un error al suscribirte al newsletter.");
+    }
+    setLoading(false);
   };
 
   return (
