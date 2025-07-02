@@ -134,8 +134,7 @@ const SidebarDashboard: React.FC = () => {
               <summary className="font-semibold text-base md:text-xl">Propiedades</summary>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
                 <li><Link href="/DashboardAgente?view=subir-propiedad" className="block text-gray-800 hover:text-[#831F40] transition-colors">subir propiedades</Link></li>
-                <li><Link href="/DashboardAgente?view=borrar-propiedad" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">eliminar propiedades</Link></li>
-                <li><Link href="/DashboardAgente?view=borrar-propiedad" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">editar propiedades</Link></li>
+                <li><Link href="/DashboardAgente?view=borrar-propiedad" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">administrar propiedades</Link></li>
               </ul>
             </details>
           </div>

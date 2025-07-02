@@ -78,10 +78,10 @@ const EditarPropiedad: React.FC<Props> = ({ id, onBack }) => {
   if (!initialValues) return <p className="p-6">Cargando propiedad...</p>;
 
   return (
-    <div className="p-6 border border-gray-200 rounded-md w-full m-auto shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
-      <h2 className="text-2xl font-bold text-[#230c89] mb-6">propiedad seleccionada: {initialValues.name}</h2>
+    <div className="p-6 border border-gray-200 rounded-md w-[60vw] m-auto shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
+      <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] mb-6">Editar la propiedad: {initialValues.name}</h2>
 
-      <div className="flex flex-col md:flex-row items-start md:items-center bg-gray-200 border border-gray-300 rounded-lg p-4 mb-6 shadow">
+      {/* <div className="flex flex-col md:flex-row items-start md:items-center bg-gray-200 border border-gray-300 rounded-lg p-4 mb-6 shadow">
         <div className="w-full sm:w-[200px] h-[120px] overflow-hidden rounded-md mr-4">
           <Image
             src={initialValues.images?.[0]?.file || "/imagen-placeholder.jpg"}
@@ -95,7 +95,7 @@ const EditarPropiedad: React.FC<Props> = ({ id, onBack }) => {
           <p className="font-bold text-[#230c89] text-xl mb-2">{initialValues.name}</p>
           <p className="text-green-600 font-semibold">Precio: ${initialValues.price}</p>
         </div>
-      </div>
+      </div> */}
 
       <Formik initialValues={initialValues} onSubmit={handleOnSubmit} enableReinitialize validationSchema={validationSchema}>
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
@@ -286,8 +286,8 @@ const EditarPropiedad: React.FC<Props> = ({ id, onBack }) => {
     <textarea
       id="description"
       name="description"
-      value={values.description}
       onChange={handleChange}
+      placeholder="¡cambia la descripción de este inmueble!"
       onBlur={handleBlur}
        className={`border ${errors.description && touched.description ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow`}
     />

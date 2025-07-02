@@ -86,7 +86,7 @@ const EliminarPropiedades = () => {
   return (
     <div className="flex flex-col items-start justify-start mx-auto w-full max-w-7xl p-4 md:p-8 lg:p-8 rounded-lg shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
       <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] mb-6 ml-2 md:ml-4 border-b border-gray-300 w-full pb-4">
-        Borrar propiedades
+        Mis propiedades
       </h2>
 
       <div className="flex flex-col w-full space-y-5">
