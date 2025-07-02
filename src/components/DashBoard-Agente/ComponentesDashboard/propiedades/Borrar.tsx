@@ -97,22 +97,22 @@ const EliminarPropiedades = () => {
               <p className="font-semibold text-[#230c89] text-xl">Propiedad N°{i+1}</p>
               <button
                 onClick={() => setIdSeleccionado(prop.id)}
-                className="text-white hover:underline text-sm font-medium flex bg-[#06a867] px-3 py-1 rounded-xl mr-1 hover:bg-[#047c4b] transition"
+                className="text-white hover:underline text-sm font-semibold  flex bg-[#06a867] px-3 py-1 rounded-xl  hover:bg-[#047c4b] transition"
               >
                 <Pencil size={20} className="w-4 h-4 mr-1" />
-                Editar
+                Editar propiedad
               </button>
             </div>
 
             {/* Contenido propiedad */}
             <div className="relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between bg-gray-200 border border-gray-300 rounded-lg p-4 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]">
               {prop.status === "Vendido" && (
-                <span className="absolute ml-2 top-5 -left-10 rotate-[-45deg] bg-red-600 text-white text-xs font-bold px-10 py-1 shadow-md">
+                <span className="absolute ml-2 top-5 -left-10 rotate-[-45deg] shadow-sm shadow-black bg-red-600 text-white text-xs font-bold px-10 py-1 ">
                   VENDIDA
                 </span>
               )}
               {prop.status === "Disponible" && (
-                <span className="absolute top-5 mt-1 -left-9 rotate-[-45deg] bg-green-700 text-white text-xs font-bold px-8 py-1 shadow-md">
+                <span className="absolute top-5 mt-1 -left-9 rotate-[-45deg] shadow-sm shadow-black bg-green-700 text-white text-xs font-bold px-8 py-1 ">
                   DISPONIBLE
                 </span>
               )}
@@ -127,9 +127,6 @@ const EliminarPropiedades = () => {
                   />
                 </div>
                 <div>
-                  <p className="font-semibold text-xl text-[#af355c] mb-1">
-                    <span className="font-bold mr-2 text-[#85173b]">nombre:</span> {prop.id}
-                  </p>
                   <p className="font-semibold text-xl text-[#af355c] mb-1">
                     <span className="font-bold mr-2 text-[#85173b]">nombre:</span> {prop.name}
                   </p>
