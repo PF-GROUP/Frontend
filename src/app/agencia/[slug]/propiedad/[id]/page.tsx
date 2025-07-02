@@ -10,12 +10,15 @@ import { useAgency } from "../../../../../../context/agencyContext";
 import Link from "next/link";
 import { AlertTriangle } from "lucide-react";
 
-interface Params {
+interface Props {
   params: { slug: string; id: string };
+  // Next siempre inyecta searchParams aunque no las uses
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default function PropiedadDetalle({ params }: Params) {
+export default function Page({ params, searchParams }: Props) {
   const { id } = params;
+  const _searchParams = searchParams;
   const [propiedad, setPropiedad] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [actualImage, setActualImage] = useState(0);

@@ -29,7 +29,7 @@ export default async function middleware(request: NextRequest) {
   const isAdminRoute = adminRoutes.includes(path)
   const isPublicRoute = publicRoutes.includes(path)
 
-  if (!isTokenValid && !isPublicRoute && !!sessionToken) {
+  if (!isTokenValid && !isPublicRoute && sessionToken) {
     const response =  NextResponse.redirect(new URL("/login", request.nextUrl))
     response.cookies.delete("token")
     return response
@@ -76,14 +76,15 @@ async function verifyToken(req: NextRequest) {
   
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
   console.log(API_URL)
-  const res = await fetch(`${API_URL}/api/auth/validToken`, {
+  const res = await fetch(`${API_URL}/auth/validToken`, {
     headers: {
       Cookie: `token=${req.cookies.get('token')?.value}`,
     },
     cache: 'no-store',
   });
-
-  return res.status === 401 || res.status === 403 ? false : true
+  
+  
+  return res.status === 401 || res.status === 403 || res.status === 404 ? false : true
 }
 function verifySession(token: string | undefined): {
   isAuthenticated: boolean

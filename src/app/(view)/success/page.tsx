@@ -6,32 +6,58 @@ import { CheckCircle } from "lucide-react";
 import confetti from "canvas-confetti";
 import { refreshSession } from "@/services/authService";
 import { useAuthContext } from "../../../../context/authContext";
-
+import { useState } from "react";
 const PagoExitoso = () => {
-    const router = useRouter();
+  const [usuario, setUsuario] = useState({});   
+  
+  const router = useRouter();
     const hasExploded = useRef(false);
     const { SaveUserData }  = useAuthContext()
   useEffect(() => {
-    refreshSession(SaveUserData).then(
-      
-    )
-    if (!hasExploded.current) {
-      hasExploded.current = true;
-      confetti({
-        particleCount: 150,
-        spread: 106,
-        origin: { y: 0.6 }, // explota desde un poco más abajo del centro
-        colors: ['#FF6F61', '#FFB400', '#00C49A', '#00A6FF', '#FF61A6', '#FF0000', '#00FF00', '#FFFF00', '#FF0000', '#00FF00', '#FFFF00', '#0000FF', "#FFD700"],
-        zIndex: 9999,
-      });
-    }
+    let pollingInterval: NodeJS.Timeout;
 
-    const timeout = setTimeout(() => {
-      router.push("/DashboardAgente");
-    }, 5000);
+    const fetchData = async () => {
+      const result = await refreshSession(SaveUserData);
 
-    return () => clearTimeout(timeout);
-  }, [router]);
+      console.log(result)
+      const tienePago = result;
+
+      if (tienePago) {
+        setUsuario(result);
+
+        if (!hasExploded.current) {
+          hasExploded.current = true;
+          confetti({
+            particleCount: 150,
+            spread: 106,
+            origin: { y: 0.6 },
+            colors: [
+              "#FF6F61", "#FFB400", "#00C49A", "#00A6FF", "#FF61A6",
+              "#FF0000", "#00FF00", "#FFFF00", "#0000FF", "#FFD700"
+            ],
+            zIndex: 9999,
+          });
+
+          // Esperá 5 segundos y redirigí
+          setTimeout(() => {
+            router.push("/DashboardAgente");
+          }, 5000);
+        }
+
+        // Detenemos el polling
+        clearInterval(pollingInterval);
+      }
+    };
+
+    // Iniciar polling cada 3 segundos
+    pollingInterval = setInterval(fetchData, 3000);
+
+    // Llamada inicial rápida
+    fetchData();
+
+    // Limpiar al desmontar
+    return () => clearInterval(pollingInterval);
+  }, [router, SaveUserData]);
 
   return (
     <div className="min-h-screen bg-[#F8E2E1] flex items-center justify-center p-4 relative overflow-hidden">

@@ -6,7 +6,7 @@ import apiService from "@/services/apiService";
 import { postFotoDePerfil } from "@/services/adminService";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Building,
   Users,
@@ -28,11 +28,15 @@ const SidebarDashboard: React.FC<SidebarDashboardProps> = ({
   surname = "",
 }) => {
   const { ResetUserData, user, SaveUserData } = useAuthContext();
-
+  const [ fotoUser, setFotoUser] = useState<string | null>(null);
   const router = useRouter();
- 
+  
 
-
+  useEffect (() => {
+    if (user) {
+      setFotoUser(user.profilePictureUrl);
+    }
+  }, [user]);
 
   const handleLogout = () => {
     apiService.post("/auth/logout", {}, true);
@@ -96,9 +100,9 @@ const handleUpload = async () => {
           <div className="flex items-center justify-between border-b border-gray-400 pb-4 mr-6 pr-2">
             <div className="flex items-center">
               <div className="rounded-full w-14 h-14 bg-gray-200 flex items-center justify-center overflow-hidden">
-                {user?.profilePictureUrl ? (
+                {fotoUser ? (
                   <img
-                    src={user?.profilePictureUrl}
+                    src={fotoUser}
                     alt="Foto de perfil"
                     className="w-full h-full object-cover"
                   />

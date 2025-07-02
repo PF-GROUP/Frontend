@@ -434,7 +434,7 @@ const FormRegister: React.FC = () => {
                     type="text"
                     name="slug"
 
-                    value={`www.kasapp/agencia/${values.slug}`}
+                    value={`kasapp.sytes.net/agencia/${values.slug}`}
                     readOnly
                     className="w-full border rounded p-2 bg-gray-100 cursor-not-allowed"
                   />

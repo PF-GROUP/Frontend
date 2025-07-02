@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import Link from "next/link";
 import React, { useState, useEffect } from "react";
 
 interface Image {
@@ -224,7 +225,7 @@ export default function ListadoPropiedades({
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="propiedades">
         {currentItems.map((prop) => (
-          <a key={prop.id} href={`/agencia/${slug}/propiedad/${prop.id}`}>
+          <Link key={prop.id} href={`/agencia/${slug}/propiedad/${prop.id}`}>
           <div key={prop.id} className="bg-white shadow-md rounded-xl overflow-hidden transition-transform hover:scale-[1.01] cursor-pointer">
         
 
@@ -246,7 +247,7 @@ export default function ListadoPropiedades({
               </div>
             </div>
           </div>
-        </a>
+        </Link>
         ))}
       </div>
 
