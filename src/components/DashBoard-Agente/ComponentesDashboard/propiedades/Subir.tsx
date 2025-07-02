@@ -38,13 +38,8 @@ const DashboardPage = () => {
 
   const initialValues: IPropertyForm = {
     name: '',
-<<<<<<< HEAD
     status: IStatus.DISPONIBLE, // Sólo disponible al crear
     type: IType.ALQUILER,   // Alquiler o Venta
-=======
-    status: 'Disponible',
-    type: '',
->>>>>>> 2895800fa572d10c1c14f8d1c61140490de4410b
     type_of_property_id: '',
     address: '',
     city: '',
@@ -84,8 +79,8 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="w-full px-4 md:px-6 py-4">
-  <div className="max-w-screen-md mx-auto grid grid-cols-1 gap-6">
+    <div className="w-full px-4 pt-0 mt-0 md:px-6 py-4 ">
+  <div className="max-w-screen-md mx-auto pt-0 mt-0 grid grid-cols-1 gap-6 rounded-xl  shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
     {propertyId ? (
       <div className="col-span-1">
         <UploadGallery propertyId={propertyId} setPropertyId={setPropertyId} />
@@ -107,7 +102,7 @@ const DashboardPage = () => {
         }) => (
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col items-start justify-start rounded-2xl p-4 md:p-6 shadow-md w-full bg-white border border-gray-200"
+            className="flex flex-col items-start justify-start rounded-xl p-4 md:p-6 shadow-md w-full bg-white border border-gray-200"
           >
             <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] tracking-wide w-full mb-6">
               Datos del Inmueble

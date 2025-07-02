@@ -5,57 +5,62 @@ import { Formik } from "formik";
 import toast from "react-hot-toast";
 import apiService from "@/services/apiService";
 import Image from "next/image";
-// import { validationSchema } from "../../validacionesDashBoard/propiedades";
-import {PropertyForm } from "../../../../../interface/DashboardAgente/subirPropiedadDTO";
+import { PropertyForm, IStatus, IType } from "../../../../../interface/DashboardAgente/subirPropiedadDTO";
+import { validationSchema } from "../../validacionesDashBoard/propiedades";
+
+interface ITypeOfProperty {
+  id: string;
+  type: string;
+}
 
 interface Props {
   id: string;
   onBack: () => void;
 }
 
-
 const EditarPropiedad: React.FC<Props> = ({ id, onBack }) => {
   const [initialValues, setInitialValues] = useState<PropertyForm | null>(null);
+  const [typeOptions, setTypeOptions] = useState<ITypeOfProperty[]>([]);
 
   useEffect(() => {
-    const fetchProperty = async () => {
+    const fetchData = async () => {
       try {
-        const response = await apiService.get(`/property/${id}`, true);
-        console.log("GET /property/:id →", response);
+        const [propertyRes, typesRes] = await Promise.all([
+          apiService.get(`/property/${id}`, true),
+          apiService.get('/typeofproperty', true),
+        ]);
+
+        const types = Array.isArray(typesRes) ? typesRes : [];
+        setTypeOptions(types);
 
         setInitialValues({
-          name: response.name || "",
-        //   status: response.status || IStatus.DISPONIBLE,
-        //   type: response.type || IType.ALQUILER,
-        //   type_of_property_id: response.type_of_property_id || "",
-          address: response.address || "",
-        //   city: response.city || "",
-          price: response.price || 0,
-        //   m2: response.m2 || 0,
-        //   bathrooms: response.bathrooms || 0,
-        //   rooms: response.rooms || 0,
-          description: response.description || "",
-          images: response.images || [], 
-        //   agency: response.agency || "",
+          name: propertyRes.name || "",
+          status: propertyRes.status || IStatus.DISPONIBLE,
+          type: propertyRes.type || IType.ALQUILER,
+          type_of_property_id: propertyRes.type_of_property_id || "",
+          address: propertyRes.address || "",
+          city: propertyRes.city || "",
+          price: propertyRes.price || 0,
+          m2: propertyRes.m2 || 0,
+          bathrooms: propertyRes.bathrooms || 0,
+          rooms: propertyRes.rooms || 0,
+          description: propertyRes.description || "",
+          images: propertyRes.images || [],
+          agency: propertyRes.agency || "", // Necesario para evitar error 400
         });
       } catch (error) {
-        console.error("Error al obtener la propiedad:", error);
-        toast.error("No se pudo cargar la propiedad");
+        console.error("Error al cargar datos:", error);
+        toast.error("Error al obtener datos de la propiedad");
       }
     };
 
-    fetchProperty();
+    fetchData();
   }, [id]);
 
-    // ✅ Acá va el handleOnSubmit separado
   const handleOnSubmit = async (values: PropertyForm) => {
-      console.log("Submit ejecutado"); // 👈 Esto debería aparecer sí o sí
     try {
-        
-      console.log("PATCH /property/:id → body:", values);
       const response = await apiService.patch(`/property/${id}`, values, true);
-      console.log("PATCH /property/:id → response:", response);
-
+      console.log("PATCH exitoso:", response);
       toast.success("Propiedad actualizada correctamente");
       onBack();
     } catch (error) {
@@ -64,14 +69,12 @@ const EditarPropiedad: React.FC<Props> = ({ id, onBack }) => {
     }
   };
 
-
   if (!initialValues) return <p className="p-6">Cargando propiedad...</p>;
 
   return (
-    <div className="p-6 border border-gray-400 rounded-md shadow-md">
-      <h2 className="text-2xl font-bold text-[#230c89] mb-6">Editando propiedad con ID: {id}</h2>
+    <div className="p-6 border border-gray-200 rounded-md w-full m-auto shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
+      <h2 className="text-2xl font-bold text-[#230c89] mb-6">propiedad seleccionada: {initialValues.name}</h2>
 
-      {/* Tarjeta resumen */}
       <div className="flex flex-col md:flex-row items-start md:items-center bg-gray-200 border border-gray-300 rounded-lg p-4 mb-6 shadow">
         <div className="w-full sm:w-[200px] h-[120px] overflow-hidden rounded-md mr-4">
           <Image
@@ -88,94 +91,217 @@ const EditarPropiedad: React.FC<Props> = ({ id, onBack }) => {
         </div>
       </div>
 
-      {/* Formulario */}
-      <Formik
-        initialValues={initialValues}
-        onSubmit={handleOnSubmit}
-        // validationSchema={validationSchema}
-        enableReinitialize={true}
-      >
+      <Formik initialValues={initialValues} onSubmit={handleOnSubmit} enableReinitialize validationSchema={validationSchema}>
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col items-start justify-start rounded-lg p-6 md:p-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]"
-          >
-            {/* Nombre */}
-            <div className="flex flex-col w-full mb-4">
-              <label htmlFor="name" className="text-lg font-bold mb-1">Nombre</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={values.name}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`border ${errors.name && touched.name ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow w-full`}
-              />
-              {errors.name && touched.name && <p className="text-red-600 text-sm mt-1">{errors.name}</p>}
-            </div>
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            {/* Dirección */}
-            <div className="flex flex-col w-full mb-4">
-              <label htmlFor="address" className="text-lg font-bold mb-1">Dirección</label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                value={values.address}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`border ${errors.address && touched.address ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow w-full`}
-              />
-              {errors.address && touched.address && <p className="text-red-600 text-sm mt-1">{errors.address}</p>}
-            </div>
+  {/* Nombre */}
+  <div className="flex flex-col w-full m-auto">
+    <label htmlFor="name" className="text-lg font-bold mb-1">Nombre</label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      value={values.name}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      className={`border ${errors.name && touched.name ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow`}
+    />
+    {errors.name && touched.name && (
+      <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+    )}
+  </div>
 
-            {/* Precio */}
-            <div className="flex flex-col w-full mb-4">
-              <label htmlFor="price" className="text-lg font-bold mb-1">Precio</label>
-              <input
-                type="number"
-                id="price"
-                name="price"
-                value={values.price}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`border ${errors.price && touched.price ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow w-full`}
-              />
-              {errors.price && touched.price && <p className="text-red-600 text-sm mt-1">{errors.price}</p>}
-            </div>
+  {/* Estado */}
+  <div className="flex flex-col w-full">
+    <label htmlFor="status" className="text-lg font-bold mb-1">Estado</label>
+    <select
+      id="status"
+      name="status"
+      value={values.status}
+      onChange={handleChange}
+      onBlur={handleBlur}
+       className={`border ${errors.status && touched.status ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow`}
+    >
+      <option value="DISPONIBLE">Disponible</option>
+      <option value="VENDIDO">Vendido</option>
+    </select>
+    {errors.status && touched.status && (
+      <p className="text-red-500 text-sm mt-1">{errors.status}</p>
+    )}
+  </div>
 
-            {/* Descripción */}
-            <div className="flex flex-col w-full mb-6">
-              <label htmlFor="description" className="text-lg font-bold mb-1">Descripción</label>
-              <textarea
-                id="description"
-                name="description"
-                value={values.description}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`border ${errors.description && touched.description ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow w-full min-h-[120px]`}
-              />
-              {errors.description && touched.description && <p className="text-red-600 text-sm mt-1">{errors.description}</p>}
-            </div>
+  {/* Tipo */}
+  <div className="flex flex-col w-full">
+    <label htmlFor="type" className="text-lg font-bold mb-1">Tipo</label>
+    <select
+      id="type"
+      name="type"
+      value={values.type}
+      onChange={handleChange}
+      onBlur={handleBlur}
+       className={`border ${errors.type && touched.type ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow`}
+    >
+      <option value="">Seleccionar</option>
+      <option value="Alquiler">Alquiler</option>
+      <option value="Venta">Venta</option>
+    </select>
+    {errors.type && touched.type && (
+      <p className="text-red-500 text-sm mt-1">{errors.type}</p>
+    )}
+  </div>
 
-            {/* Botones */}
-            <div className="flex flex-col md:flex-row justify-between items-center w-full gap-3">
-              <button
-                type="submit"
-                className="text-white bg-blue-800 py-2 px-4 rounded-lg w-full md:w-full font-semibold hover:bg-blue-900 transition"
-              >
-                Guardar cambios
-              </button>
-              <button
-                type="button"
-                onClick={onBack}
-                className="text-white bg-[#A62F55] py-2 px-4 rounded-lg w-full md:w-full font-semibold hover:bg-[#831F40] transition"
-              >
-                Volver
-              </button>
-            </div>
-          </form>
+  {/* Tipo de propiedad */}
+  <div className="flex flex-col w-full">
+    <label htmlFor="type_of_property_id" className="text-lg font-bold mb-1">Tipo de Propiedad</label>
+    <select
+      id="type_of_property_id"
+      name="type_of_property_id"
+      value={values.type_of_property_id}
+      onChange={handleChange}
+      onBlur={handleBlur}
+       className={`border ${errors.type_of_property_id && touched.type_of_property_id ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow`}
+    >
+      <option value="">Seleccionar</option>
+      {typeOptions.map((type) => (
+        <option key={type.id} value={type.id}>{type.type}</option>
+      ))}
+    </select>
+    {errors.type_of_property_id && touched.type_of_property_id && (
+      <p className="text-red-500 text-sm mt-1">{errors.type_of_property_id}</p>
+    )}
+  </div>
+
+  {/* Ciudad */}
+  <div className="flex flex-col w-full">
+    <label htmlFor="city" className="text-lg font-bold mb-1">Ciudad</label>
+    <input
+      type="text"
+      id="city"
+      name="city"
+      value={values.city}
+      onChange={handleChange}
+      onBlur={handleBlur}
+       className={`border ${errors.city && touched.city ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow`}
+    />
+    {errors.city && touched.city && (
+      <p className="text-red-500 text-sm mt-1">{errors.city}</p>
+    )}
+  </div>
+
+  {/* Dirección */}
+  <div className="flex flex-col w-full">
+    <label htmlFor="address" className="text-lg font-bold mb-1">Dirección</label>
+    <input
+      type="text"
+      id="address"
+      name="address"
+      value={values.address}
+      onChange={handleChange}
+      onBlur={handleBlur}
+       className={`border ${errors.address && touched.address ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow`}
+    />
+    {errors.address && touched.address && (
+      <p className="text-red-500 text-sm mt-1">{errors.address}</p>
+    )}
+  </div>
+
+  {/* Precio */}
+  <div className="flex flex-col w-full">
+    <label htmlFor="price" className="text-lg font-bold mb-1">Precio</label>
+    <input
+      type="number"
+      id="price"
+      name="price"
+      value={values.price}
+      onChange={handleChange}
+      onBlur={handleBlur}
+       className={`border ${errors.price && touched.price ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow`}
+    />
+    {errors.price && touched.price && (
+      <p className="text-red-500 text-sm mt-1">{errors.price}</p>
+    )}
+  </div>
+
+  {/* m2 */}
+  <div className="flex flex-col w-full">
+    <label htmlFor="m2" className="text-lg font-bold mb-1">m²</label>
+    <input
+      type="number"
+      id="m2"
+      name="m2"
+      value={values.m2}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      className={`border ${errors.m2 && touched.m2 ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow`}
+    />
+    {errors.m2 && touched.m2 && (
+      <p className="text-red-500 text-sm mt-1">{errors.m2}</p>
+    )}
+  </div>
+
+  {/* Baños */}
+  <div className="flex flex-col w-full">
+    <label htmlFor="bathrooms" className="text-lg font-bold mb-1">Baños</label>
+    <input
+      type="number"
+      id="bathrooms"
+      name="bathrooms"
+      value={values.bathrooms}
+      onChange={handleChange}
+      onBlur={handleBlur}
+       className={`border ${errors.bathrooms && touched.bathrooms ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow`}
+    />
+    {errors.bathrooms && touched.bathrooms && (
+      <p className="text-red-500 text-sm mt-1">{errors.bathrooms}</p>
+    )}
+  </div>
+
+  {/* Habitaciones */}
+  <div className="flex flex-col w-full">
+    <label htmlFor="rooms" className="text-lg font-bold mb-1">Habitaciones</label>
+    <input
+      type="number"
+      id="rooms"
+      name="rooms"
+      value={values.rooms}
+      onChange={handleChange}
+      onBlur={handleBlur}
+       className={`border ${errors.rooms && touched.rooms ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow`}
+    />
+    {errors.rooms && touched.rooms && (
+      <p className="text-red-500 text-sm mt-1">{errors.rooms}</p>
+    )}
+  </div>
+
+  {/* Descripción */}
+  <div className="flex flex-col w-full md:col-span-2">
+    <label htmlFor="description" className="text-lg font-bold mb-1">Descripción</label>
+    <textarea
+      id="description"
+      name="description"
+      value={values.description}
+      onChange={handleChange}
+      onBlur={handleBlur}
+       className={`border ${errors.description && touched.description ? 'border-red-500' : 'border-gray-400'} text-gray-800 rounded-lg p-2 shadow`}
+    />
+    {errors.description && touched.description && (
+      <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+    )}
+  </div>
+
+  {/* Botones */}
+  <div className="flex flex-col md:flex-row justify-between items-center w-full gap-3 md:col-span-2">
+    <button type="submit" className="text-white bg-blue-800 py-2 px-4 rounded-lg w-full md:w-full font-semibold hover:bg-blue-900 transition">
+      Guardar cambios
+    </button>
+    <button type="button" onClick={onBack} className="text-white bg-[#A62F55] py-2 px-4 rounded-lg w-full md:w-full font-semibold hover:bg-[#831F40] transition">
+      Volver
+    </button>
+  </div>
+
+</form>
+
         )}
       </Formik>
     </div>
