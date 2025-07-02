@@ -13,6 +13,7 @@ import Contrasena from '@/components/DashBoard-Agente/ComponentesDashboard/cuent
 import FotoPerfil from '@/components/DashBoard-Agente/ComponentesDashboard/cuenta/Cambiar-fotoPerfil';
 import ReportarError from '@/components/DashBoard-Agente/ComponentesDashboard/soporte/Reportar-error';
 import Seguridad from '@/components/DashBoard-Agente/ComponentesDashboard/seguridad/Seguridad';
+import UploadLogoBanner from '@/components/DashBoard-Agente/ComponentesDashboard/miSitio/enviarLogoYBanner';
 import { useAuthContext } from '../../../../context/authContext';
 
 
@@ -29,6 +30,8 @@ export default function DashboardPage() {
         return <EditarTitulo />;
       case 'cambiar-colores':
         return <CambiarColores />;
+      case 'enviarLogoYBanner':
+        return <UploadLogoBanner customizationId='' />;
       case 'subir-propiedad':
         return <SubirPropiedad />;
       case 'borrar-propiedad':

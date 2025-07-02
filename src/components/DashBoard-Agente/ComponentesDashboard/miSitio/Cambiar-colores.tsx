@@ -5,7 +5,7 @@ import { Formik } from "formik";
 import { toast } from "react-hot-toast";
 import { colorValidationSchema } from "../../validacionesDashBoard/miSitio";
 import { useAuthContext } from "../../../../../context/authContext";
-import UploadLogoBanner from "./enviarLogoYBanner";
+// import UploadLogoBanner from "./enviarLogoYBanner";
 
 interface ICustomizationValues {
   information: string;
@@ -21,92 +21,93 @@ interface ICustomizationValues {
 const MiSitio: React.FC = () => {
   const { user } = useAuthContext();
   const [hasCustomization, setHasCustomization] = useState<boolean | null>(null);
-  const [customizationId, setCustomizationId] = useState<string | null>(null); 
+  // const [customizationId, setCustomizationId] = useState<string | null>(null); 
 
+  
   console.log("Id agencia: ", user?.agencyId);
-    console.log(user)
+  console.log(user)
   useEffect(() => {
     if (!user?.agencyId) return;
-
+    
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/agencies/${user.agencyId}/customization`, {
       credentials: "include",
     })
-      
-      .then((res) => {
-        if (res.status === 200) {
-          setHasCustomization(true);
-        } else if (res.status === 404) {
-          setHasCustomization(false);
-        }
-      })
-      .catch((err) => {
-        console.error("Error al verificar customización:", err);
-      });
+    
+    .then((res) => {
+      if (res.status === 200) {
+        setHasCustomization(true);
+      } else if (res.status === 404) {
+        setHasCustomization(false);
+      }
+    })
+    .catch((err) => {
+      console.error("Error al verificar customización:", err);
+    });
   }, [user?.agencyId]);
-
+  
   function rgbToHexIfNeeded(color: string): string {
-  // Si ya es hex, devolvelo tal cual
-  if (/^#([0-9A-Fa-f]{3}){1,2}$/.test(color)) return color;
-
-  // Si es RGB o RGBA
+    // Si ya es hex, devolvelo tal cual
+    if (/^#([0-9A-Fa-f]{3}){1,2}$/.test(color)) return color;
+    
+    // Si es RGB o RGBA
   const rgbMatch = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-
+  
   if (rgbMatch) {
     const [, r, g, b] = rgbMatch.map(Number);
     const hex = `#${[r, g, b]
       .map((val) => val.toString(16).padStart(2, "0"))
       .join("")}`;
-    return hex;
+      return hex;
+    }
+    
+    // Si no es ni hex ni rgb válido, devolvelo sin cambios
+    return color;
   }
-
-  // Si no es ni hex ni rgb válido, devolvelo sin cambios
-  return color;
-}
-
-
+  
+  
   const handleOnSubmit = async (values: ICustomizationValues) => {
     console.log("🔥 ENVIANDO DATOS:", values);
-
-  const cleanColor = rgbToHexIfNeeded;
-
-  const payload = {
-    information: values.information,
-    mainColors: cleanColor(values.mainColors),
-    navbarColor: cleanColor(values.navbarColor),
-    buttonColor: cleanColor(values.buttonColor),
-    backgroundColor: cleanColor(values.backgroundColor),
-    secondaryColor: cleanColor(values.secondaryColor),
-  };
-
-  console.log("🎨 Payload listo para enviar:", payload);
-  
-  try {
-    console.log("customization:", hasCustomization);
     
-
-
+    const cleanColor = rgbToHexIfNeeded;
+    
+    const payload = {
+      information: values.information,
+      mainColors: cleanColor(values.mainColors),
+      navbarColor: cleanColor(values.navbarColor),
+      buttonColor: cleanColor(values.buttonColor),
+      backgroundColor: cleanColor(values.backgroundColor),
+      secondaryColor: cleanColor(values.secondaryColor),
+    };
+    
+    console.log("🎨 Payload listo para enviar:", payload);
+    
     try {
-      const response = await cambiarColores(String(user?.agencyId ?? ""), payload);
-      console.log(" response completo:", response);
-      if (response) {
-        toast.success("Colores cambiados correctamente");
-        setHasCustomization(true);
-        setCustomizationId(response.id)
+      console.log("customization:", hasCustomization);
+      
+      
+      
+      try {
+        const response = await cambiarColores(String(user?.agencyId ?? ""), payload);
+        console.log(" response completo:", response);
+        if (response) {
+          toast.success("Colores cambiados correctamente");
+          setHasCustomization(true);
+          // setCustomizationId(response.id)
+        }
+      } catch (error) {
+        console.error("Error al cambiar los colores:", error);
       }
-  } catch (error) {
-    console.error("Error al cambiar los colores:", error);
-  }
-  } catch (error) {
-    console.error("Error al cambiar los colores:", error);
-  }
+    } catch (error) {
+      console.error("Error al cambiar los colores:", error);
+    }
   };
-
+  
   return (
     <>
       <Formik
         initialValues={{
           logoImage: "",
-          information: "",
+          information: "¡Bienvenidos a mi sitio web!",
           mainColors: "#FFFFFF",
           banner: "",
           navbarColor: "#a0aec0",
@@ -116,7 +117,7 @@ const MiSitio: React.FC = () => {
         }}
         validationSchema={colorValidationSchema}
         onSubmit={handleOnSubmit}
-      >
+        >
         {({
           values,
           handleChange,
@@ -129,7 +130,7 @@ const MiSitio: React.FC = () => {
           <form
             onSubmit={handleSubmit}
             className="flex flex-col items-start justify-start m-auto w-full max-w-5xl rounded-lg p-6 pt-0 md:p-8 md:pt-8 space-y-8 shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]"
-          >
+            >
             {/* Aquí va TODO tu formulario tal cual está */}
             <div className="flex items-center justify-between w-full mb-0 pb-4">
               <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] ">
@@ -138,7 +139,7 @@ const MiSitio: React.FC = () => {
               <a
                 href="#Logo"
                 className="text-white bg-blue-800 pt-2 pb-2 pl-3 pr-3 rounded-lg hover:bg-blue-900"
-              >
+                >
                 Comenzar a editar
               </a>
             </div>
@@ -146,19 +147,19 @@ const MiSitio: React.FC = () => {
             <div
               className="w-full border border-gray-400 shadow mt-3"
               style={{ backgroundColor: values.backgroundColor }}
-            >
+              >
               <div
                 className="flex justify-between items-center border-b py-4 px-4"
                 style={{ backgroundColor: values.navbarColor }}
-              >
+                >
                 <div className="h-14 w-30 ml-2 bg-white rounded shadow" />
                 <div className="flex gap-2 flex-wrap">
                   {["Home", "Category", "About Us", "Profile"].map((btn) => (
                     <button
-                      key={btn}
-                      type="button"
-                      className="px-4 py-2 rounded shadow text-sm font-semibold"
-                      style={{ backgroundColor: values.buttonColor, color: values.secondaryColor }}
+                    key={btn}
+                    type="button"
+                    className="px-4 py-2 rounded shadow text-sm font-semibold"
+                    style={{ backgroundColor: values.buttonColor, color: values.secondaryColor }}
                     >
                       {btn}
                     </button>
@@ -172,7 +173,7 @@ const MiSitio: React.FC = () => {
                   <h3
                     className="text-xl md:text-3xl font-bold drop-shadow-lg"
                     style={{ color: values.secondaryColor }}
-                  >
+                    >
                     Mi Web Inmobiliaria
                   </h3>
                   <p className="text-white text-sm md:text-base drop-shadow-md" style={{ color: values.mainColors }}>
@@ -193,15 +194,15 @@ const MiSitio: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-4 gap-4">
                 {[1, 2, 3].map((i) => (
                   <div
-                    key={i}
-                    className="border rounded-lg p-3 bg-white space-y-2 shadow"
+                  key={i}
+                  className="border rounded-lg p-3 bg-white space-y-2 shadow"
                   >
                     <div className="w-full h-24 bg-gray-300 rounded" />
                     <button
                       type="button"
                       className="w-full py-1 rounded text-white font-semibold"
                       style={{ backgroundColor: values.buttonColor }}
-                    >
+                      >
                       Ver
                     </button>
                     <p className="text-center text-sm text-blue-600" >
@@ -234,8 +235,8 @@ const MiSitio: React.FC = () => {
                     onBlur={handleBlur}
                     className={`w-full h-10 bg-white rounded border p-1 ${
                       touched[id as keyof typeof touched] && errors[id as keyof typeof errors]
-                        ? "border-red-500"
-                        : "border-gray-400"
+                      ? "border-red-500"
+                      : "border-gray-400"
                     }`}
                   />
                 </div>
@@ -247,7 +248,7 @@ const MiSitio: React.FC = () => {
                 type="submit"
                 disabled={isSubmitting}
                 className="text-white bg-blue-800 py-2 px-4 rounded-lg w-full font-semibold hover:bg-blue-900 transition"
-              >
+                >
                 Aplicar cambios
               </button>
             </div>
@@ -256,7 +257,7 @@ const MiSitio: React.FC = () => {
       </Formik>
 
       {/* Renderizado condicional del componente de subir logo y banner */}
-      {customizationId && <UploadLogoBanner customizationId={customizationId} />}
+      {/* <UploadLogoBanner customizationId={customizationId} /> */}
     </>
   );
 };

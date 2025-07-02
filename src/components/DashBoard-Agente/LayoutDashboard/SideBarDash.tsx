@@ -121,10 +121,11 @@ const SidebarDashboard: React.FC = () => {
               <summary className="font-semibold text-base md:text-xl">Mi sitio</summary>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
                 <li><Link href="/DashboardAgente?view=editar-titulo" className="block text-gray-800 hover:text-[#831F40] transition-colors">editar nombre y descripción</Link></li>
-                <li><Link href="/DashboardAgente?view=cambiar-colores" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">cambiar colores</Link></li>
+                <li><Link href="/DashboardAgente?view=cambiar-colores" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">editar colores</Link></li>
+                <li><Link href="/DashboardAgente?view=enviarLogoYBanner" className="block text-gray-800 hover:text-[#831F40] transition-colors mt-2">editar logo y banner</Link></li>
               </ul>
             </details>
-          </div> 
+          </div>  
 
           {/* --- ITEM - Propiedades --- */}
           <div className="flex items-start gap-2 mt-6 hover:bg-gray-300 rounded-md p-2 cursor-pointer w-full">

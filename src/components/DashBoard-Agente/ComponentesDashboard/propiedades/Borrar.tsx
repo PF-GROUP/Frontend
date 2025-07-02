@@ -2,6 +2,7 @@
 
 import apiService from "@/services/apiService";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../../../../../context/authContext";
 import toast from "react-hot-toast";
@@ -44,10 +45,9 @@ const EliminarPropiedades = () => {
 
   const handleEliminar = async (id: string) => {
     try {
-
       await apiService.del(`/property/soft/${id}`, true);
-      toast.success("Propiedad eliminada con exito")
-       setPropiedades((prev) => prev.filter((prop) => prop.id !== id));
+      toast.success("Propiedad eliminada con exito");
+      setPropiedades((prev) => prev.filter((prop) => prop.id !== id));
     } catch (error) {
       console.error("Error al eliminar propiedad:", error);
     }
@@ -78,67 +78,77 @@ const EliminarPropiedades = () => {
       </h2>
 
       <div className="flex flex-col w-full space-y-5">
-        {propiedades.map((prop) => (
-          <div
-            key={prop.id}
-            className="relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between bg-gray-200 border border-gray-300 rounded-lg p-4 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]"
-          >
-            {/* Ribbon de estado dentro del contenedor gris */}
-            {prop.status === "Vendido" && (
-              <span className="absolute ml-2 top-5 -left-10  rotate-[-45deg] bg-red-600 text-white text-xs font-bold px-10 py-1 shadow-md">
-                VENDIDA
-              </span>
-            )}
-            {prop.status === "Disponible" && (
-              <span className="absolute top-5 -left-8 rotate-[-45deg] bg-green-700 text-white text-xs font-bold px-8 py-1 shadow-md">
-                DISPONIBLE
-              </span>
-            )}
-
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
-              <div className="w-full sm:w-[200px] h-[120px] overflow-hidden rounded-md mr-3">
-                <Image
-                  src={prop.images[0]?.file || "/imagen-placeholder.jpg"}
-                  alt={prop.name}
-                  width={200}
-                  height={120}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-              <div>
-                <p className="font-semibold text-xl text-[#af355c] mb-1">
-                  <span className="font-bold mr-2 text-[#85173b]">nombre:</span>{" "}
-                  {prop.name}
-                </p>
-                <p className="text-lg text-[#992b50] mb-1 ml-1">
-                  <span className="font-semibold mr-2 text-[#8e2446]">dirección:</span>{" "}
-                  {prop.address}
-                </p>
-                <p className="text-lg italic  text-[#bd486d] mb-2 ml-1">
-                  <span className="font-semibold mr-2 text-[#91274b]">tipo:</span>{" "}
-                  {prop.type_of_property?.type}
-                </p>
-                <p className="text-green-600 font-bold text-lg ml-1">
-                  <span className="font-semibold mr-2 text-green-700">precio:</span> $
-                  {prop.price}
-                </p>
-              </div>
+        {propiedades.map((prop, i) => (
+          <div key={prop.id}>
+            {/* Propiedad N° y link editar */}
+            <div className="flex justify-between items-center mb-2 ml-1 mr-1">
+              <p className="font-semibold text-[#230c89] text-xl">Propiedad N°{i + 1}</p>
+              <Link
+                href={`/editar-propiedad/${prop.id}`}
+                className="text-blue-600 hover:underline text-sm font-medium"
+              >
+                Editar
+              </Link>
             </div>
 
-            <div className="flex flex-col sm:flex-row w-[400px] gap-3 mt-4 md:mt-0">
-              <button
-                onClick={() => toggleEstado(prop.id)}
-                className="text-white bg-[#91274b] py-2 px-4 rounded-lg font-semibold hover:bg-[#621833] transition w-full sm:w-auto"
-              >
-                {prop.status === "Vendido" ? "Marcar disponible" : "Marcar vendida"}
-              </button>
-              <button
-              
-                onClick={() => handleEliminar(prop.id)}
-                className="text-white bg-[#bd0909] py-2 px-4 rounded-lg font-semibold hover:bg-[#8d0707] transition w-full sm:w-auto"
-              >
-                Eliminar
-              </button>
+            {/* Contenedor de propiedad */}
+            <div
+              className="relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between bg-gray-200 border border-gray-300 rounded-lg p-4 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]"
+            >
+              {prop.status === "Vendido" && (
+                <span className="absolute ml-2 top-5 -left-10 rotate-[-45deg] bg-red-600 text-white text-xs font-bold px-10 py-1 shadow-md">
+                  VENDIDA
+                </span>
+              )}
+              {prop.status === "Disponible" && (
+                <span className="absolute top-5 -left-8 rotate-[-45deg] bg-green-700 text-white text-xs font-bold px-8 py-1 shadow-md">
+                  DISPONIBLE
+                </span>
+              )}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
+                <div className="w-full sm:w-[200px] h-[120px] overflow-hidden rounded-md mr-3">
+                  <Image
+                    src={prop.images[0]?.file || "/imagen-placeholder.jpg"}
+                    alt={prop.name}
+                    width={200}
+                    height={120}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+                <div>
+                  <p className="font-semibold text-xl text-[#af355c] mb-1">
+                    <span className="font-bold mr-2 text-[#85173b]">nombre:</span>{" "}
+                    {prop.name}
+                  </p>
+                  <p className="text-lg text-[#992b50] mb-1 ml-1">
+                    <span className="font-semibold mr-2 text-[#8e2446]">dirección:</span>{" "}
+                    {prop.address}
+                  </p>
+                  <p className="text-lg italic text-[#bd486d] mb-2 ml-1">
+                    <span className="font-semibold mr-2 text-[#91274b]">tipo:</span>{" "}
+                    {prop.type_of_property?.type}
+                  </p>
+                  <p className="text-green-600 font-bold text-lg ml-1">
+                    <span className="font-semibold mr-2 text-green-700">precio:</span> $
+                    {prop.price}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row w-[400px] gap-3 mt-4 md:mt-0">
+                <button
+                  onClick={() => toggleEstado(prop.id)}
+                  className="text-white bg-[#91274b] py-2 px-4 rounded-lg font-semibold hover:bg-[#621833] transition w-full sm:w-auto"
+                >
+                  {prop.status === "Vendido" ? "Marcar disponible" : "Marcar vendida"}
+                </button>
+                <button
+                  onClick={() => handleEliminar(prop.id)}
+                  className="text-white bg-[#bd0909] py-2 px-4 rounded-lg font-semibold hover:bg-[#8d0707] transition w-full sm:w-auto"
+                >
+                  Eliminar
+                </button>
+              </div>
             </div>
           </div>
         ))}
