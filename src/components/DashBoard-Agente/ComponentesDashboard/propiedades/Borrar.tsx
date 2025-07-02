@@ -2,10 +2,11 @@
 
 import apiService from "@/services/apiService";
 import Image from "next/image";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../../../../../context/authContext";
 import toast from "react-hot-toast";
+import { Pencil } from "lucide-react";
+import EditarPropiedad from "./editarPropiedades";
 
 interface Propiedad {
   id: string;
@@ -22,6 +23,7 @@ interface Propiedad {
 const EliminarPropiedades = () => {
   const { user } = useAuthContext();
   const [propiedades, setPropiedades] = useState<Propiedad[]>([]);
+  const [idSeleccionado, setIdSeleccionado] = useState<string | null>(null); // 👈 Estado clave
 
   useEffect(() => {
     const fetchPropiedades = async () => {
@@ -32,9 +34,14 @@ const EliminarPropiedades = () => {
           `/property/agency/${user.agencyId}`,
           true
         );
-        console.log("Propiedades del user: ", propiedadesData);
-        
-        setPropiedades(propiedadesData);
+
+        // 🔥 Ordenamos de más vieja a más nueva usando createdAt
+      const propiedadesOrdenadas = [...propiedadesData].sort(
+        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      );
+
+   
+        setPropiedades(propiedadesOrdenadas);
       } catch (error) {
         console.error("Error al obtener propiedades:", error);
       }
@@ -46,7 +53,7 @@ const EliminarPropiedades = () => {
   const handleEliminar = async (id: string) => {
     try {
       await apiService.del(`/property/soft/${id}`, true);
-      toast.success("Propiedad eliminada con exito");
+      toast.success("Propiedad eliminada con éxito");
       setPropiedades((prev) => prev.filter((prop) => prop.id !== id));
     } catch (error) {
       console.error("Error al eliminar propiedad:", error);
@@ -71,37 +78,41 @@ const EliminarPropiedades = () => {
     }
   };
 
+  // ✅ Si hay una propiedad seleccionada, mostramos el componente de edición
+  if (idSeleccionado) {
+    return <EditarPropiedad id={idSeleccionado} onBack={() => setIdSeleccionado(null)} />;
+  }
+
   return (
     <div className="flex flex-col items-start justify-start mx-auto w-full max-w-7xl p-4 md:p-8 lg:p-8 rounded-lg shadow-[1px_5px_8px_4px_rgba(0,0,0,0.2)]">
-      <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] mb-6 ml-2 md:ml-4">
+      <h2 className="text-2xl md:text-3xl font-bold text-[#230c89] mb-6 ml-2 md:ml-4 border-b border-gray-300 w-full pb-4">
         Borrar propiedades
       </h2>
 
       <div className="flex flex-col w-full space-y-5">
         {propiedades.map((prop, i) => (
           <div key={prop.id}>
-            {/* Propiedad N° y link editar */}
+            {/* Encabezado */}
             <div className="flex justify-between items-center mb-2 ml-1 mr-1">
-              <p className="font-semibold text-[#230c89] text-xl">Propiedad N°{i + 1}</p>
-              <Link
-                href={`/editar-propiedad/${prop.id}`}
-                className="text-blue-600 hover:underline text-sm font-medium"
+              <p className="font-semibold text-[#230c89] text-xl">Propiedad N°{i+1}</p>
+              <button
+                onClick={() => setIdSeleccionado(prop.id)}
+                className="text-white hover:underline text-sm font-medium flex bg-[#06a867] px-3 py-1 rounded-xl mr-1 hover:bg-[#047c4b] transition"
               >
+                <Pencil size={20} className="w-4 h-4 mr-1" />
                 Editar
-              </Link>
+              </button>
             </div>
 
-            {/* Contenedor de propiedad */}
-            <div
-              className="relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between bg-gray-200 border border-gray-300 rounded-lg p-4 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]"
-            >
+            {/* Contenido propiedad */}
+            <div className="relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between bg-gray-200 border border-gray-300 rounded-lg p-4 hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]">
               {prop.status === "Vendido" && (
                 <span className="absolute ml-2 top-5 -left-10 rotate-[-45deg] bg-red-600 text-white text-xs font-bold px-10 py-1 shadow-md">
                   VENDIDA
                 </span>
               )}
               {prop.status === "Disponible" && (
-                <span className="absolute top-5 -left-8 rotate-[-45deg] bg-green-700 text-white text-xs font-bold px-8 py-1 shadow-md">
+                <span className="absolute top-5 mt-1 -left-9 rotate-[-45deg] bg-green-700 text-white text-xs font-bold px-8 py-1 shadow-md">
                   DISPONIBLE
                 </span>
               )}
@@ -117,20 +128,19 @@ const EliminarPropiedades = () => {
                 </div>
                 <div>
                   <p className="font-semibold text-xl text-[#af355c] mb-1">
-                    <span className="font-bold mr-2 text-[#85173b]">nombre:</span>{" "}
-                    {prop.name}
+                    <span className="font-bold mr-2 text-[#85173b]">nombre:</span> {prop.id}
+                  </p>
+                  <p className="font-semibold text-xl text-[#af355c] mb-1">
+                    <span className="font-bold mr-2 text-[#85173b]">nombre:</span> {prop.name}
                   </p>
                   <p className="text-lg text-[#992b50] mb-1 ml-1">
-                    <span className="font-semibold mr-2 text-[#8e2446]">dirección:</span>{" "}
-                    {prop.address}
+                    <span className="font-semibold mr-2 text-[#8e2446]">dirección:</span> {prop.address}
                   </p>
                   <p className="text-lg italic text-[#bd486d] mb-2 ml-1">
-                    <span className="font-semibold mr-2 text-[#91274b]">tipo:</span>{" "}
-                    {prop.type_of_property?.type}
+                    <span className="font-semibold mr-2 text-[#91274b]">tipo:</span> {prop.type_of_property?.type}
                   </p>
                   <p className="text-green-600 font-bold text-lg ml-1">
-                    <span className="font-semibold mr-2 text-green-700">precio:</span> $
-                    {prop.price}
+                    <span className="font-semibold mr-2 text-green-700">precio:</span> ${prop.price}
                   </p>
                 </div>
               </div>
