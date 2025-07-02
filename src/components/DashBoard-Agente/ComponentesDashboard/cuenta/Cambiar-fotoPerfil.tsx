@@ -8,7 +8,6 @@ import toast from "react-hot-toast";
 import { useAuthContext } from "../../../../../context/authContext";
 import apiService from "@/services/apiService";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://91.235.34.31:3000";
 
 const FotoPerfil: React.FC = () => {
   const { user, SaveUserData } = useAuthContext();
@@ -68,37 +67,21 @@ const FotoPerfil: React.FC = () => {
     }
 
     setIsUploading(true);
-    console.log("Esta es la imagen del user: ", selectedFile)
     try {
       // 📨 Creamos el FormData para enviar la imagen como multipart/form-data
       const formData = new FormData();
       formData.append("file", selectedFile);
 
       // 📤 Enviamos la imagen al backend, que a su vez la sube a Cloudinary
-      console.log("Este es el id del user:", user.id);
-      // const response = await fetch(`${API_URL}/images/profile/${user.id}`, {
-      //   method: "POST",
-      //   body: formData,
-      //   credentials: "include", // incluye cookies para autenticar al usuario
-      // });
-      const response = await apiService.post(`/images/profile/${user.id}`,true)
-      console.log("Respuesta status:", response.status);
-
-      // if (!response.ok) throw new Error("Error al subir la imagen");
-
+      const response = await apiService.post(`/images/profile/${user.id}`, formData, true)
       
-      const { imageUrl } = await response.json();
-      console.log("Image URL:", imageUrl);
+      if(response) {
+        SaveUserData({user: {...user, profilePictureUrl: response.url}});
+        toast.success("Imagen subida y perfil actualizado");
+      }
+      // 👇 Asegurate de que response.profilePictureUrl venga completa (http...)
 
-      // const data = await response.json();
-      // console.log("Respuesta completa del backend:", data);
 
-
-      // 🧠 Actualizamos el contexto con la nueva URL de la imagen de perfil
-      const updatedUser = { ...user, profilePictureUrl: imageUrl };
-      SaveUserData({ user: updatedUser });
-
-      toast.success("Imagen subida y perfil actualizado");
 
       // 🧹 Limpiamos estados
       setSelectedFile(null);
@@ -172,7 +155,7 @@ const FotoPerfil: React.FC = () => {
       {/* 📁 Botón para seleccionar imagen desde input */}
       <label
         htmlFor="file-upload"
-        className={`flex items-center gap-2 bg-blue-700 text-white font-semibold text-base sm:text-lg py-2 px-4 rounded-lg cursor-pointer ${
+        className={`flex items-center gap-2 bg-blue-800 hover:bg-blue-900 text-white font-semibold text-base sm:text-lg py-2 px-4 rounded-lg cursor-pointer transition disabled:opacity-70 disabled:cursor-not-allowed ${
           isUploading ? "opacity-70 pointer-events-none" : ""
         }`}
       >
@@ -194,10 +177,10 @@ const FotoPerfil: React.FC = () => {
         <button
           onClick={handleUpload}
           disabled={isUploading}
-          className={`w-full max-w-xs py-2 px-4 rounded-lg font-semibold text-white ${
+          className={`w-full max-w-xs py-2 px-4 rounded-lg font-semibold text-white transition disabled:opacity-70 disabled:cursor-not-allowed ${
             isUploading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-green-600 hover:bg-green-700"
+              ? "bg-gray-500 cursor-not-allowed"
+              : "bg-[#A62F55]  hover:bg-[#831F40]"
           }`}
         >
           {isUploading ? "Subiendo..." : "Subir Imagen"}

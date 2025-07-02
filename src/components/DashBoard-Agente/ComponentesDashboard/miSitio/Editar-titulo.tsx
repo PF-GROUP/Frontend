@@ -23,11 +23,7 @@ const EditarTitulo: React.FC = () => {
         agentUser: String(user.agencyId),
       };
 
-      console.log("Esta es el id de la agencia: ", user.agencyId);
-      console.log("estos son el Nombre y Desc: ", payload);
-
       const response = await editarAgencia(payload, String(user.agencyId));
-      console.log("🧠 response completo:", response);
 
       if (response) {
         toast.success("Nombre y Descripción modificados.", { duration: 2500 });
@@ -116,11 +112,11 @@ const EditarTitulo: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-center w-full mt-6 gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-center w-full mt-6 gap-3">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="text-white bg-blue-700 py-2 px-4 rounded-lg w-full md:w-[250px] font-semibold hover:bg-blue-800 transition disabled:opacity-70 disabled:cursor-not-allowed"
+              className="text-white bg-blue-800 py-2 px-4 rounded-lg w-full md:w-full font-semibold hover:bg-blue-900 transition disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isSubmitting ? "⏳ Guardando..." : "Guardar cambios"}
             </button>
@@ -130,7 +126,7 @@ const EditarTitulo: React.FC = () => {
                 resetForm(); // ✅ Resetea valores
                 toast.error("Cambios cancelados"); // ✅ Toast
               }}
-              className="text-white bg-red-600 py-2 px-4 rounded-lg w-full md:w-[200px] font-semibold hover:bg-red-700 transition"
+              className="text-white bg-[#A62F55] py-2 px-4 rounded-lg w-full md:w-full font-semibold hover:bg-[#831F40] transition"
               disabled={isSubmitting}
             >
               Cancelar

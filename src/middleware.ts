@@ -42,27 +42,27 @@ export default async function middleware(request: NextRequest) {
       return NextResponse.next()
   }
 
-  // 3. Redirección si no está autenticado
-  if (isProtectedRoute && !isAuthenticated) {
-    return NextResponse.redirect(new URL("/login", request.nextUrl))
-  }
-  // if (isProtectedRoute && !isPay && isAuthenticated) {
+  // // 3. Redirección si no está autenticado
+  // if (isProtectedRoute && !isAuthenticated) {
+  //   return NextResponse.redirect(new URL("/login", request.nextUrl))
+  // }
+  // // if (isProtectedRoute && !isPay && isAuthenticated) {
+  // //   return NextResponse.redirect(new URL("/stripe", request.nextUrl))
+  // // }
+  // if (isProtectedRoute && isOnBoarding && isAuthenticated) {
   //   return NextResponse.redirect(new URL("/stripe", request.nextUrl))
   // }
-  if (isProtectedRoute && isOnBoarding && isAuthenticated) {
-    return NextResponse.redirect(new URL("/stripe", request.nextUrl))
-  }
-  if (isOnBoardingRoute && !isOnBoarding) {
-    console.log(isOnBoarding)
-    return NextResponse.redirect(new URL("/", request.nextUrl))
-  }
-  console.log("aaaa")
-  if (isAdminRoute && !isAdmin) {
-    return NextResponse.redirect(new URL("/", request.nextUrl))
-  }
-  if (isAdminRoute && !isAuthenticated) {
-    return NextResponse.redirect(new URL("/login", request.nextUrl))
-  }
+  // if (isOnBoardingRoute && !isOnBoarding) {
+  //   console.log(isOnBoarding)
+  //   return NextResponse.redirect(new URL("/", request.nextUrl))
+  // }
+  // console.log("aaaa")
+  // if (isAdminRoute && !isAdmin) {
+  //   return NextResponse.redirect(new URL("/", request.nextUrl))
+  // }
+  // if (isAdminRoute && !isAuthenticated) {
+  //   return NextResponse.redirect(new URL("/login", request.nextUrl))
+  // }
 
   // 4. Redirección si ya está logueado e intenta ir a login/register
   if (isPublicRoute && isAuthenticated) {
