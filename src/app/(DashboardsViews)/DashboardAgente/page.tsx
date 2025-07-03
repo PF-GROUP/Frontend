@@ -1,9 +1,8 @@
 'use client';
 
-// Este hook te permite leer los parámetros que están en la URL, justo después del signo ?.
+import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-// import Dashboard from '@/components/DashBoard-Agente/DashboardInicio';
 import EditarTitulo from '@/components/DashBoard-Agente/ComponentesDashboard/miSitio/Editar-titulo';
 import CambiarColores from '@/components/DashBoard-Agente/ComponentesDashboard/miSitio/Cambiar-colores';
 import SubirPropiedad from '@/components/DashBoard-Agente/ComponentesDashboard/propiedades/Subir';
@@ -14,12 +13,11 @@ import ReportarError from '@/components/DashBoard-Agente/ComponentesDashboard/so
 import Seguridad from '@/components/DashBoard-Agente/ComponentesDashboard/seguridad/Seguridad';
 import UploadLogoBanner from '@/components/DashBoard-Agente/ComponentesDashboard/miSitio/enviarLogoYBanner';
 import { useAuthContext } from '../../../../context/authContext';
+import Loader from '../../../components/Loader/Loader'; // Asegurate que este path sea correcto
+import SuscripcionNewsletter from "../../../components/DashBoard-Agente/ComponentesDashboard/soporte/SuscripciónNewsletter"
 
-
-export default function DashboardPage() {
-  const { user } = useAuthContext(); 
-  
-  
+function DashboardContent() {
+  const { user } = useAuthContext();
   const searchParams = useSearchParams(); 
   const view = searchParams.get('view');
 
@@ -30,9 +28,11 @@ export default function DashboardPage() {
       case 'cambiar-colores':
         return <CambiarColores />;
       case 'enviarLogoYBanner':
-        return <UploadLogoBanner customizationId='' />;
+        return <UploadLogoBanner customizationId='' setCustomizationId={() => {}} />;
       case 'subir-propiedad':
         return <SubirPropiedad />;
+      case "Suscripcion-Newsletter" :
+        return <SuscripcionNewsletter />;
       case 'borrar-propiedad':
         return <Borrar />;
       case 'cambiar-contrasena':
@@ -44,23 +44,26 @@ export default function DashboardPage() {
       case 'seguridad':
         return <Seguridad />;
       default:
-        return(
+        return (
           <div className="bg-gray-200 border-l-8 border-[#A62F55] shadow-lg rounded-lg p-6">
-            {/* AQUI TAMBIEN IMPLEMENTAR EL USER DE LAS COOCKIES */}
-            <h1 className="text-2xl font-bold text-[#831F40] mb-2">¡Bienvenido/a {user?.name} !</h1>
-            <p className="text-gray-700">Desde tu pagína gestionar todo lo relacionado con tu sitio, propiedades, clientes y mucho más. 🚀
+            <h1 className="text-2xl font-bold text-[#831F40] mb-2">
+              ¡Bienvenido/a {user?.name}!
+            </h1>
+            <p className="text-gray-700">
+              Desde tu página gestioná todo lo relacionado con tu sitio, propiedades, clientes y mucho más. 🚀
             </p>
           </div>
-          )
+        );
     }
   };
 
+  return renderContent();
+}
 
 export default function Page() {
   return (
-
-    <Suspense fallback={<div><Loader/></div>}>
-      <DashboardPage />
+    <Suspense fallback={<div><Loader /></div>}>
+      <DashboardContent />
     </Suspense>
   );
 }

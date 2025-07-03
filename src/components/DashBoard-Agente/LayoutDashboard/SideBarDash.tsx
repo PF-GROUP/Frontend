@@ -19,7 +19,6 @@ import apiService from "@/services/apiService";
 
 const SidebarDashboard: React.FC = () => {
   const {user, ResetUserData} = useAuthContext()
-  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false);
   // const [profileImage, setProfileImage] = useState<string | null>(null);
 
@@ -32,13 +31,14 @@ const SidebarDashboard: React.FC = () => {
   const toggleSidebar = () => setIsOpen(!isOpen);
   const closeSidebar = () => setIsOpen(false);
 
-  const handleLogout = () => {
-    apiService.post("/auth/logout", {}, true);
+  const  handleLogout = async () => {
+    await apiService.post("/auth/logout", {}, true);
+    ResetUserData()
     toast.success("Cerrando sesión, redirigiendo a home...");
-    ResetUserData();
+
     setTimeout(() => {
-      router.push("/home");
-    }, 1000);
+      window.location.href = '/home';
+    }, 3000);
   };
 
   useEffect(() => {
@@ -159,7 +159,7 @@ const SidebarDashboard: React.FC = () => {
                 <li><Link href="/DashboardAgente?view=reportar-error" className="block text-gray-800 hover:text-[#831F40] transition-colors">Reportar error</Link></li>
               </ul>
               <ul className="mt-2 bg-gray-100 rounded-md p-2 space-y-1 hover:bg-white">
-                <li><Link href="/DashboardAgente?view=SuscripciónNewsletter" className="block text-gray-800 hover:text-[#870505] transition-colors">Boletín informativo</Link></li>
+                <li><Link href="/DashboardAgente?view=Suscripcion-Newsletter" className="block text-gray-800 hover:text-[#870505] transition-colors">Boletín informativo</Link></li>
               </ul>
             </details>
           </div>

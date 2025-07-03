@@ -1,4 +1,4 @@
-// import ChatbotPrueba  from "../../components/ChatBot/chatbot";
+import ChatbotPrueba  from "../../components/ChatBot/chatbot";
 import Navbar from "@/components/navbar/navbar";
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -7,7 +7,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Navbar />
        </div>
       <main className="flex-1">{children}</main>
-              {/* <ChatbotPrueba /> */}
+              <ChatbotPrueba />
     </div>
   );
 }

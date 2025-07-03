@@ -40,7 +40,7 @@ const CeluSidebar: React.FC<CeluSidebarDashboardProps> = ({ name, surname }) => 
     toast.success("Cerrando sesión, redirigiendo a home...");
     ResetUserData();
     setTimeout(() => {
-      router.push("/home");
+      window.location.href = '/home';
     }, 1000);
     setOpen(false);
   };

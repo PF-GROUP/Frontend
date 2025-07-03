@@ -43,7 +43,7 @@ const SidebarDashboard: React.FC<SidebarDashboardProps> = ({
     toast.success("Cerrando sesión, redirigiendo a home...");
     ResetUserData();
     setTimeout(() => {
-      router.push("/home");
+      window.location.href = '/home';
     }, 1000);
   };
 

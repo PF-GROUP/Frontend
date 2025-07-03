@@ -12,13 +12,11 @@ import { AlertTriangle } from "lucide-react";
 
 interface Props {
   params: { slug: string; id: string };
-  // Next siempre inyecta searchParams aunque no las uses
   searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default function Page({ params, searchParams }: Props) {
+export default function Page({ params }: Props) {
   const { id } = params;
-  const _searchParams = searchParams;
   const [propiedad, setPropiedad] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [actualImage, setActualImage] = useState(0);
@@ -29,44 +27,24 @@ export default function Page({ params, searchParams }: Props) {
   const { agencia } = useAgency();
 
   useEffect(() => {
-  setLoading(true);
-  const fetchPropiedad = async () => {
-    const response = await getPropertyById(id);
-    if (response) setPropiedad(response);
-    setLoading(false);
-  };
+    setLoading(true);
+    const fetchPropiedad = async () => {
+      const response = await getPropertyById(id);
+      if (response) setPropiedad(response);
+      setLoading(false);
+    };
 
-  fetchPropiedad();
-}, [id]);
+    fetchPropiedad();
+  }, [id]);
 
-if (loading || !agencia) {
-  return (
-    <div className="flex items-center justify-center h-screen">
-      <Loader />
-    </div>
-  );
-}
-  if (!agencia ) {
+  if (loading || !agencia) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[rgb(240,241,244)] text-gray-800 p-6">
-        <div className="bg-white shadow-lg rounded-2xl p-8 flex flex-col items-center text-center max-w-md w-full">
-          <AlertTriangle className="text-[#9b0624] mb-4" size={64} />
-          <h1 className="text-4xl font-extrabold mb-2">404</h1>
-          <p className="text-lg font-semibold mb-4">Página no encontrada</p>
-          <p className="text-gray-600 mb-6">
-            Lo sentimos, la página que estás buscando no existe o fue movida.
-          </p>
-          <Link
-            href="/home"
-            className="bg-[#9b0624] hover:bg-[#870505] text-white font-semibold py-2 px-6 rounded-full transition-colors"
-          >
-            Volver al inicio
-          </Link>
-        </div>
+      <div className="flex items-center justify-center h-screen">
+        <Loader />
       </div>
     );
   }
-    
+
   if (!propiedad || !propiedad.agency) {
     return (
       <div className="flex flex-col items-center justify-center max-w-md mx-auto min-h-screen px-4 text-center">
@@ -100,14 +78,23 @@ if (loading || !agencia) {
     });
   };
 
+  console.log(agency?.agentUser?.phone)
+  console.log(agencia.user.phone)
+  console.log(agency?.agenUser)
   const handleWhatsapp = () => {
-    const phone = agency.agentUser.phone;
-    const text = `Hola! Me interesa agendar una visita para la propiedad "${propiedad.name}" (ID: ${propiedad.id}) que cuesta $${propiedad.price.toLocaleString()} el día ${selectedDate}`;
-    const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(text)}`;
-    window.open(url, "_blank");
-    setShowModal(false);
-    setSelectedDate("");
-  };
+  const Phone = agencia.user.phone;
+
+  if (!Phone) {
+    alert("El agente no tiene un número de teléfono configurado.");
+    return;
+  }
+
+  const text = `Hola! Me interesa agendar una visita para la propiedad "${propiedad.name}" (ID: ${propiedad.id}) que cuesta $${propiedad.price.toLocaleString()} el día ${selectedDate}`;
+  const url = `https://api.whatsapp.com/send?phone=${Phone}&text=${encodeURIComponent(text)}`;
+  window.open(url, "_blank");
+  setShowModal(false);
+  setSelectedDate("");
+};
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4 md:px-6 flex flex-col justify-center items-center">
@@ -204,14 +191,22 @@ if (loading || !agencia) {
           <div>
             <h1 className="text-2xl font-bold mb-1">{propiedad.name}</h1>
             <p className="text-gray-700 mb-1">
-              {propiedad.rooms} ambientes • {propiedad.bathroom} baños • {propiedad.m2} m²
+              {propiedad.rooms} ambientes • {propiedad.bathrooms} baños • {propiedad.m2} m²
             </p>
             <p className="text-gray-500 mb-4">{propiedad.address}, {propiedad.city}</p>
             <p className="text-2xl font-bold text-green-600 mb-4">${propiedad.price.toLocaleString()}</p>
 
             <div className="text-sm text-gray-700 space-y-1 mb-4">
-              <p><strong>Tipo:</strong> {propiedad.type_of_property}</p>
-              <p><strong>Operación:</strong> {propiedad.type === "sell" ? "Venta" : "Alquiler"}</p>
+              <p><strong>Tipo:</strong> {
+                typeof propiedad.type_of_property === 'string'
+                  ? propiedad.type_of_property
+                  : propiedad.type_of_property?.type || "Sin especificar"
+              }</p>
+              <p><strong>Operación:</strong> {
+                typeof propiedad.type === 'string'
+                  ? propiedad.type === 'sell' ? 'Venta' : 'Alquiler'
+                  : propiedad.type?.type || 'Sin especificar'
+              }</p>
               <p><strong>Estado:</strong> {propiedad.status}</p>
             </div>
 

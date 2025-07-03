@@ -43,30 +43,28 @@ export default async function middleware(request: NextRequest) {
   }
 
   // // 3. Redirección si no está autenticado
-  // if (isProtectedRoute && !isAuthenticated) {
-  //   return NextResponse.redirect(new URL("/login", request.nextUrl))
-  // }
-  // // if (isProtectedRoute && !isPay && isAuthenticated) {
-  // //   return NextResponse.redirect(new URL("/stripe", request.nextUrl))
-  // // }
-  // if (isProtectedRoute && isOnBoarding && isAuthenticated) {
-  //   return NextResponse.redirect(new URL("/stripe", request.nextUrl))
-  // }
-  // if (isOnBoardingRoute && !isOnBoarding) {
-  //   console.log(isOnBoarding)
-  //   return NextResponse.redirect(new URL("/", request.nextUrl))
-  // }
-  // console.log("aaaa")
-  // if (isAdminRoute && !isAdmin) {
-  //   return NextResponse.redirect(new URL("/", request.nextUrl))
-  // }
-  // if (isAdminRoute && !isAuthenticated) {
-  //   return NextResponse.redirect(new URL("/login", request.nextUrl))
-  // }
+  if (isProtectedRoute && !isAuthenticated) {
+    return NextResponse.redirect(new URL("/login", request.nextUrl))
+  }
 
-  // 4. Redirección si ya está logueado e intenta ir a login/register
+
+  if (isProtectedRoute && isOnBoarding && isAuthenticated) {
+    return NextResponse.redirect(new URL("/stripe", request.nextUrl))
+  }
+  if (isOnBoardingRoute && !isOnBoarding) {
+    console.log(isOnBoarding)
+    return NextResponse.redirect(new URL("/", request.nextUrl))
+  }
+
+  if (isAdminRoute && !isAdmin) {
+    return NextResponse.redirect(new URL("/", request.nextUrl))
+  }
+  if (isAdminRoute && !isAuthenticated) {
+    return NextResponse.redirect(new URL("/login", request.nextUrl))
+  }
+
   if (isPublicRoute && isAuthenticated) {
-    const targetPath = isOnBoarding || isPay ? "/stripe" : "/DashboardAgente"
+    const targetPath = isOnBoarding  ? "/stripe" : "/DashboardAgente"
     return NextResponse.redirect(new URL(targetPath, request.nextUrl))
   }
 
@@ -82,7 +80,7 @@ async function verifyToken(req: NextRequest) {
     },
     cache: 'no-store',
   });
-  
+  console.log("ESTO ME DIO", res.status)
   
   return res.status === 401 || res.status === 403 || res.status === 404 ? false : true
 }
@@ -130,5 +128,9 @@ function verifySession(token: string | undefined): {
 
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+  matcher: [
+    '/((?!api|_next|.*\\.(?:png|jpg|jpeg|svg|ico|webp|gif|css|js|map)$).*)',
+  ],
 }
+
+
