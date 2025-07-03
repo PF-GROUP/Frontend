@@ -1,20 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-
-// next.config.js
   experimental: {
-    optimizeCss: false, 
-},
-eslint: {
+    optimizeCss: false,
+  },
+  eslint: {
     ignoreDuringBuilds: true,
   },
-typescript: {
+  typescript: {
     ignoreBuildErrors: true,
   },
-
-
-
+  images: {
+    domains: ['res.cloudinary.com'], // ← ahora deberia mostrar las imagenes
+  },
 };
 
 export default nextConfig;
