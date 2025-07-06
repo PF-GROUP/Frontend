@@ -31,3 +31,15 @@ export const getPropertyById = async (id: string) => {
     return null;
   }
 };
+
+
+export const getByUserAgencia = async (id:string) => {
+  try {
+
+    const response = await apiService.get(`/agency/getByUser/${id}`, true);
+    return response;
+  } catch (error) {
+    console.error("Error al obtener la agencia by el id de user", error);
+    return null
+  }
+} 

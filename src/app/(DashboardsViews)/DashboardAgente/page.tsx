@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import EditarTitulo from '@/components/DashBoard-Agente/ComponentesDashboard/miSitio/Editar-titulo';
@@ -15,11 +15,20 @@ import UploadLogoBanner from '@/components/DashBoard-Agente/ComponentesDashboard
 import { useAuthContext } from '../../../../context/authContext';
 import Loader from '../../../components/Loader/Loader'; // Asegurate que este path sea correcto
 import SuscripcionNewsletter from "../../../components/DashBoard-Agente/ComponentesDashboard/soporte/SuscripciónNewsletter"
-
+import Link from 'next/link';
+import apiService from '@/services/apiService';
 function DashboardContent() {
   const { user } = useAuthContext();
+  const [agencia, setAgencia] = useState({ slug: "agencia-cordoba" });
   const searchParams = useSearchParams(); 
   const view = searchParams.get('view');
+ 
+  useEffect(() => {
+    if (!user?.id) return;
+    apiService.get(`agency/getByUser/${user.id}`).then((res) => {
+      setAgencia(res);
+    });
+  }, [user?.id]);
 
   const renderContent = () => {
     switch (view) {
@@ -51,6 +60,9 @@ function DashboardContent() {
             </h1>
             <p className="text-gray-700">
               Desde tu página gestioná todo lo relacionado con tu sitio, propiedades, clientes y mucho más. 🚀
+            </p>
+            <p>
+              Accede desde <Link href={`/agencia/${agencia.slug}`}>aqui</Link>
             </p>
           </div>
         );
