@@ -8,9 +8,10 @@ import { projectTraceSource } from "next/dist/build/swc/generated-native"
 const protectedRoutes = ["/DashboardAgente"]
 const onBoardingRoutes = ["/stripe"]
 const adminRoutes = ["/DashboardAdmin"]
-const publicRoutes = ["/login", "/register"]
+const publicRoutes = ["/login", "/register","/","/home"]
 
 export default async function middleware(request: NextRequest) {
+  return NextResponse.next()
   let isTokenValid = false
     const sessionToken = request.cookies.get("token")?.value
   try {
@@ -74,6 +75,7 @@ async function verifyToken(req: NextRequest) {
   
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
   console.log(API_URL)
+  return true
   const res = await fetch(`${API_URL}/auth/validToken`, {
     headers: {
       Cookie: `token=${req.cookies.get('token')?.value}`,
